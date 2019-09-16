@@ -1,4 +1,5 @@
 ## FaceTed backend
+[![Build Status](https://travis-ci.com/Ohtu-FaceTed/FaceTed-Backend.svg?branch=master)](https://travis-ci.com/Ohtu-FaceTed/FaceTed-Backend)
 
 ### Quick Start
 ```
