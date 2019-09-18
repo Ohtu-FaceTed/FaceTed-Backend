@@ -11,14 +11,24 @@ def index():
 
 @app.route('/answer', methods=['POST'])
 def answer():
-    return {'new_question': {'attribute_id': 101, 'attribute_fi': 'Asuinhuone'},
-            'building_classes': [{'class_id': 110, 'class_fi': 'Omakotitalot', 'score': 0.9},
-                                 {'class_id': 320, 'class_fi': 'Hotellit', 'score': 0.5},
-                                 {'class_id': 1311, 'class_fi': 'Väestönsuojat', 'score': 0.1}]}
+    try:
+        content = request.get_json()
+        language = content['language']
+        attribute_id = content['attribute_id']
+        response = content['response']
+    except KeyError as e:
+        return {'success': False,
+                'message': 'Please supply "language", "attribute_id", and "response" in query'}
+    else:
+        return {'success': True,
+                'new_question': {'attribute_id': 101, 'attribute_name': 'Asuinhuone'},
+                'building_classes': [{'class_id': 110, 'class_name': 'Omakotitalot', 'score': 0.9},
+                                     {'class_id': 320, 'class_name': 'Hotellit', 'score': 0.5},
+                                     {'class_id': 1311, 'class_name': 'Väestönsuojat', 'score': 0.1}]}
 
 @app.route('/question', methods=['GET'])
 def question():
-    return {'attribute_id': 101, 'attribute_fi': 'Asuinhuone'}
+    return {'attribute_id': 101, 'attribute_name': 'Asuinhuone'}
 
 if __name__ == "__main__":
     # Parse command line arguments
