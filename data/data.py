@@ -8,7 +8,7 @@ def attributes():
   attributes = {}
   for row in keys.get_rows():
     if row[0].ctype != 0:
-      attributes[str(row[0].value)] = row[1].value.encode("utf-8")
+      attributes[float(row[0].value)] = row[1].value.encode("utf-8")
   return attributes
 
 def test_data():
@@ -16,5 +16,7 @@ def test_data():
   classes = []
   for row in test.get_rows():
     classes.append(np.array(map(lambda one: one.value, row)))
-  return np.array(classes).astype(str)
-
+  classes[0][0] = 0
+  classes = np.array(classes).astype(float)
+  classes[0,0] = None
+  return classes
