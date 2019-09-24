@@ -26,7 +26,7 @@ def answer():
                 'message': 'Please supply "language", "attribute_id", and "response" in query'})
     else:
         return jsonify({'success': True,
-                'new_question': {'attribute_id': '0101', 'attribute_name': 'Asuinhuone'},
+                'new_question': {'attribute_id': '0102', 'attribute_name': 'Eteinen'},
                 'building_classes': [{'class_id': '0110', 'class_name': 'Omakotitalot', 'score': 0.9},
                                      {'class_id': '0320', 'class_name': 'Hotellit', 'score': 0.5},
                                      {'class_id': '1311', 'class_name': 'Väestönsuojat', 'score': 0.1}]})
