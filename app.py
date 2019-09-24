@@ -4,6 +4,7 @@ import data.data as data
 
 app = Flask(__name__)
 
+#could be moved to its own module
 def next_question():
     attributes = data.attributes()
     id = attributes.keys()[0]
@@ -27,7 +28,6 @@ def answer():
     else:
         return {'success': True,
                 'new_question': {'attribute_id': '0101', 'attribute_name': 'Asuinhuone'},
-                #'new_question': next_question(),
                 'building_classes': [{'class_id': '0110', 'class_name': 'Omakotitalot', 'score': 0.9},
                                      {'class_id': '0320', 'class_name': 'Hotellit', 'score': 0.5},
                                      {'class_id': '1311', 'class_name': 'Väestönsuojat', 'score': 0.1}]}
@@ -35,7 +35,6 @@ def answer():
 @app.route('/question', methods=['GET'])
 def question():
     return {'attribute_id': '0101', 'attribute_name': 'Asuinhuone'}
-    #return next_question()
 
 if __name__ == "__main__":
     # Parse command line arguments
