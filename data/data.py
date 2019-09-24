@@ -10,7 +10,7 @@ def attributes():
   for row in keys.get_rows():
     #ignore empty cells
     if row[0].ctype != 0:
-      attributes[float(row[0].value)] = row[1].value.encode("utf-8")
+      attributes[float(row[0].value)] = row[1].value
   return attributes
 
 #returns two-dimensional numpy array of building class data
