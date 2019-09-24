@@ -18,7 +18,7 @@ def building_classes():
   test = data.sheet_by_name("testi")
   classes = []
   for row in test.get_rows():
-    classes.append(np.array(map(lambda one: one.value, row)))
+    classes.append(np.array(list(map(lambda one: one.value, row))))
   classes[0][0] = 0
   classes = np.array(classes).astype(float)
   classes[0,0] = None
