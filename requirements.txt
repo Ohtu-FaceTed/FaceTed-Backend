@@ -8,6 +8,7 @@ itsdangerous==1.1.0
 Jinja2==2.10.1
 MarkupSafe==1.1.1
 more-itertools==7.2.0
+numpy==1.17.2
 packaging==19.1
 pluggy==0.13.0
 py==1.8.0
@@ -16,4 +17,5 @@ pytest==5.1.2
 six==1.12.0
 wcwidth==0.1.7
 Werkzeug==0.15.6
+xlrd==1.2.0
 zipp==0.6.0

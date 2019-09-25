@@ -1,10 +1,16 @@
 import argparse
+import data.data as data
 from flask import Flask, escape, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
+#could be moved to its own module
+def next_question():
+    attributes = data.attributes()
+    id = list(attributes.keys())[0]
+    return {"attribute_id": str(id), "attribute_name": attributes.get(id)}
 
 @app.route("/")
 def index():
