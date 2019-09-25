@@ -7,12 +7,12 @@ def attributes():
   return attributes
 
 @pytest.fixture
-def building_classes():
-  from data.data import building_classes
-  return building_classes
+def building_classes_numpy():
+  from data.data import building_classes_numpy
+  return building_classes_numpy
 
 def test_attributes_are_returned_as_dictionary(attributes):
   assert type(attributes()) == dict
 
-def test_building_classes_are_returned_as_numpy_array(building_classes):
-  assert type(building_classes()) == np.ndarray
+def test_building_classes_are_returned_as_numpy_array(building_classes_numpy):
+  assert type(building_classes_numpy()) == np.ndarray

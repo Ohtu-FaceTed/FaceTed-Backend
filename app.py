@@ -15,7 +15,7 @@ def next_question():
 @app.route("/")
 def index():
     name = request.args.get("name", "World")
-    return f"Hello, {escape(name)}"
+    return "Hello, {escape(name)}"
 
 @app.route('/answer', methods=['POST'])
 def answer():
