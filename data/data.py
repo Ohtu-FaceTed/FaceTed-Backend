@@ -59,7 +59,8 @@ def get_conditional_probabilities():
   df = pd.DataFrame(data=probabilities, columns=columns)
 
   # Add building class column, yes the transformation is a bit gnarly
-  building_class = [f'{int(x):04d}' if x%1==0. else f'{x:06.1f}' for x in building_observations[1:,0]]
+  #building_class = [f'{int(x):04d}' if x%1==0. else f'{x:06.1f}' for x in building_observations[1:,0]]
+  building_class = [f'{int(x):04d}' for x in building_observations[1:,0]]
   df.insert(0, column='building_class', value=building_class)
 
   return df
