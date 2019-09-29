@@ -8,9 +8,8 @@ CORS(app)
 
 #could be moved to its own module
 def next_question():
-    attributes = data.attributes()
-    id = random.choice(list(attributes.keys()))
-    return {"attribute_id": str(id), "attribute_name": attributes.get(id)}
+    id = random.choice(list(data.attributes.keys()))
+    return {"attribute_id": str(id), "attribute_name": data.attributes.get(id)}
 
 @app.route("/")
 def index():
@@ -31,11 +30,16 @@ def answer():
         return jsonify({'success': False,
                 'message': 'Please supply "language", "attribute_id", and "response" in query'})
     else:
+        posterior = data.calculate_posterior(attribute_id, response)
+        new_building_classes = []
+        for _, (class_id, score) in posterior.iterrows():
+            new_building_classes.append({'class_id': class_id, 
+                                         'class_name': data.building_classes[class_id],
+                                         'score': score})
+
         return jsonify({'success': True,
                 'new_question': next_question(),
-                'building_classes': [{'class_id': '0110', 'class_name': 'Omakotitalot', 'score': 0.9},
-                                     {'class_id': '0320', 'class_name': 'Hotellit', 'score': 0.5},
-                                     {'class_id': '1311', 'class_name': 'Väestönsuojat', 'score': 0.1}]})
+                'building_classes': new_building_classes})
 
 @app.route('/question', methods=['GET'])
 def question():
