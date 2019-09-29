@@ -6,6 +6,7 @@ data = xlrd.open_workbook("data/luokat_kaikki.xls")
 
 #returns dictionary made up from attribute code and name pairs
 def get_attributes():
+  '''Loads attribute_id to attribute_name mapping from file and returns them as dict'''
   keys = data.sheet_by_name("avain")
   attributes = {}
   for row in keys.get_rows():
@@ -14,9 +15,11 @@ def get_attributes():
       attributes[str(int(row[0].value))] = row[1].value
   return attributes
 
+# Load attributes here, so we don't need to read from disk on every request
 attributes = get_attributes()
 
 def get_building_classes():
+  '''Loads building class_id to class_name mapping from file and returns them as dict'''
   # Read data (FIXME: hardcoding of path)
   data = pd.read_csv('data/building_classes.csv', sep=',', dtype=str)
 
@@ -25,10 +28,12 @@ def get_building_classes():
 
   return building_classes
 
+# Load building_classes here, so we don't need to read from disk on every request
 building_classes = get_building_classes()
 
 #returns two-dimensional numpy array of building class data
 def get_building_observations():
+  '''Loads building "observations" from file and returns them as Numpy array'''
   test = data.sheet_by_name("testi")
   classes = []
   for row in test.get_rows():
@@ -38,9 +43,11 @@ def get_building_observations():
   classes[0,0] = None
   return classes
 
+# Load building_observations, so we don't need to read from disk on every request
 building_observations = get_building_observations()
 
-def get_conditional_probabilities():  
+def get_conditional_probabilities():
+  '''Calculates the conditional probability table from the building observations and returns them as a Pandas dataframe'''
   # Extract column names and convert them to strings
   columns = building_observations[0,1:].astype(int).astype(str)
 
@@ -57,9 +64,11 @@ def get_conditional_probabilities():
 
   return df
 
+# Calculate conditional probabilites here, so we don't need to do it on every request
 conditional_probabilities = get_conditional_probabilities()
 
 def calculate_posterior(attribute, value, prior=None, normalize=True):
+  '''Calculates the posterior probability for each building class given attribute and value'''
   n_building_class = conditional_probabilities.shape[0]
 
   # Assume uniform prior if none is provided
