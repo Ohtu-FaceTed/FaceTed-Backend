@@ -47,23 +47,23 @@ def test_post_answer_requires_all_fields(backend):
     json = response.get_json()
     assert json['success'] == False
 
-    response = backend.post('/answer', json={'language': 1, 'attribute_id': 1})
+    response = backend.post('/answer', json={'language': 1, 'attribute_id': '1'})
     json = response.get_json()
     assert json['success'] == False
 
-    response = backend.post('/answer', json={'language': 1, 'attribute_id': 1, 'response': 1})
+    response = backend.post('/answer', json={'language': 1, 'attribute_id': '1', 'response': True})
     json = response.get_json()
     assert json['success'] == True
 
 def test_post_answer_returns_new_question(backend):
-    response = backend.post('/answer', json={'language': 1, 'attribute_id': 1, 'response': 1})
+    response = backend.post('/answer', json={'language': 1, 'attribute_id': '1', 'response': True})
     json = response.get_json()
     assert 'new_question' in json
     assert 'attribute_id' in json['new_question']
     assert 'attribute_name' in json['new_question']
 
 def test_post_answer_returns_building_classes(backend):
-    response = backend.post('/answer', json={'language': 1, 'attribute_id': 1, 'response': 1})
+    response = backend.post('/answer', json={'language': 1, 'attribute_id': '1', 'response': True})
     json = response.get_json()
     assert 'building_classes' in json
     for item in json['building_classes']:
