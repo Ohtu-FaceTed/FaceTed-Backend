@@ -38,8 +38,8 @@ def test_attributes_keys_and_values_are_strings(attributes):
     assert type(key) == str
     assert type(value) == str
 
-def test_building_observations_is_numpy_array(building_observations):
-  assert type(building_observations) == np.ndarray
+def test_building_observations_is_dataframe(building_observations):
+  assert type(building_observations) == pd.DataFrame
 
 def test_building_observations_has_at_least_one_building_class_and_attribute(building_observations):
   assert building_observations.ndim == 2
@@ -66,12 +66,12 @@ def test_conditional_probabilities_has_at_least_one_building_class_and_attribute
   assert conditional_probabilities.shape[1] >= 1
 
 def test_conditional_probabilities_class_ids_in_building_classes(conditional_probabilities, building_classes):
-  for class_id in conditional_probabilities['building_class']:
+  for class_id in conditional_probabilities['class_id']:
     assert class_id in building_classes.keys()
 
 def test_conditional_probabilities_attribute_ids_in_attributes(conditional_probabilities, attributes):
   for attribute_id in conditional_probabilities.columns:
-    assert attribute_id == 'building_class' or attribute_id in attributes.keys()
+    assert attribute_id == 'class_id' or attribute_id in attributes.keys()
 
 def test_calculate_posterior_normalizes_probabilities_by_default(calculate_posterior):
   res = calculate_posterior("1", True)
@@ -87,3 +87,4 @@ def test_calculate_posterior_unnormalized_probabilities_are_bernoulli(calculate_
   res_true = calculate_posterior("1", True, normalize=False)
   res_false = calculate_posterior("1", False, normalize=False)
   assert np.isclose(res_true['posterior']+res_false['posterior'], 1.0).all()
+  
