@@ -66,12 +66,12 @@ def test_conditional_probabilities_has_at_least_one_building_class_and_attribute
   assert conditional_probabilities.shape[1] >= 1
 
 def test_conditional_probabilities_class_ids_in_building_classes(conditional_probabilities, building_classes):
-  for class_id in conditional_probabilities['building_class']:
+  for class_id in conditional_probabilities['class_id']:
     assert class_id in building_classes.keys()
 
 def test_conditional_probabilities_attribute_ids_in_attributes(conditional_probabilities, attributes):
   for attribute_id in conditional_probabilities.columns:
-    assert attribute_id == 'building_class' or attribute_id in attributes.keys()
+    assert attribute_id == 'class_id' or attribute_id in attributes.keys()
 
 def test_calculate_posterior_normalizes_probabilities_by_default(calculate_posterior):
   res = calculate_posterior("1", True)

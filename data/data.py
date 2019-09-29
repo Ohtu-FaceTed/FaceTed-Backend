@@ -44,8 +44,16 @@ def get_building_observations_numpy():
 
 def get_building_observations():
   '''Loads building "observations" from file and returns them as Pandas dataframe'''
-  df = pd.read_excel("data/luokat_kaikki.xls")
+  # Read data from file FIXME: hardcoded of paths
+  df = pd.read_excel("data/luokat_kaikki.xls", dtype={'class_id': str})
+
+  # Make sure the column names are strings
   df.columns = df.columns.astype(str)
+
+  # Just take the main code for each class_id (ignore decimal part) 
+  # FIXME: is this what the customer wants?
+  df.class_id = df.class_id.apply(lambda x: x[:4])
+
   return df
 
 # Load building_observations, so we don't need to read from disk on every request
@@ -53,20 +61,14 @@ building_observations = get_building_observations()
 
 def get_conditional_probabilities():
   '''Calculates the conditional probability table from the building observations and returns them as a Pandas dataframe'''
-  # Extract column names and convert them to strings
-  columns = building_observations[0,1:].astype(int).astype(str)
+  # Start with building_observations
+  df = building_observations.copy()
 
-  # Extract "observations" and convert them to "probabilities"
-  observations = building_observations[1:,1:]
-  probabilities = (observations + 1)/3 # Laplace smoothing
+  # Find attribute columns
+  attribute_cols = df.columns[df.columns != 'class_id']
 
-  # Create a Pandas dataframe to allow mixed datatypes and keep column names
-  df = pd.DataFrame(data=probabilities, columns=columns)
-
-  # Add building class column, yes the transformation is a bit gnarly
-  #building_class = [f'{int(x):04d}' if x%1==0. else f'{x:06.1f}' for x in building_observations[1:,0]]
-  building_class = [f'{int(x):04d}' for x in building_observations[1:,0]]
-  df.insert(0, column='building_class', value=building_class)
+  # Convert the observation values into probabilities with Laplace smoothing
+  df[attribute_cols] = (df[attribute_cols] + 1)/3 
 
   return df
 
@@ -93,7 +95,7 @@ def calculate_posterior(attribute, value, prior=None, normalize=True):
     posterior /= posterior.sum()
 
   # Create Pandas dataframe with building class and posterior
-  df = pd.DataFrame({'building_class': conditional_probabilities['building_class'], 
+  df = pd.DataFrame({'class_id': conditional_probabilities['class_id'], 
                      'posterior': posterior})
   
   return df
