@@ -32,7 +32,7 @@ def answer():
     else:
         posterior = data.calculate_posterior(attribute_id, response)
         new_building_classes = []
-        for ind,(class_id, score) in posterior.iterrows():
+        for _, (class_id, score) in posterior.iterrows():
             new_building_classes.append({'class_id': class_id, 
                                          'class_name': data.building_classes[class_id],
                                          'score': score})
