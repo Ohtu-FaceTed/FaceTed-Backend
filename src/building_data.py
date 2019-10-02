@@ -16,14 +16,22 @@ def load_attributes(attribute_file):
         df = pd.read_csv(attribute_file, dtype=str)
 
         # Check that the required fields are present
-        assert 'attribute_id' in df
-        assert 'attribute_name' in df
+        assert 'attribute_id' in df, "The attributes data does not contain a 'attribute_id' column!"
+        assert 'attribute_name' in df, "The attributes data does not contain a 'attribute_name' column!"
+    except AssertionError as e:
+        print(f'The attribute file ({attribute_file}) failed to meet expectations: {e.args[0]}',
+              file=sys.stderr)
+        df = None # Reset to None so that we substitute the default dataframe
     except:
         print(f'Failed to load attribute data from {attribute_file}!', 
               file=sys.stderr)
+    finally:
         # If reading the data failed, use placeholder data, so some 
         # functionality is maintained
-        df = DEFAULT_ATTRIBUTES
+        if df is None:
+            print('Substituting placeholder data for attributes!', 
+                  file=sys.stderr)
+            df = DEFAULT_ATTRIBUTES
 
     return df
 
@@ -39,18 +47,27 @@ DEFAULT_BUILDING_CLASSES = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
 
 def load_building_classes(building_classes_file):
     '''Attempts to load buiding class data from file into Pandas dataframe'''
+    df = None
     try:
         df = pd.read_csv(building_classes_file, dtype=str)
         
         # Check that the required fields are present
-        assert 'class_id' in df
-        assert 'class_name' in df
+        assert 'class_id' in df, "The building classes data does not contain a 'class_id' column!"
+        assert 'class_name' in df, "The building classes data does not contain a 'class_name' column!"
+    except AssertionError as e:
+        print(f'The building classes file ({building_classes_file}) failed to meet expectations: {e.args[0]}',
+              file=sys.stderr)
+        df = None # Reset to None so that we substitute the default dataframe
     except:
         print(f'Failed to load building class data from {building_classes_file}!', 
               file=sys.stderr)
+    finally:
         # If reading the data failed, use placeholder data, so some 
         # functionality is maintained
-        df = DEFAULT_BUILDING_CLASSES
+        if df is None:
+            print('Substituting placeholder data for building classes!', 
+                  file=sys.stderr)
+            df = DEFAULT_BUILDING_CLASSES
 
     return df
 
@@ -64,23 +81,41 @@ DEFAULT_OBSERVATIONS = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
                                      '102': [0, 1, 0]})
 
 
-def load_observations(observation_file, class_ids=(), attribute_ids=()):
+def load_observations(observation_file, class_ids=None, attribute_ids=None):
     '''Attempts to load buiding-attribute observation data from file into Pandas dataframe'''
+    df = None
     try:
         df = pd.read_csv(observation_file, dtype={'class_id': str})
 
-        # Check that the required fields are present
-        assert 'class_id' in df
-        for class_id in class_ids:
-            assert class_id in df.class_id.values
-        for attribute_id in attribute_ids:
-            assert attribute_id in df.columns
+        # Check that the class_id field is present
+        assert 'class_id' in df, "The observation data does not contain a 'class_id' column!"
+
+        # If class_ids is given, check that we find all the ids in the 
+        # observations in class_ids as well
+        if class_ids is not None:
+            for class_id in df.class_id.unique():
+                assert class_id in class_ids, f'The class id {class_id} is only found in observations!'
+        
+        # If attribute_ids is given, check that we find all the ids in the
+        # observations in attribute_ids as well
+        if attribute_ids is not None:
+            for attribute_id in df.columns:
+                if attribute_id == 'class_id': continue
+                assert attribute_id in attribute_ids, f'The attribute id {attribute_id} is only found in observations!'
+    except AssertionError as e:
+        print(f'The observation data file ({observation_file}) failed to meet expectations: {e.args[0]}',
+              file=sys.stderr)
+        df = None # Reset to None so that we substitute the default dataframe
     except:
         print(f'Failed to load observation data from {observation_file}!', 
                 file=sys.stderr)
-        # If reading the data failed, use placeholder data, so some 
+    finally:
+        # If reading the data failed, use placeholder data, so some
         # functionality is maintained
-        df = DEFAULT_OBSERVATIONS
+        if df is None:
+            print('Substituting placeholder data for observations!', 
+                  file=sys.stderr)
+            df = DEFAULT_OBSERVATIONS
 
     # Ensure that the column labels are interpreted as strings
     df.columns = df.columns.astype(str)
