@@ -3,6 +3,8 @@ import sys
 import pandas as pd
 
 # The attribute dataframe should have at least the following columns
+#   attribute_id: numerical attribute identifier (string, unique)
+#   attribute_name: common name for class (string)
 DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102'], 
                                    'attribute_name': ['Asunnot', 'Asuinhuone', 
                                                       'Eteinen']})
@@ -26,7 +28,9 @@ def load_attributes(attribute_file):
     return df
 
 
-# The building classes dataframe should have at least the following fields
+# The building classes dataframe should have at least the following fields:
+#   class_id: four digit class identifier (string, unique)
+#   class_name: common name for class (string)
 DEFAULT_BUILDING_CLASSES = pd.DataFrame({'class_id': ['0110', '0111', '0112'], 
                                          'class_name': ['Omakotitalot', 
                                                         'Paritalot', 
@@ -51,14 +55,16 @@ def load_building_classes(building_classes_file):
     return df
 
 
-# The observations dataframe should have at least the following columns
-DEFAULT_OBSERVATIONS = pd.DataFrame({'class_id': ['0110', '0111', '0112'], 
+# The observations dataframe should have at least the following columns:
+#   class_id: same as building_classes class_id (string, unique)
+#   [attribute]: number of observations of this attribute for a given class_id (integer)
+DEFAULT_OBSERVATIONS = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
                                      '1': [1, 1, 1],
                                      '101': [1, 0, 1],
                                      '102': [0, 1, 0]})
 
 
-def load_observations(observation_file, class_ids=(), attributes_ids=()):
+def load_observations(observation_file, class_ids=(), attribute_ids=()):
     '''Attempts to load buiding-attribute observation data from file into Pandas dataframe'''
     try:
         df = pd.read_csv(observation_file, dtype={'class_id': str})
@@ -82,7 +88,7 @@ def load_observations(observation_file, class_ids=(), attributes_ids=()):
     return df
 
 
-class BuildingData():
+class BuildingData:
     def __init__(self, data_directory):
         '''Initializes a BuildingData object using the data files in data_directory'''
         # Load attribute data into hidden variable, access via properties
@@ -95,9 +101,12 @@ class BuildingData():
 
         # Load observation data
         observation_file = os.path.join(data_directory, 'observations.csv')
-        self.observations = load_observations(observation_file)
+        self.observations = load_observations(observation_file, 
+                                              class_ids=self._building_classes.class_id.unique(),
+                                              attribute_ids=self._attributes.attribute_id.unique())
+
         # FIXME: if any of the previous give the default values, should force 
-        # all of them to have default values
+        # all of them to have default values, or simply fail?
 
     @property
     def attribute_name(self):
