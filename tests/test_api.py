@@ -1,5 +1,5 @@
 from app import app
-from flask import jsonify
+from flask import jsonify, session
 import pytest
 
 @pytest.fixture(scope='module')
@@ -70,3 +70,23 @@ def test_post_answer_returns_building_classes(backend):
         assert 'class_id' in item
         assert 'class_name' in item
         assert 'score' in item
+
+def test_session_gets_created_for_client_requesting_first_question(backend):
+    with backend:
+        backend.get('/question')
+        assert 'user' in session
+
+def test_id_stored_in_session_is_string(backend):
+    with backend:
+        backend.get('/question')
+        assert type(session['user']) == str
+
+def test_session_gets_recreated_for_client_requesting_first_question(backend):
+    previous_id = ''
+    with backend:
+        backend.get('/question')
+        with backend.session_transaction() as sess:
+            previous_id = sess['user']
+        backend.get('/question')
+        assert previous_id != ''
+        assert session['user'] != previous_id
