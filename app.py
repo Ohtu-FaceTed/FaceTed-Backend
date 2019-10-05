@@ -1,9 +1,6 @@
 from src import app
 import argparse
-import data.data as data
-from flask import Flask, escape, request, jsonify, session
-from flask_cors import CORS
-import string
+from flask import Flask, escape, request, jsonify
 
 
 
