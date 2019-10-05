@@ -1,6 +1,7 @@
 from src import app
 
 from src.question import next_question
+from src.session import users
 
 import argparse
 import random
