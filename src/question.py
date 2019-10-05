@@ -1,10 +1,9 @@
 from src import app
-from src import sessionManagement
 from src.sessionManagement import generate_id, users
 
 import random
 import data.data as data
-from flask import Flask, escape, jsonify, session
+from flask import Flask, jsonify, session
 
 
 # could be moved to its own module

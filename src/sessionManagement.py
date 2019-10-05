@@ -1,5 +1,5 @@
 import random
-from flask import Flask, escape, request, jsonify, session
+from flask import session
 import string
 
 # to store every users session data

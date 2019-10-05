@@ -4,7 +4,7 @@ from src.question import next_question
 from src.sessionManagement import users
 
 import data.data as data
-from flask import Flask, request, jsonify, session
+from flask import request, jsonify, session
 
 
 @app.route('/answer', methods=['POST'])

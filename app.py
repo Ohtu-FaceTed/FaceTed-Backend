@@ -1,6 +1,6 @@
 from src import app
 import argparse
-from flask import Flask, escape, request, jsonify
+from flask import escape, request
 
 
 
