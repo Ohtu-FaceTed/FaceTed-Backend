@@ -1,10 +1,6 @@
-import argparse
 import random
-import data.data as data
 from flask import Flask, escape, request, jsonify, session
-from flask_cors import CORS
 import string
-from src import app
 
 # to store every users session data
 users = {}

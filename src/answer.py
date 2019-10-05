@@ -1,14 +1,10 @@
 from src import app
 
 from src.question import next_question
-from src.session import users
+from src.sessionManagement import users
 
-import argparse
-import random
 import data.data as data
-from flask import Flask, escape, request, jsonify, session
-import string
-
+from flask import Flask, request, jsonify, session
 
 
 @app.route('/answer', methods=['POST'])
