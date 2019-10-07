@@ -1,5 +1,5 @@
 from app import app
-from flask import jsonify, session
+from flask import session
 import pytest
 
 @pytest.fixture(scope='module')
@@ -79,7 +79,7 @@ def test_session_gets_created_for_client_requesting_first_question(backend):
 def test_id_stored_in_session_is_string(backend):
     with backend:
         backend.get('/question')
-        assert type(session['user']) == str
+        assert isinstance(session['user'], str)
 
 def test_session_gets_recreated_for_client_requesting_first_question(backend):
     previous_id = ''

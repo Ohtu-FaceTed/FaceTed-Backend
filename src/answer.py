@@ -1,9 +1,9 @@
+import src
 from src import app
 
 from src.question import next_question
 from src.sessionManagement import users
 
-import data.data as data
 from flask import request, jsonify, session
 
 
@@ -11,25 +11,29 @@ from flask import request, jsonify, session
 def answer():
     try:
         content = request.get_json()
-        language = content['language']
+        # language = content['language'] FIXME: To be implemented
         attribute_id = content['attribute_id']
         response = content['response']
-    except TypeError as e:
+    except TypeError:
         return jsonify({'success': False,
                         'message': 'Please supply "language", "attribute_id", and "response" in query'})
-    except KeyError as e:
+    except KeyError:
         return jsonify({'success': False,
                         'message': 'Please supply "language", "attribute_id", and "response" in query'})
     else:
         if 'user' in session:
             # access users session data
-            users[session['user']]
+            if session['user'] not in users:
+                ident = generate_id()
+                session['user'] = ident
+                users[ident] = {'probabilities': [], 'answers': []}
 
-        posterior = data.calculate_posterior(attribute_id, response)
+
+        posterior = src.classifier.calculate_posterior(attribute_id, response)
         new_building_classes = []
         for _, (class_id, score) in posterior.iterrows():
             new_building_classes.append({'class_id': class_id,
-                                         'class_name': data.building_classes[class_id],
+                                         'class_name': src.building_data.building_class_name[class_id],
                                          'score': score})
 
         return jsonify({'success': True,
