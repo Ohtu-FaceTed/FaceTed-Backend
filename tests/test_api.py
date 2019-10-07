@@ -1,5 +1,8 @@
 from app import app
 from flask import jsonify, session
+from src.sessionManagement import users
+import data.data as data
+import pandas as pd
 import pytest
 
 @pytest.fixture(scope='module')
@@ -14,6 +17,33 @@ def backend():
     yield test_client
 
     ctxt.pop()
+
+@pytest.fixture
+def responses(backend):
+    responses = {'id': '', 'probabilities': [], 'answers': [], 'questions': [], 'attributes': []}
+    answer = True
+    prior = None
+    attribute_id = ''
+    with backend:
+        response = backend.get('/question')
+        json = response.get_json()
+        responses['id'] = session['user']
+        attribute_id = json['attribute_id']
+        responses['questions'].append(json['attribute_name'])
+        for x in range(10):
+            response = backend.post('/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': answer})
+            json = response.get_json()
+            attribute_id = json['new_question']['attribute_id']
+            responses['questions'].append(json['new_question']['attribute_name'])
+            responses['attributes'].append(attribute_id)
+            if len(responses['probabilities']) > 0:
+                prior = responses['probabilities'][-1]
+            posterior = data.calculate_posterior(attribute_id, answer, prior)
+            new = posterior['posterior']
+            responses['probabilities'].append(new)
+            responses['answers'].append(answer)
+            answer != answer
+    return responses
 
 def test_get_root_succeeds(backend):
     response = backend.get('/')
@@ -90,3 +120,57 @@ def test_session_gets_recreated_for_client_requesting_first_question(backend):
         backend.get('/question')
         assert previous_id != ''
         assert session['user'] != previous_id
+
+def test_same_questions_not_repeated_during_session(responses):
+    questions = responses['questions']
+    attributes = responses['attributes']
+    unique_questions = list(set(questions))
+    unique_attributes = list(set(attributes))
+    assert len(unique_questions) == len(questions)
+    assert len(unique_attributes) == len(attributes)
+
+def test_prior_questions_are_saved_during_session(responses):
+    user = users[responses['id']]
+    assert user['questions'] == responses['questions']
+
+def test_users_answers_are_saved_during_session(responses):
+    user = users[responses['id']]
+    assert user['answers'] == responses['answers']
+
+def test_prior_probabilities_are_saved_during_session(responses):
+    user = users[responses['id']]
+    prob = user['probabilities']
+    comp = responses['probabilities']
+    print(prob[0])
+    print('XXXXX')
+    print(comp[0])
+    assert len(prob) == len(comp)
+    #for i in range(len(prob)):
+    #    assert (prob[i] == comp[i]).all()
+
+def test_returned_building_classes_are_based_on_prior_probabilities(backend):
+    attribute_id = ''
+    response = ''
+    prior = ''
+    posterior = ''
+    building_classes = []
+    new_building_classes = []
+    with backend:
+        response = backend.get('/question')
+        json = response.get_json()
+        attribute_id = json['attribute_id']
+        prob = data.calculate_posterior(attribute_id, True, None)
+        prior = prob['posterior']
+        response = backend.post('/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': True})
+        json = response.get_json()
+        attribute_id = json['new_question']['attribute_id']
+        posterior = data.calculate_posterior(attribute_id, True, prior)
+        response = backend.post('/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': True})
+        json = response.get_json()
+        building_classes = json['building_classes']
+        for _, (class_id, score) in posterior.iterrows():
+            new_building_classes.append({'class_id': class_id, 
+                                         'class_name': data.building_classes[class_id],
+                                         'score': score})
+        assert building_classes == new_building_classes
+
