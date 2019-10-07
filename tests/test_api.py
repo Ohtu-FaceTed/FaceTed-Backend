@@ -141,9 +141,6 @@ def test_prior_probabilities_are_saved_during_session(responses):
     user = users[responses['id']]
     prob = user['probabilities']
     comp = responses['probabilities']
-    print(prob[0])
-    print('XXXXX')
-    print(comp[0])
     assert len(prob) == len(comp)
     #for i in range(len(prob)):
     #    assert (prob[i] == comp[i]).all()
