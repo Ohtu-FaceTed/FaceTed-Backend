@@ -1,3 +1,4 @@
+import src
 from src import app
 
 from src.question import next_question
@@ -25,11 +26,11 @@ def answer():
             # access users session data
             users[session['user']]
 
-        posterior = data.calculate_posterior(attribute_id, response)
+        posterior = src.classifier.calculate_posterior(attribute_id, response)
         new_building_classes = []
         for _, (class_id, score) in posterior.iterrows():
             new_building_classes.append({'class_id': class_id,
-                                         'class_name': data.building_classes[class_id],
+                                         'class_name': src.building_data.building_class_names[class_id],
                                          'score': score})
 
         return jsonify({'success': True,
