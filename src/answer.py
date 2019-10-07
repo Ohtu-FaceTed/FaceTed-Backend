@@ -11,7 +11,7 @@ from flask import request, jsonify, session
 def answer():
     try:
         content = request.get_json()
-        language = content['language']
+        # language = content['language'] FIXME: To be implemented
         attribute_id = content['attribute_id']
         response = content['response']
     except TypeError:
@@ -23,7 +23,11 @@ def answer():
     else:
         if 'user' in session:
             # access users session data
-            assert session['user'] in users
+            if session['user'] not in users:
+                ident = generate_id()
+                session['user'] = ident
+                users[ident] = {'probabilities': [], 'answers': []}
+
 
         posterior = src.classifier.calculate_posterior(attribute_id, response)
         new_building_classes = []

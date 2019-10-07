@@ -6,7 +6,7 @@ import pandas as pd
 #   attribute_id: numerical attribute identifier (string, unique)
 #   attribute_name: common name for class (string)
 DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102'],
-                                   'attribute_name': ['Asunnot', 'Asuinhuone', 
+                                   'attribute_name': ['Asunnot', 'Asuinhuone',
                                                       'Eteinen']})
 
 
@@ -24,12 +24,12 @@ def load_attributes(attribute_file, verbose=True):
             print(f'The attribute file ({attribute_file}) failed to meet expectations: {e.args[0]}',
                   file=sys.stderr)
         df = None # Reset to None so that we substitute the default dataframe
-    except:
+    except Exception:
         if verbose:
             print(f'Failed to load attribute data from {attribute_file}!',
                   file=sys.stderr)
     finally:
-        # If reading the data failed, use placeholder data, so some 
+        # If reading the data failed, use placeholder data, so some
         # functionality is maintained
         if df is None:
             if verbose:
@@ -63,7 +63,7 @@ def load_building_classes(building_classes_file, verbose=True):
             print(f'The building classes file ({building_classes_file}) failed to meet expectations: {e.args[0]}',
                   file=sys.stderr)
         df = None # Reset to None so that we substitute the default dataframe
-    except:
+    except Exception:
         if verbose:
             print(f'Failed to load building class data from {building_classes_file}!',
                   file=sys.stderr)
@@ -102,7 +102,6 @@ def load_observations(observation_file, class_ids=None, attribute_ids=None, verb
         if class_ids is not None:
             for class_id in df.class_id.unique():
                 if class_id not in class_ids: raise ValueError(f'The class id {class_id} is only found in observations!')
-        
         # If attribute_ids is given, check that we find all the ids in the
         # observations in attribute_ids as well
         if attribute_ids is not None:
@@ -114,7 +113,7 @@ def load_observations(observation_file, class_ids=None, attribute_ids=None, verb
             print(f'The observation data file ({observation_file}) failed to meet expectations: {e.args[0]}',
                   file=sys.stderr)
         df = None # Reset to None so that we substitute the default dataframe
-    except:
+    except Exception:
         if verbose:
             print(f'Failed to load observation data from {observation_file}!',
                   file=sys.stderr)

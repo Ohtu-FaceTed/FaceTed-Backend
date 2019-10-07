@@ -42,5 +42,4 @@ class NaiveBayesClassifier:
         # Create Pandas dataframe with building class and posterior
         df = pd.DataFrame({'class_id': self.conditional_probabilities.class_id,
                            'posterior': posterior})
-        
         return df
