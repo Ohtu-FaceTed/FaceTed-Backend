@@ -22,7 +22,7 @@ if __name__ == "__main__":
     parser.add_argument('--data_directory', default='./data', help='data directory')
     args = parser.parse_args()
 
-    # Load data from the supplied directorytand replace the default objects 
+    # Load data from the supplied directorytand replace the default objects
     src.building_data = src.BuildingData(args.data_directory)
     src.classifier = src.NaiveBayesClassifier(src.building_data.observations)
 

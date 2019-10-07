@@ -4,7 +4,6 @@ from src import app
 from src.question import next_question
 from src.sessionManagement import users
 
-#import data.data as data
 from flask import request, jsonify, session
 
 
@@ -15,16 +14,16 @@ def answer():
         language = content['language']
         attribute_id = content['attribute_id']
         response = content['response']
-    except TypeError as e:
+    except TypeError:
         return jsonify({'success': False,
                         'message': 'Please supply "language", "attribute_id", and "response" in query'})
-    except KeyError as e:
+    except KeyError:
         return jsonify({'success': False,
                         'message': 'Please supply "language", "attribute_id", and "response" in query'})
     else:
         if 'user' in session:
             # access users session data
-            users[session['user']]
+            assert session['user'] in users
 
         posterior = src.classifier.calculate_posterior(attribute_id, response)
         new_building_classes = []

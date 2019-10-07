@@ -11,7 +11,7 @@ def calculate_conditional_probabilities(observations):
   attribute_cols = df.columns[df.columns != 'class_id']
 
   # Convert the observation values into probabilities with Laplace smoothing
-  df[attribute_cols] = (df[attribute_cols] + 1)/3 
+  df[attribute_cols] = (df[attribute_cols] + 1)/3
 
   return df
 
@@ -40,7 +40,7 @@ class NaiveBayesClassifier:
             posterior /= posterior.sum()
 
         # Create Pandas dataframe with building class and posterior
-        df = pd.DataFrame({'class_id': self.conditional_probabilities.class_id, 
+        df = pd.DataFrame({'class_id': self.conditional_probabilities.class_id,
                            'posterior': posterior})
         
         return df
