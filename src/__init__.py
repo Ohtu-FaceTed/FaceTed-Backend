@@ -18,6 +18,6 @@ from .building_data import BuildingData
 from .naive_bayes_classifier import NaiveBayesClassifier
 
 # Default objects. These should be overriden by the app
-building_data = BuildingData('')
+building_data = BuildingData('', verbose=False)
 classifier = NaiveBayesClassifier(building_data.observations)
 

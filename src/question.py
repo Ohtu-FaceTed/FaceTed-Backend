@@ -3,7 +3,6 @@ from src import app
 from src.sessionManagement import generate_id, users
 
 import random
-#import data.data as data
 from flask import jsonify, session
 
 

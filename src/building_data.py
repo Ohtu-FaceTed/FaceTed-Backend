@@ -10,7 +10,7 @@ DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102'],
                                                       'Eteinen']})
 
 
-def load_attributes(attribute_file):
+def load_attributes(attribute_file, verbose=True):
     '''Attempts to load attribute data from file into Pandas dataframe'''
     df = None
     try:
@@ -20,18 +20,21 @@ def load_attributes(attribute_file):
         assert 'attribute_id' in df, "The attributes data does not contain a 'attribute_id' column!"
         assert 'attribute_name' in df, "The attributes data does not contain a 'attribute_name' column!"
     except AssertionError as e:
-        print(f'The attribute file ({attribute_file}) failed to meet expectations: {e.args[0]}',
-              file=sys.stderr)
+        if verbose:
+            print(f'The attribute file ({attribute_file}) failed to meet expectations: {e.args[0]}',
+                  file=sys.stderr)
         df = None # Reset to None so that we substitute the default dataframe
     except:
-        print(f'Failed to load attribute data from {attribute_file}!', 
-              file=sys.stderr)
+        if verbose:
+            print(f'Failed to load attribute data from {attribute_file}!', 
+                  file=sys.stderr)
     finally:
         # If reading the data failed, use placeholder data, so some 
         # functionality is maintained
         if df is None:
-            print('Substituting placeholder data for attributes!', 
-                  file=sys.stderr)
+            if verbose:
+                print('Substituting placeholder data for attributes!', 
+                      file=sys.stderr)
             df = DEFAULT_ATTRIBUTES
 
     return df
@@ -46,7 +49,7 @@ DEFAULT_BUILDING_CLASSES = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
                                                         'Rivitalot']})
 
 
-def load_building_classes(building_classes_file):
+def load_building_classes(building_classes_file, verbose=True):
     '''Attempts to load buiding class data from file into Pandas dataframe'''
     df = None
     try:
@@ -56,18 +59,21 @@ def load_building_classes(building_classes_file):
         assert 'class_id' in df, "The building classes data does not contain a 'class_id' column!"
         assert 'class_name' in df, "The building classes data does not contain a 'class_name' column!"
     except AssertionError as e:
-        print(f'The building classes file ({building_classes_file}) failed to meet expectations: {e.args[0]}',
-              file=sys.stderr)
+        if verbose:
+            print(f'The building classes file ({building_classes_file}) failed to meet expectations: {e.args[0]}',
+                  file=sys.stderr)
         df = None # Reset to None so that we substitute the default dataframe
     except:
-        print(f'Failed to load building class data from {building_classes_file}!', 
-              file=sys.stderr)
+        if verbose:
+            print(f'Failed to load building class data from {building_classes_file}!', 
+                  file=sys.stderr)
     finally:
         # If reading the data failed, use placeholder data, so some 
         # functionality is maintained
         if df is None:
-            print('Substituting placeholder data for building classes!', 
-                  file=sys.stderr)
+            if verbose:
+                print('Substituting placeholder data for building classes!', 
+                      file=sys.stderr)
             df = DEFAULT_BUILDING_CLASSES
 
     return df
@@ -82,7 +88,7 @@ DEFAULT_OBSERVATIONS = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
                                      '102': [0, 1, 0]})
 
 
-def load_observations(observation_file, class_ids=None, attribute_ids=None):
+def load_observations(observation_file, class_ids=None, attribute_ids=None, verbose=True):
     '''Attempts to load buiding-attribute observation data from file into Pandas dataframe'''
     df = None
     try:
@@ -104,18 +110,21 @@ def load_observations(observation_file, class_ids=None, attribute_ids=None):
                 if attribute_id == 'class_id': continue
                 assert attribute_id in attribute_ids, f'The attribute id {attribute_id} is only found in observations!'
     except AssertionError as e:
-        print(f'The observation data file ({observation_file}) failed to meet expectations: {e.args[0]}',
-              file=sys.stderr)
+        if verbose:
+            print(f'The observation data file ({observation_file}) failed to meet expectations: {e.args[0]}',
+                  file=sys.stderr)
         df = None # Reset to None so that we substitute the default dataframe
     except:
-        print(f'Failed to load observation data from {observation_file}!', 
-                file=sys.stderr)
+        if verbose:
+            print(f'Failed to load observation data from {observation_file}!', 
+                  file=sys.stderr)
     finally:
         # If reading the data failed, use placeholder data, so some
         # functionality is maintained
         if df is None:
-            print('Substituting placeholder data for observations!', 
-                  file=sys.stderr)
+            if verbose:
+                print('Substituting placeholder data for observations!', 
+                      file=sys.stderr)
             df = DEFAULT_OBSERVATIONS
 
     # Ensure that the column labels are interpreted as strings
@@ -125,21 +134,22 @@ def load_observations(observation_file, class_ids=None, attribute_ids=None):
 
 
 class BuildingData:
-    def __init__(self, data_directory):
+    def __init__(self, data_directory, verbose=True):
         '''Initializes a BuildingData object using the data files in data_directory'''
         # Load attribute data into hidden variable, access via properties
         attribute_file = os.path.join(data_directory, 'attributes.csv')
-        self._attributes = load_attributes(attribute_file)
+        self._attributes = load_attributes(attribute_file, verbose=verbose)
 
         # Load building class data into hidden variable, access via properties
         building_classes_file = os.path.join(data_directory, 'building_classes.csv')
-        self._building_classes = load_building_classes(building_classes_file)
+        self._building_classes = load_building_classes(building_classes_file, verbose=verbose)
 
         # Load observation data
         observation_file = os.path.join(data_directory, 'observations.csv')
         self.observations = load_observations(observation_file, 
                                               class_ids=self._building_classes.class_id.unique(),
-                                              attribute_ids=self._attributes.attribute_id.unique())
+                                              attribute_ids=self._attributes.attribute_id.unique(),
+                                              verbose=verbose)
 
         # FIXME: if any of the previous give the default values, should force 
         # all of them to have default values, or simply fail?
