@@ -12,6 +12,7 @@ DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102'],
 
 def load_attributes(attribute_file):
     '''Attempts to load attribute data from file into Pandas dataframe'''
+    df = None
     try:
         df = pd.read_csv(attribute_file, dtype=str)
 
