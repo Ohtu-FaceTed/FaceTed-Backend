@@ -54,7 +54,6 @@ def load_building_classes(building_classes_file, verbose=True):
     df = None
     try:
         df = pd.read_csv(building_classes_file, dtype=str)
-        
         # Check that the required fields are present
         if 'class_id' not in df: raise ValueError("The building classes data does not contain a 'class_id' column!")
         if 'class_name' not in df: raise ValueError("The building classes data does not contain a 'class_name' column!")
