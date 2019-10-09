@@ -8,10 +8,10 @@ def calculate_conditional_probabilities(observations):
   df = observations.copy()
 
   # Find attribute columns
-  attribute_cols = df.columns[df.columns != 'class_id']
+  attribute_cols = df.columns[(df.columns != 'class_id') & (df.columns != 'count')]
 
   # Convert the observation values into probabilities with Laplace smoothing
-  df[attribute_cols] = (df[attribute_cols] + 1)/3
+  df[attribute_cols] = (df[attribute_cols] + 1)/(df['count'][:,None]+2)
 
   return df
 
