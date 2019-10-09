@@ -29,10 +29,12 @@ class NaiveBayesClassifier:
             prior = np.ones(self.observations.shape[0])
 
         # Extract the likelihood from the conditional probability table
-        if value == True:
+        if value == 'yes':
             likelihood = self.conditional_probabilities[attribute]
-        else:
+        elif value == 'no':
             likelihood = 1-self.conditional_probabilities[attribute]
+        else:
+            likelihood = 1
 
         # Calculate the posterior and normalize if requested
         posterior = prior * likelihood
