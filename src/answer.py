@@ -1,7 +1,8 @@
+import src
 from src import app
 
 from src.question import next_question
-from src.sessionManagement import users
+from src.sessionManagement import users, generate_id
 
 from flask import request, jsonify, session
 
@@ -10,7 +11,7 @@ from flask import request, jsonify, session
 def answer():
     try:
         content = request.get_json()
-        language = content['language']
+        # language = content['language'] FIXME: To be implemented
         attribute_id = content['attribute_id']
         response = content['response']
     except TypeError:
@@ -28,6 +29,11 @@ def answer():
         if 'user' in session:
             # access users session data
             user = users[session['user']]
+            if session['user'] not in users:
+                ident = generate_id()
+                session['user'] = ident
+                users[ident] = {'probabilities': [], 'answers': [], 'questions': [], 'attributes':[]}
+                user = users[ident]
 
         #selects the previous probabilities as prior for calculating posterior
         if len(user['probabilities']) > 0:
@@ -38,7 +44,7 @@ def answer():
         new_building_classes = []
         for _, (class_id, score) in posterior.iterrows():
             new_building_classes.append({'class_id': class_id,
-                                         'class_name': data.building_classes[class_id],
+                                         'class_name': src.building_data.building_class_name[class_id],
                                          'score': score})
 
         #Selects a question only once during session

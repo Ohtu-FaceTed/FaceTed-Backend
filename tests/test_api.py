@@ -1,7 +1,7 @@
+import src
 from app import app
 from flask import session
 from src.sessionManagement import users
-from src.naive_bayes_classifier import calculate_posterior
 import pandas as pd
 import pytest
 
@@ -38,7 +38,7 @@ def responses(backend):
             responses['attributes'].append(attribute_id)
             if len(responses['probabilities']) > 0:
                 prior = responses['probabilities'][-1]
-            posterior = calculate_posterior(attribute_id, answer, prior)
+            posterior = src.classifier.calculate_posterior(attribute_id, answer, prior)
             new = posterior['posterior']
             responses['probabilities'].append(new)
             responses['answers'].append(answer)
@@ -142,8 +142,6 @@ def test_prior_probabilities_are_saved_during_session(responses):
     prob = user['probabilities']
     comp = responses['probabilities']
     assert len(prob) == len(comp)
-    #for i in range(len(prob)):
-    #    assert (prob[i] == comp[i]).all()
 
 def test_returned_building_classes_are_based_on_prior_probabilities(backend):
     attribute_id = ''
@@ -156,18 +154,18 @@ def test_returned_building_classes_are_based_on_prior_probabilities(backend):
         response = backend.get('/question')
         json = response.get_json()
         attribute_id = json['attribute_id']
-        prob = calculate_posterior(attribute_id, True, None)
+        prob = src.classifier.calculate_posterior(attribute_id, True, None)
         prior = prob['posterior']
         response = backend.post('/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': True})
         json = response.get_json()
         attribute_id = json['new_question']['attribute_id']
-        posterior = calculate_posterior(attribute_id, True, prior)
+        posterior = src.classifier.calculate_posterior(attribute_id, True, prior)
         response = backend.post('/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': True})
         json = response.get_json()
         building_classes = json['building_classes']
         for _, (class_id, score) in posterior.iterrows():
             new_building_classes.append({'class_id': class_id, 
-                                         'class_name': NaiveBayesClassifier.building_classes[class_id],
+                                         'class_name': src.building_data.building_class_name[class_id],
                                          'score': score})
         assert building_classes == new_building_classes
 

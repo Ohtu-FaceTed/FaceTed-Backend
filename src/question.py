@@ -1,3 +1,4 @@
+import src
 from src import app
 from src.sessionManagement import generate_id, users
 
