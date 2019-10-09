@@ -1,7 +1,7 @@
-import src
 from app import app
 from flask import session
 from src.sessionManagement import users
+import src
 import pandas as pd
 import pytest
 
