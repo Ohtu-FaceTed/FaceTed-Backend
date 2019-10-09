@@ -137,10 +137,12 @@ class BuildingData:
         # Load attribute data into hidden variable, access via properties
         attribute_file = os.path.join(data_directory, 'attributes.csv')
         self._attributes = load_attributes(attribute_file, verbose=verbose)
+        self._attributes_dict = {attr_id:attr_name for ind,(attr_id, attr_name) in self._attributes.iterrows()}
 
         # Load building class data into hidden variable, access via properties
         building_classes_file = os.path.join(data_directory, 'building_classes.csv')
         self._building_classes = load_building_classes(building_classes_file, verbose=verbose)
+        self._building_classes_dict = {class_id:class_name for ind,(class_id, class_name) in self._building_classes.iterrows()}
 
         # Load observation data
         observation_file = os.path.join(data_directory, 'observations.csv')
@@ -155,9 +157,9 @@ class BuildingData:
     @property
     def attribute_name(self):
         '''Returns the attribute_id-attribute_name mapping'''
-        return {attr_id:attr_name for ind,(attr_id, attr_name) in self._attributes.iterrows()}
+        return self._attributes_dict
 
     @property
     def building_class_name(self):
         '''Returns the building class_id-class_name mapping'''
-        return {class_id:class_name for ind,(class_id, class_name) in self._building_classes.iterrows()}
+        return self._building_classes_dict
