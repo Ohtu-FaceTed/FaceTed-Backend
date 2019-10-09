@@ -18,7 +18,7 @@ def test_conditional_probabilities_has_at_least_one_building_class_and_attribute
 
 def test_conditional_probabilities_are_probabilities(default_conditional_probabilities):
     for attribute in default_conditional_probabilities:
-        if attribute == 'class_id': continue
+        if attribute in ['class_id', 'count']: continue
         p = default_conditional_probabilities[attribute]
         assert (0 <= p).all() and (p <= 1).all()
 
