@@ -1,6 +1,6 @@
-from src.building_data import *
-import pytest
 import pandas as pd
+import pytest
+from src.building_data import *
 
 
 @pytest.fixture
@@ -56,9 +56,15 @@ def default_observations():
 def test_observations_is_dataframe(default_observations):
     assert isinstance(default_observations, pd.DataFrame)
 
+def test_observations_dataframe_has_class_id(default_observations):
+    assert 'class_id' in default_observations
+
+def test_observations_dataframe_has_count(default_observations):
+    assert 'count' in default_observations
+
 def test_observations_has_at_least_one_building_class_and_attribute(default_observations):
     assert default_observations.shape[0] >= 1
-    assert default_observations.shape[1] >= 1
+    assert default_observations.shape[1] >= 3 # class_id + count + [attributes]
 
 def test_observations_class_ids_are_strings(default_observations):
     for x in default_observations.class_id:
