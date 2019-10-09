@@ -1,8 +1,7 @@
-from app import app
+import src
+from src import app
 from flask import session
 from src.sessionManagement import users
-import src
-import pandas as pd
 import pytest
 
 @pytest.fixture(scope='module')
@@ -21,7 +20,7 @@ def backend():
 @pytest.fixture
 def responses(backend):
     responses = {'id': '', 'probabilities': [], 'answers': [], 'questions': [], 'attributes': []}
-    answer = True
+    answer = 'yes'
     prior = None
     attribute_id = ''
     with backend:
@@ -42,7 +41,8 @@ def responses(backend):
             new = posterior['posterior']
             responses['probabilities'].append(new)
             responses['answers'].append(answer)
-            answer != answer
+            if answer == 'yes':
+                answer = 'now'
     return responses
 
 def test_get_root_succeeds(backend):
@@ -50,6 +50,7 @@ def test_get_root_succeeds(backend):
     assert response.status_code == 200
 
 def test_get_question_succeeds(backend):
+    print('here')
     response = backend.get('/question')
     assert response.status_code == 200
 
@@ -73,27 +74,27 @@ def test_post_answer_requires_sent_json(backend):
     assert json['success'] == False
 
 def test_post_answer_requires_all_fields(backend):
-    response = backend.post('/answer', json={'language': 1})
+    response = backend.post('/answer', json={})
     json = response.get_json()
     assert json['success'] == False
 
-    response = backend.post('/answer', json={'language': 1, 'attribute_id': '1'})
+    response = backend.post('/answer', json={'attribute_id': '1'})
     json = response.get_json()
     assert json['success'] == False
 
-    response = backend.post('/answer', json={'language': 1, 'attribute_id': '1', 'response': True})
+    response = backend.post('/answer', json={'attribute_id': '1', 'response': 'yes'})
     json = response.get_json()
     assert json['success'] == True
 
 def test_post_answer_returns_new_question(backend):
-    response = backend.post('/answer', json={'language': 1, 'attribute_id': '1', 'response': True})
+    response = backend.post('/answer', json={'language': 1, 'attribute_id': '1', 'response': 'yes'})
     json = response.get_json()
     assert 'new_question' in json
     assert 'attribute_id' in json['new_question']
     assert 'attribute_name' in json['new_question']
 
 def test_post_answer_returns_building_classes(backend):
-    response = backend.post('/answer', json={'language': 1, 'attribute_id': '1', 'response': True})
+    response = backend.post('/answer', json={'language': 1, 'attribute_id': '1', 'response': 'yes'})
     json = response.get_json()
     assert 'building_classes' in json
     for item in json['building_classes']:
@@ -154,13 +155,13 @@ def test_returned_building_classes_are_based_on_prior_probabilities(backend):
         response = backend.get('/question')
         json = response.get_json()
         attribute_id = json['attribute_id']
-        prob = src.classifier.calculate_posterior(attribute_id, True, None)
+        prob = src.classifier.calculate_posterior(attribute_id, 'yes', None)
         prior = prob['posterior']
-        response = backend.post('/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': True})
+        response = backend.post('/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': 'yes'})
         json = response.get_json()
         attribute_id = json['new_question']['attribute_id']
-        posterior = src.classifier.calculate_posterior(attribute_id, True, prior)
-        response = backend.post('/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': True})
+        posterior = src.classifier.calculate_posterior(attribute_id, 'yes', prior)
+        response = backend.post('/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': 'yes'})
         json = response.get_json()
         building_classes = json['building_classes']
         for _, (class_id, score) in posterior.iterrows():
