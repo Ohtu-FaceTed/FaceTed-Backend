@@ -3,7 +3,6 @@ from src import app
 from src.question import next_question
 from src.sessionManagement import users
 
-import data.data as data
 from flask import request, jsonify, session
 
 
@@ -14,10 +13,10 @@ def answer():
         language = content['language']
         attribute_id = content['attribute_id']
         response = content['response']
-    except TypeError as e:
+    except TypeError:
         return jsonify({'success': False,
                         'message': 'Please supply "language", "attribute_id", and "response" in query'})
-    except KeyError as e:
+    except KeyError:
         return jsonify({'success': False,
                         'message': 'Please supply "language", "attribute_id", and "response" in query'})
     else:
@@ -34,7 +33,7 @@ def answer():
         if len(user['probabilities']) > 0:
             prior = user['probabilities'][-1]
 
-        posterior = data.calculate_posterior(attribute_id, response, prior)
+        posterior = src.classifier.calculate_posterior(attribute_id, response, prior)
         probabilities = posterior['posterior']
         new_building_classes = []
         for _, (class_id, score) in posterior.iterrows():
