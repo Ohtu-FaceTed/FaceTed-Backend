@@ -29,7 +29,7 @@ def responses(backend):
         responses['id'] = session['user']
         attribute_id = json['attribute_id']
         responses['questions'].append(json['attribute_name'])
-        for x in range(10):
+        for x in range(3):
             response = backend.post('/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': answer})
             json = response.get_json()
             attribute_id = json['new_question']['attribute_id']

@@ -1,7 +1,7 @@
 import src
 from src import app
 
-from src.question import next_question
+from src.question_selection import next_question
 from src.sessionManagement import users, generate_id
 
 from flask import request, jsonify, session
@@ -24,7 +24,6 @@ def answer():
 
         user = None
         prior = None
-        question = ''
 
         if 'user' in session:
             # access users session data
@@ -47,16 +46,10 @@ def answer():
                                          'class_name': src.building_data.building_class_name[class_id],
                                          'score': score})
 
-        #Selects a question only once during session
-        while True:
-            q = next_question()
-            if q['attribute_name'] not in user['questions']:
-                question = q
-                break
-
         #Saves current state
         user['probabilities'].append(probabilities)
         user['answers'].append(response)
+        question = next_question()
         user['questions'].append(question['attribute_name'])
         user['attributes'].append(question['attribute_id'])
 
