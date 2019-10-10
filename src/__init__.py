@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, escape, request
 app = Flask(__name__)
 
 from src import question
@@ -21,3 +21,8 @@ from .naive_bayes_classifier import NaiveBayesClassifier
 building_data = BuildingData('', verbose=False)
 classifier = NaiveBayesClassifier(building_data.observations)
 
+
+@app.route("/")
+def index():
+    name = request.args.get("name", "World")
+    return f"Hello, {escape(name)}"
