@@ -1,14 +1,6 @@
 import src
 from src import app
 import argparse
-from flask import escape, request
-
-
-
-@app.route("/")
-def index():
-    name = request.args.get("name", "World")
-    return f"Hello, {escape(name)}"
 
 
 if __name__ == "__main__":
