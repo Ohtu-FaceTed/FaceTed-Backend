@@ -38,7 +38,7 @@ def best_questions():
             continue
         H = new_entropy(i)
         entropies.append((i, H))
-    
+
     entropies = sorted(entropies, key=lambda x: x[1])
 
     return entropies
@@ -48,6 +48,6 @@ def next_question():
     try:
         ident = best_questions()[0][0]
         return {"attribute_id": str(ident), "attribute_name": src.building_data.attribute_name[ident]}
-    except:
+    except IndexError:
         #All questions asked
         return {"attribute_id": '', "attribute_name": ''}
