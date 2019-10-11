@@ -9,7 +9,7 @@ def entropy(probabilities):
     for i in probabilities['posterior']:
         H += i * np.log(i)
     H = H*(-1)
-    
+
     return H
 
 def new_entropy(attribute):
@@ -17,7 +17,7 @@ def new_entropy(attribute):
     #selects the previous probabilities as prior for calculating posterior
     prior = None
     if users[session['user']]['probabilities']:
-        prior = users[session['user']]['probabilities'][-1] 
+        prior = users[session['user']]['probabilities'][-1]
 
     probabilites_yes = src.classifier.calculate_posterior(attribute, 'yes', prior)
     N0 = np.sum(probabilites_yes['posterior']) #Maybe this?
