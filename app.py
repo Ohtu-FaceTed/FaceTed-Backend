@@ -11,7 +11,8 @@ if __name__ == "__main__":
                         help='start Flask in debug mode (DANGEROUS!)')
     parser.add_argument('--port', default=5000, help='server port')
     parser.add_argument('--host', default='0.0.0.0', help='server host')
-    parser.add_argument('--data_directory', default='./data', help='data directory')
+    parser.add_argument('--data_directory',
+                        default='./data', help='data directory')
     args = parser.parse_args()
 
     # Load data from the supplied directorytand replace the default objects

@@ -2,6 +2,7 @@ from src import app
 from src.question_selection import *
 import pytest
 
+
 @pytest.fixture(scope='module')
 def backend():
     app.config['TESTING'] = True
@@ -15,6 +16,7 @@ def backend():
 
     ctxt.pop()
 
+
 def test_best_question_has_lower_entropy_than_remaining_questions(backend):
     with backend:
         response = backend.get('/question')
@@ -23,6 +25,7 @@ def test_best_question_has_lower_entropy_than_remaining_questions(backend):
         while questions:
             entropy = new_entropy(ident)
             assert entropy <= max(questions, key=lambda x: x[1])[1]
-            response = backend.post('/answer', json={'language': 'suomi', 'attribute_id': ident, 'response': 'yes'})
+            response = backend.post(
+                '/answer', json={'language': 'suomi', 'attribute_id': ident, 'response': 'yes'})
             ident = response.get_json()['new_question']['attribute_id']
             questions = best_questions()
