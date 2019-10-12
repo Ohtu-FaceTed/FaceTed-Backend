@@ -9,17 +9,15 @@ def entropy(probabilities):
     for i in probabilities['posterior']:
         H += i * np.log(i)
     H = H*(-1)
-    
+
     return H
 
 def new_entropy(attribute):
     '''Calculates new entropy for question considering both answers'''
+    #selects the previous probabilities as prior for calculating posterior
     prior = None
-    try:
-        #selects the previous probabilities as prior for calculating posterior
-        prior = users[user]['probabilities'][-1]
-    except:
-        pass
+    if users[session['user']]['probabilities']:
+        prior = users[session['user']]['probabilities'][-1]
 
     probabilites_yes = src.classifier.calculate_posterior(attribute, 'yes', prior)
     N0 = np.sum(probabilites_yes['posterior']) #Maybe this?
@@ -38,16 +36,17 @@ def best_questions():
             continue
         H = new_entropy(i)
         entropies.append((i, H))
-    
+
     entropies = sorted(entropies, key=lambda x: x[1])
 
     return entropies
 
 def next_question():
     '''Returns best question to be asked next'''
-    try:
-        ident = best_questions()[0][0]
+    best = best_questions()
+    if best:
+        ident = best[0][0]
         return {"attribute_id": str(ident), "attribute_name": src.building_data.attribute_name[ident]}
-    except:
+    else:
         #All questions asked
         return {"attribute_id": '', "attribute_name": ''}

@@ -1,9 +1,6 @@
-import src
 from src import app
 from src.sessionManagement import generate_id, users
 from src.question_selection import next_question
-
-import random
 from flask import jsonify, session
 
 @app.route('/question', methods=['GET'])

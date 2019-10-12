@@ -1,8 +1,5 @@
 from src import app
-from flask import session
-from src.sessionManagement import users
 from src.question_selection import *
-import src
 import pytest
 
 @pytest.fixture(scope='module')
