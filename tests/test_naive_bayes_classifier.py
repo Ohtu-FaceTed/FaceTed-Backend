@@ -64,12 +64,13 @@ def test_calculate_posterior_unnormalized_probabilities_are_bernoulli(default_cl
         "1", "yes", normalize=False)
     res_false = default_classifier.calculate_posterior(
         "1", "no", normalize=False)
-    assert np.isclose(res_true['posterior']+res_false['posterior'], 1.0).all()
+    assert np.isclose(res_true['posterior'] +
+                      res_false['posterior'], 1.0).all()
 
 
 def test_skip_returns_prior_in_calculate_posterior(default_classifier):
     # Generate a deterministic but random prior
-    n_attributes = len(default_classifier.observations.columns)-2
+    n_attributes = len(default_classifier.observations.columns) - 2
     np.random.seed(12345)
     prior = np.random.permutation(n_attributes).astype(float)
     prior /= prior.sum()

@@ -9,7 +9,7 @@ def entropy(probabilities):
     H = 0
     for i in probabilities['posterior']:
         H += i * np.log(i)
-    H = H*(-1)
+    H = H * (-1)
 
     return H
 

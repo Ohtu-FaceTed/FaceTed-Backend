@@ -12,7 +12,7 @@ def calculate_conditional_probabilities(observations):
         df.columns != 'class_id') & (df.columns != 'count')]
 
     # Convert the observation values into probabilities with Laplace smoothing
-    df[attribute_cols] = (df[attribute_cols] + 1)/(df['count'][:, None]+2)
+    df[attribute_cols] = (df[attribute_cols] + 1) / (df['count'][:, None] + 2)
 
     return df
 
@@ -34,7 +34,7 @@ class NaiveBayesClassifier:
         if value == 'yes':
             likelihood = self.conditional_probabilities[attribute]
         elif value == 'no':
-            likelihood = 1-self.conditional_probabilities[attribute]
+            likelihood = 1 - self.conditional_probabilities[attribute]
         else:
             likelihood = 1
 
