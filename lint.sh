@@ -1,2 +1,2 @@
 #!/bin/bash
-autopep8 --recursive --in-place src/ tests/ app.py
+autopep8 --recursive --in-place --ignore E402 src/ tests/ app.py
