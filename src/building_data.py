@@ -81,7 +81,7 @@ def load_building_classes(building_classes_file, verbose=True):
 
 # The observations dataframe should have at least the following columns:
 #   class_id: same as building_classes class_id (string, unique)
-#   count: number of observations of this class (int, positive) 
+#   count: number of observations of this class (int, positive)
 #   [attribute]: number of observations of this attribute for a given class_id (integer)
 DEFAULT_OBSERVATIONS = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
                                      'count': [1, 1, 1],
@@ -97,9 +97,9 @@ def load_observations(observation_file, class_ids=None, attribute_ids=None, verb
         df = pd.read_csv(observation_file, dtype={'class_id': str})
 
         # Check that the class_id and count fields are present
-        if 'class_id' not in df: 
+        if 'class_id' not in df:
             raise ValueError("The observation data does not contain a 'class_id' column!")
-        if 'count' not in df: 
+        if 'count' not in df:
             raise ValueError("The observation data does not contain a 'count' column!")
 
         # Check counts are positive integers
