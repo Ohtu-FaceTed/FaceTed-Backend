@@ -1,5 +1,6 @@
 import os
 import sys
+import numpy as np
 import pandas as pd
 
 # The attribute dataframe should have at least the following columns
@@ -80,8 +81,10 @@ def load_building_classes(building_classes_file, verbose=True):
 
 # The observations dataframe should have at least the following columns:
 #   class_id: same as building_classes class_id (string, unique)
+#   count: number of observations of this class (int, positive)
 #   [attribute]: number of observations of this attribute for a given class_id (integer)
 DEFAULT_OBSERVATIONS = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
+                                     'count': [1, 1, 1],
                                      '1': [1, 1, 1],
                                      '101': [1, 0, 1],
                                      '102': [0, 1, 0]})
@@ -93,8 +96,15 @@ def load_observations(observation_file, class_ids=None, attribute_ids=None, verb
     try:
         df = pd.read_csv(observation_file, dtype={'class_id': str})
 
-        # Check that the class_id field is present
-        if 'class_id' not in df: raise ValueError("The observation data does not contain a 'class_id' column!")
+        # Check that the class_id and count fields are present
+        if 'class_id' not in df:
+            raise ValueError("The observation data does not contain a 'class_id' column!")
+        if 'count' not in df:
+            raise ValueError("The observation data does not contain a 'count' column!")
+
+        # Check counts are positive integers
+        if not np.equal(np.mod(df['count'], 1), 0).all or (df['count']<1).any():
+            raise ValueError("Found 'count' values in observation data that are not positive integers")
 
         # If class_ids is given, check that we find all the ids in the
         # observations in class_ids as well
@@ -105,7 +115,7 @@ def load_observations(observation_file, class_ids=None, attribute_ids=None, verb
         # observations in attribute_ids as well
         if attribute_ids is not None:
             for attribute_id in df.columns:
-                if attribute_id == 'class_id': continue
+                if attribute_id in ['class_id', 'count']: continue
                 if attribute_id not in attribute_ids: raise ValueError(f'The attribute id {attribute_id} is only found in observations!')
     except ValueError as e:
         if verbose:
