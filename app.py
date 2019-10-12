@@ -12,7 +12,7 @@ if __name__ == "__main__":
     parser.add_argument('--port', default=5000, help='server port')
     parser.add_argument('--host', default='0.0.0.0', help='server host')
     parser.add_argument('--data_directory', default='./data', help='data directory')
-    parser.add_argument('--profile', action='store_true', 
+    parser.add_argument('--profile', action='store_true',
                         help='start Flask with profiler enabled (implies --debug, DANGEROUS!)')
     args = parser.parse_args()
 
