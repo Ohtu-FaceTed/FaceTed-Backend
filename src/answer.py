@@ -27,8 +27,9 @@ def answer():
 
         if 'user' in session:
             # access users session data
-            user = users[session['user']]
-            if session['user'] not in users:
+            if session['user'] in users:
+                user = users[session['user']]
+            else:
                 ident = generate_id()
                 session['user'] = ident
                 users[ident] = {'probabilities': [],
