@@ -18,13 +18,17 @@ def load_attributes(attribute_file, verbose=True):
         df = pd.read_csv(attribute_file, dtype=str)
 
         # Check that the required fields are present
-        if 'attribute_id' not in df: raise ValueError("The attributes data does not contain a 'attribute_id' column!")
-        if 'attribute_name' not in df: raise ValueError("The attributes data does not contain a 'attribute_name' column!")
+        if 'attribute_id' not in df:
+            raise ValueError(
+                "The attributes data does not contain a 'attribute_id' column!")
+        if 'attribute_name' not in df:
+            raise ValueError(
+                "The attributes data does not contain a 'attribute_name' column!")
     except ValueError as e:
         if verbose:
             print(f'The attribute file ({attribute_file}) failed to meet expectations: {e.args[0]}',
                   file=sys.stderr)
-        df = None # Reset to None so that we substitute the default dataframe
+        df = None  # Reset to None so that we substitute the default dataframe
     except Exception:
         if verbose:
             print(f'Failed to load attribute data from {attribute_file}!',
@@ -56,13 +60,17 @@ def load_building_classes(building_classes_file, verbose=True):
     try:
         df = pd.read_csv(building_classes_file, dtype=str)
         # Check that the required fields are present
-        if 'class_id' not in df: raise ValueError("The building classes data does not contain a 'class_id' column!")
-        if 'class_name' not in df: raise ValueError("The building classes data does not contain a 'class_name' column!")
+        if 'class_id' not in df:
+            raise ValueError(
+                "The building classes data does not contain a 'class_id' column!")
+        if 'class_name' not in df:
+            raise ValueError(
+                "The building classes data does not contain a 'class_name' column!")
     except ValueError as e:
         if verbose:
             print(f'The building classes file ({building_classes_file}) failed to meet expectations: {e.args[0]}',
                   file=sys.stderr)
-        df = None # Reset to None so that we substitute the default dataframe
+        df = None  # Reset to None so that we substitute the default dataframe
     except Exception:
         if verbose:
             print(f'Failed to load building class data from {building_classes_file}!',
@@ -98,30 +106,38 @@ def load_observations(observation_file, class_ids=None, attribute_ids=None, verb
 
         # Check that the class_id and count fields are present
         if 'class_id' not in df:
-            raise ValueError("The observation data does not contain a 'class_id' column!")
+            raise ValueError(
+                "The observation data does not contain a 'class_id' column!")
         if 'count' not in df:
-            raise ValueError("The observation data does not contain a 'count' column!")
+            raise ValueError(
+                "The observation data does not contain a 'count' column!")
 
         # Check counts are positive integers
-        if not np.equal(np.mod(df['count'], 1), 0).all or (df['count']<1).any():
-            raise ValueError("Found 'count' values in observation data that are not positive integers")
+        if not np.equal(np.mod(df['count'], 1), 0).all or (df['count'] < 1).any():
+            raise ValueError(
+                "Found 'count' values in observation data that are not positive integers")
 
         # If class_ids is given, check that we find all the ids in the
         # observations in class_ids as well
         if class_ids is not None:
             for class_id in df.class_id.unique():
-                if class_id not in class_ids: raise ValueError(f'The class id {class_id} is only found in observations!')
+                if class_id not in class_ids:
+                    raise ValueError(
+                        f'The class id {class_id} is only found in observations!')
         # If attribute_ids is given, check that we find all the ids in the
         # observations in attribute_ids as well
         if attribute_ids is not None:
             for attribute_id in df.columns:
-                if attribute_id in ['class_id', 'count']: continue
-                if attribute_id not in attribute_ids: raise ValueError(f'The attribute id {attribute_id} is only found in observations!')
+                if attribute_id in ['class_id', 'count']:
+                    continue
+                if attribute_id not in attribute_ids:
+                    raise ValueError(
+                        f'The attribute id {attribute_id} is only found in observations!')
     except ValueError as e:
         if verbose:
             print(f'The observation data file ({observation_file}) failed to meet expectations: {e.args[0]}',
                   file=sys.stderr)
-        df = None # Reset to None so that we substitute the default dataframe
+        df = None  # Reset to None so that we substitute the default dataframe
     except Exception:
         if verbose:
             print(f'Failed to load observation data from {observation_file}!',
@@ -147,12 +163,16 @@ class BuildingData:
         # Load attribute data into hidden variable, access via properties
         attribute_file = os.path.join(data_directory, 'attributes.csv')
         self._attributes = load_attributes(attribute_file, verbose=verbose)
-        self._attributes_dict = {attr_id:attr_name for ind,(attr_id, attr_name) in self._attributes.iterrows()}
+        self._attributes_dict = {attr_id: attr_name for ind,
+                                 (attr_id, attr_name) in self._attributes.iterrows()}
 
         # Load building class data into hidden variable, access via properties
-        building_classes_file = os.path.join(data_directory, 'building_classes.csv')
-        self._building_classes = load_building_classes(building_classes_file, verbose=verbose)
-        self._building_classes_dict = {class_id:class_name for ind,(class_id, class_name) in self._building_classes.iterrows()}
+        building_classes_file = os.path.join(
+            data_directory, 'building_classes.csv')
+        self._building_classes = load_building_classes(
+            building_classes_file, verbose=verbose)
+        self._building_classes_dict = {class_id: class_name for ind,
+                                       (class_id, class_name) in self._building_classes.iterrows()}
 
         # Load observation data
         observation_file = os.path.join(data_directory, 'observations.csv')
