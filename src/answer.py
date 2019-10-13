@@ -32,14 +32,16 @@ def answer():
             else:
                 ident = generate_id()
                 session['user'] = ident
-                users[ident] = {'probabilities': [], 'answers': [], 'questions': [], 'attributes':[]}
+                users[ident] = {'probabilities': [],
+                                'answers': [], 'questions': [], 'attributes': []}
                 user = users[ident]
 
-        #selects the previous probabilities as prior for calculating posterior
+        # selects the previous probabilities as prior for calculating posterior
         if len(user['probabilities']) > 0:
             prior = user['probabilities'][-1]
 
-        posterior = src.classifier.calculate_posterior(attribute_id, response, prior)
+        posterior = src.classifier.calculate_posterior(
+            attribute_id, response, prior)
         probabilities = posterior['posterior']
         new_building_classes = []
         for _, (class_id, score) in posterior.iterrows():
@@ -47,7 +49,7 @@ def answer():
                                          'class_name': src.building_data.building_class_name[class_id],
                                          'score': score})
 
-        #Saves current state
+        # Saves current state
         user['probabilities'].append(probabilities)
         user['answers'].append(response)
         question = next_question()
