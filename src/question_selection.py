@@ -41,12 +41,29 @@ def best_questions():
 
     return entropies
 
+def best_question():
+    '''Returns attribute with lowest resultant entropy of posteriors'''
+
+    used_attributes = users[session['user']]['attributes']
+    free_attributes = [x for x in src.building_data.observations.columns if x not in ['class_id', 'count'] and x not in used_attributes]
+    cond_p = src.classifier.conditional_probabilities[free_attributes]
+    prior = np.ones(cond_p.shape[0])/cond_p.shape[0] if not users[session['user']]['probabilities'] else users[session['user']]['probabilities'][-1]
+    p_yes = cond_p*prior[:,None]
+    p_yes /= p_yes.sum(axis=0)
+    p_no = (1-cond_p)*prior[:,None]
+    p_no /= p_no.sum(axis=0)
+
+    entropy = -(p_yes*np.log(p_yes)).sum(axis=0) - (p_no*np.log(p_no)).sum(axis=0)
+    best_attr = entropy.argmin()
+
+    return best_attr
+
 def next_question():
     '''Returns best question to be asked next'''
-    best = best_questions()
+    best = best_question()
     if best:
-        ident = best[0][0]
-        return {"attribute_id": str(ident), "attribute_name": src.building_data.attribute_name[ident]}
+        ident = best
+        return {"attribute_id": ident, "attribute_name": src.building_data.attribute_name[ident]}
     else:
         #All questions asked
         return {"attribute_id": '', "attribute_name": ''}
