@@ -26,7 +26,7 @@ def new_entropy(attribute):
 
     return entropy(probabilites_yes) * N0 + entropy(probabilites_no) * N1
 
-def best_questions():
+def best_questions_old():
     '''Sorts remaining questions from best to worst based on their entropies'''
     #Questions ordered from lowest to highest entropy
     entropies = []
@@ -41,28 +41,35 @@ def best_questions():
 
     return entropies
 
-def best_question():
+def best_questions():
     '''Returns attribute with lowest resultant entropy of posteriors'''
 
+    # Find the attributes that have been asked and that can be asked
     used_attributes = users[session['user']]['attributes']
     free_attributes = [x for x in src.building_data.observations.columns if x not in ['class_id', 'count'] and x not in used_attributes]
+
+    # Get the conditional probability table and the prior
     cond_p = src.classifier.conditional_probabilities[free_attributes]
     prior = np.ones(cond_p.shape[0])/cond_p.shape[0] if not users[session['user']]['probabilities'] else users[session['user']]['probabilities'][-1]
+
+    # Calculate and normalize posteriors for yes and no answers
     p_yes = cond_p*prior[:,None]
     p_yes /= p_yes.sum(axis=0)
     p_no = (1-cond_p)*prior[:,None]
     p_no /= p_no.sum(axis=0)
 
+    # Calculate entropy
     entropy = -(p_yes*np.log(p_yes)).sum(axis=0) - (p_no*np.log(p_no)).sum(axis=0)
-    best_attr = entropy.argmin()
+    entropy = entropy.sort_values()
+    entropy = [(i,x) for i,x in zip(entropy.index, entropy)]
 
-    return best_attr
+    return entropy
 
 def next_question():
     '''Returns best question to be asked next'''
-    best = best_question()
+    best = best_questions()
     if best:
-        ident = best
+        ident = best[0][0]
         return {"attribute_id": ident, "attribute_name": src.building_data.attribute_name[ident]}
     else:
         #All questions asked
