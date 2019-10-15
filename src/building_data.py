@@ -6,9 +6,13 @@ import pandas as pd
 # The attribute dataframe should have at least the following columns
 #   attribute_id: numerical attribute identifier (string, unique)
 #   attribute_name: common name for class (string)
+#   attribute_question: question form of attribute (string)
 DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102'],
                                    'attribute_name': ['Asunnot', 'Asuinhuone',
-                                                      'Eteinen']})
+                                                      'Eteinen'],
+                                   'attribute_question': ['Onko rakennuksessa asunnot?',
+                                                          'Onko rakennuksessa asuinhuone?',
+                                                          'Onko rakennuksessa eteinen?']})
 
 
 def load_attributes(attribute_file, verbose=True):
@@ -24,6 +28,9 @@ def load_attributes(attribute_file, verbose=True):
         if 'attribute_name' not in df:
             raise ValueError(
                 "The attributes data does not contain a 'attribute_name' column!")
+        if 'attribute_question' not in df:
+            raise ValueError(
+                "The attributes data does not contain a 'attribute_question' column")
     except ValueError as e:
         if verbose:
             print(f'The attribute file ({attribute_file}) failed to meet expectations: {e.args[0]}',
@@ -163,8 +170,12 @@ class BuildingData:
         # Load attribute data into hidden variable, access via properties
         attribute_file = os.path.join(data_directory, 'attributes.csv')
         self._attributes = load_attributes(attribute_file, verbose=verbose)
-        self._attributes_dict = {attr_id: attr_name for ind,
-                                 (attr_id, attr_name) in self._attributes.iterrows()}
+        self._attributes_dict = {attr_id: {'attribute_id': attr_id,
+                                           'attribute_name': attr_name,
+                                           'attribute_question': attr_question}
+                                 for ind, (attr_id, attr_name, attr_question) in self._attributes.iterrows()}
+        self._attributes_names_dict = {attr_id: attr_name for ind,
+                                       (attr_id, attr_name, attr_question) in self._attributes.iterrows()}
 
         # Load building class data into hidden variable, access via properties
         building_classes_file = os.path.join(
@@ -185,9 +196,14 @@ class BuildingData:
         # all of them to have default values, or simply fail?
 
     @property
+    def attribute(self):
+        '''Returns the attribute_id to attribute fields dict mapping'''
+        return self._attributes_dict
+
+    @property
     def attribute_name(self):
         '''Returns the attribute_id-attribute_name mapping'''
-        return self._attributes_dict
+        return self._attributes_names_dict
 
     @property
     def building_class_name(self):
