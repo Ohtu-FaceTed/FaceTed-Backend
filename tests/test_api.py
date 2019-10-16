@@ -143,6 +143,7 @@ def test_session_gets_recreated_for_client_requesting_first_question(backend):
         assert previous_id != ''
         assert session['user'] != previous_id
 
+
 def test_if_user_in_session_user_data_is_created_after_first_question(backend):
     with backend:
         backend.get('/question')
@@ -150,6 +151,7 @@ def test_if_user_in_session_user_data_is_created_after_first_question(backend):
         assert session['user'] not in users
         backend.post('/answer', json={'attribute_id': '1', 'response': 'yes'})
         assert session['user'] in users
+
 
 def test_same_questions_not_repeated_during_session(responses):
     questions = responses['questions']
