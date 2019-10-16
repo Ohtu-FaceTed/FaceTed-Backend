@@ -160,7 +160,7 @@ def test_load_observations_fails_without_data_rows():
 
 def test_load_observations_fails_if_a_count_is_zero():
     df = DEFAULT_OBSERVATIONS.copy()
-    df['count'][1] = 0
+    df.loc[1,'count'] = 0
     with tempfile.NamedTemporaryFile() as tmp_file:
         df.to_csv(tmp_file.name, index=False)
         with pytest.raises(ValueError):
