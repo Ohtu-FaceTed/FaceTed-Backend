@@ -2,12 +2,12 @@ import numpy as np
 import pandas as pd
 import pytest
 from src.naive_bayes_classifier import *
-from src.building_data import load_observations
+from src.building_data import DEFAULT_OBSERVATIONS
 
 
 @pytest.fixture
 def default_conditional_probabilities():
-    obs = load_observations(None)
+    obs = DEFAULT_OBSERVATIONS
     return calculate_conditional_probabilities(obs)
 
 
@@ -31,7 +31,7 @@ def test_conditional_probabilities_are_probabilities(default_conditional_probabi
 
 @pytest.fixture
 def default_classifier():
-    obs = load_observations(None)
+    obs = DEFAULT_OBSERVATIONS
     return NaiveBayesClassifier(obs)
 
 
