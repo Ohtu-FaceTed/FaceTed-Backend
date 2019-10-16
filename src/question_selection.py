@@ -80,7 +80,7 @@ def next_question():
     best = best_questions()
     if best:
         ident = best[0][0]
-        return {"attribute_id": ident, "attribute_name": src.building_data.attribute_name[ident]}
+        return src.building_data.attribute[ident]
     else:
         # All questions asked
-        return {"attribute_id": '', "attribute_name": ''}
+        return {"attribute_id": '', "attribute_name": '', 'attribute_question': ''}
