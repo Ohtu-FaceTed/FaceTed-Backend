@@ -14,6 +14,7 @@ db = SQLAlchemy(app)
 from flask_cors import CORS
 from src import answer
 from src import question
+from src import previous
 
 app.config["SECRET_KEY"] = os.urandom(32)
 # load actual secret key
