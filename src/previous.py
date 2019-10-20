@@ -4,7 +4,7 @@ from src import app
 from src.question_selection import next_question
 from src.sessionManagement import users, generate_id
 
-from flask import request, jsonify, session, redirect, url_for
+from flask import request, jsonify, session, redirect
 
 
 @app.route('/previous', methods=['GET'])
@@ -24,14 +24,14 @@ def previous():
                 users[ident] = {'probabilities': [],
                                 'answers': [], 'questions': [], 'question_strings': [], 'attributes': []}
                 user = users[ident]
-        
+
     #if user has no previous data a new question is created and saved
     if len(user['questions']) == 0:
         question = next_question()
         users[ident]['questions'].append(question['attribute_name'])
         users[ident]['question_strings'].append(question['attribute_question'])
         users[ident]['attributes'].append(question['attribute_id'])
-        return jsonify(question)    
+        return jsonify(question)
 
     #if user returns to the first question, only the question is returned
     if len(user['probabilities']) < 2 and len(user['questions']) > 0:
@@ -46,7 +46,7 @@ def previous():
         return {"attribute_id": attribute_id, "attribute_name": question, "attribute_question": question_string}
 
 
-    # deletes previously saved values 
+    # deletes previously saved values
     user['probabilities'] = user['probabilities'][: -2]
     user['answers'].pop()
     user['questions'] = user['questions'][: -2]
