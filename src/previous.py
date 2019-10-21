@@ -4,7 +4,7 @@ from src import app
 from src.question_selection import next_question
 from src.sessionManagement import users, generate_id
 
-from flask import request, jsonify, session, redirect
+from flask import request, jsonify, session
 
 
 @app.route('/previous', methods=['GET'])
@@ -19,13 +19,13 @@ def previous():
         if session['user'] in users:
             user = users[session['user']]
         else:
-                ident = generate_id()
-                session['user'] = ident
-                users[ident] = {'probabilities': [],
-                                'answers': [], 'questions': [], 'question_strings': [], 'attributes': []}
-                user = users[ident]
+            ident = generate_id()
+            session['user'] = ident
+            users[ident] = {'probabilities': [],
+                            'answers': [], 'questions': [], 'question_strings': [], 'attributes': []}
+            user = users[ident]
 
-    #if user has no previous data a new question is created and saved
+    # if user has no previous data a new question is created and saved
     if len(user['questions']) == 0:
         question = next_question()
         users[ident]['questions'].append(question['attribute_name'])
@@ -33,7 +33,7 @@ def previous():
         users[ident]['attributes'].append(question['attribute_id'])
         return jsonify(question)
 
-    #if user returns to the first question, only the question is returned
+    # if user returns to the first question, only the question is returned
     if len(user['probabilities']) < 2 and len(user['questions']) > 0:
         if len(user['probabilities']) == 1:
             user['probabilities'].pop()
@@ -45,7 +45,6 @@ def previous():
         question_string = user['question_strings'][-1]
         return {"attribute_id": attribute_id, "attribute_name": question, "attribute_question": question_string}
 
-
     # deletes previously saved values
     user['probabilities'] = user['probabilities'][: -2]
     user['answers'].pop()
@@ -53,13 +52,14 @@ def previous():
     user['question_strings'] = user['question_strings'][: -2]
     user['attributes'] = user['attributes'][: -2]
 
-    #selects the values that led to previous probabilities
+    # selects the values that led to previous probabilities
     if len(user['probabilities']) > 0:
         prior = user['probabilities'][-1]
     attribute_id = user['attributes'][-1]
     response = user['answers'][-1]
 
-    posterior = src.classifier.calculate_posterior(attribute_id, response, prior)
+    posterior = src.classifier.calculate_posterior(
+        attribute_id, response, prior)
     probabilities = posterior['posterior']
     new_building_classes = []
     for _, (class_id, score) in posterior.iterrows():

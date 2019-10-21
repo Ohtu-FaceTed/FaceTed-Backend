@@ -2,10 +2,10 @@ import os
 from flask import Flask, escape, request
 app = Flask(__name__)
 
-#SQLAlchemy import and setup
+# SQLAlchemy import and setup
 from flask_sqlalchemy import SQLAlchemy
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://app.db"
-#prints for debugging
+# prints for debugging
 app.config["SQLALCHEMY_ECHO"] = True
 
 db = SQLAlchemy(app)
@@ -34,7 +34,7 @@ def index():
     return f"Hello, {escape(name)}"
 
 
-#create tables
+# create tables
 try:
     db.create_all()
 except:

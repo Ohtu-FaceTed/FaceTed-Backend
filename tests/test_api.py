@@ -171,9 +171,11 @@ def test_prior_questions_are_saved_during_session(responses):
     user = users[responses['id']]
     assert user['questions'] == responses['questions']
 
+
 def test_prior_question_strings_are_saved_during_session(responses):
     user = users[responses['id']]
     assert user['question_strings'] == responses['question_strings']
+
 
 def test_users_answers_are_saved_during_session(responses):
     user = users[responses['id']]
@@ -241,9 +243,9 @@ def test_if_user_returs_to_first_question_no_building_classes_are_sent(backend):
         backend.post(
             '/answer', json={'attribute_id': attribute_id, 'response': 'yes'})
         previous = backend.get('/previous')
-        json = previous.get_json()   
+        json = previous.get_json()
         assert 'building_classes' not in json
-        assert json['attribute_name'] == question     
+        assert json['attribute_name'] == question
 
 
 def test_if_user_in_session_user_data_is_created_when_asking_previous_question(backend):
