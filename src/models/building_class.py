@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from . import db
+from src import db
 
 class BuildingClass(db.Model):
     __tablename__ = 'building_class'

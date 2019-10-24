@@ -4,17 +4,23 @@ app = Flask(__name__)
 
 # SQLAlchemy import and setup
 from flask_sqlalchemy import SQLAlchemy
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://app.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
 # prints for debugging
 app.config["SQLALCHEMY_ECHO"] = True
 
 db = SQLAlchemy(app)
 
-
 from flask_cors import CORS
 from src import answer
 from src import question
 from src import previous
+
+from src.models import answer
+from src.models import attribute
+from src.models import answer_question
+from src.models import session
+from src.models import building_class
+
 
 app.config["SECRET_KEY"] = os.urandom(32)
 # load actual secret key
