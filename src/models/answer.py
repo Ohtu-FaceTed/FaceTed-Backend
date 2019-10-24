@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from . import db
+from src import db
 
 
 class Answer(db.Model):

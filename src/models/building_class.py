@@ -1,10 +1,14 @@
 from sqlalchemy import Column, Integer, String
 <<<<<<< HEAD
+<<<<<<< HEAD
 from src import db
 
 =======
 from . import db
 >>>>>>> Added BuildingClass and Attribute SQL models, Changed SQL models to match
+=======
+from src import db
+>>>>>>> Models for Session and QuestionAnswer
 
 class BuildingClass(db.Model):
     __tablename__ = 'building_class'
