@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from src import db
 
+
 class Answer(db.Model):
     __tablename__ = 'answer'
 
