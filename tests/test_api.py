@@ -22,7 +22,7 @@ def backend():
 @pytest.fixture
 def responses(backend):
     responses = {'id': '', 'probabilities': [],
-                 'answers': [], 'questions': [], 'attributes': []}
+                 'answers': [], 'questions': [], 'question_strings': [], 'attributes': []}
     answer = 'yes'
     prior = None
     attribute_id = ''
@@ -32,6 +32,8 @@ def responses(backend):
         responses['id'] = session['user']
         attribute_id = json['attribute_id']
         responses['questions'].append(json['attribute_name'])
+        responses['question_strings'].append(
+            json['attribute_question'])
         for x in range(3):
             response = backend.post(
                 '/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': answer})
@@ -39,6 +41,8 @@ def responses(backend):
             attribute_id = json['new_question']['attribute_id']
             responses['questions'].append(
                 json['new_question']['attribute_name'])
+            responses['question_strings'].append(
+                json['new_question']['attribute_question'])
             responses['attributes'].append(attribute_id)
             if len(responses['probabilities']) > 0:
                 prior = responses['probabilities'][-1]
@@ -143,13 +147,16 @@ def test_session_gets_recreated_for_client_requesting_first_question(backend):
         assert previous_id != ''
         assert session['user'] != previous_id
 
+
 def test_if_user_in_session_user_data_is_created_after_first_question(backend):
     with backend:
         backend.get('/question')
         users.pop(session['user'], None)
         assert session['user'] not in users
-        backend.post('/answer', json={'attribute_id': '1', 'response': 'yes'})
+        backend.post(
+            '/answer', json={'attribute_id': '1', 'response': 'yes'})
         assert session['user'] in users
+
 
 def test_same_questions_not_repeated_during_session(responses):
     questions = responses['questions']
@@ -163,6 +170,11 @@ def test_same_questions_not_repeated_during_session(responses):
 def test_prior_questions_are_saved_during_session(responses):
     user = users[responses['id']]
     assert user['questions'] == responses['questions']
+
+
+def test_prior_question_strings_are_saved_during_session(responses):
+    user = users[responses['id']]
+    assert user['question_strings'] == responses['question_strings']
 
 
 def test_users_answers_are_saved_during_session(responses):
@@ -205,3 +217,45 @@ def test_returned_building_classes_are_based_on_prior_probabilities(backend):
                                          'class_name': src.building_data.building_class_name[class_id],
                                          'score': score})
         assert building_classes == new_building_classes
+
+
+def test_requesting_previous_question_returns_correct_question(responses, backend):
+    previous_question = responses['questions'][-2]
+    previous_attribute = responses['attributes'][-2]
+    previous_question_string = responses['question_strings'][-2]
+    with backend:
+        response = backend.get('/previous')
+        json = response.get_json()
+        question = json['new_question']['attribute_name']
+        attribute = json['new_question']['attribute_id']
+        question_string = json['new_question']['attribute_question']
+        assert question == previous_question
+        assert attribute == previous_attribute
+        assert question_string == previous_question_string
+
+
+def test_if_user_returs_to_first_question_no_building_classes_are_sent(backend):
+    with backend:
+        response = backend.get('/question')
+        json = response.get_json()
+        question = json['attribute_name']
+        attribute_id = json['attribute_id']
+        backend.post(
+            '/answer', json={'attribute_id': attribute_id, 'response': 'yes'})
+        previous = backend.get('/previous')
+        json = previous.get_json()
+        assert 'building_classes' not in json
+        assert json['attribute_name'] == question
+
+
+def test_if_user_in_session_user_data_is_created_when_asking_previous_question(backend):
+    with backend:
+        response = backend.get('/question')
+        json = response.get_json()
+        attribute_id = json['attribute_id']
+        backend.post(
+            '/answer', json={'attribute_id': attribute_id, 'response': 'yes'})
+        users.pop(session['user'], None)
+        assert session['user'] not in users
+        backend.get('/previous')
+        assert session['user'] in users

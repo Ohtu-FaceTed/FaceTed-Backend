@@ -33,7 +33,7 @@ def answer():
                 ident = generate_id()
                 session['user'] = ident
                 users[ident] = {'probabilities': [],
-                                'answers': [], 'questions': [], 'attributes': []}
+                                'answers': [], 'questions': [], 'question_strings': [], 'attributes': []}
                 user = users[ident]
 
         # selects the previous probabilities as prior for calculating posterior
@@ -54,6 +54,7 @@ def answer():
         user['answers'].append(response)
         question = next_question()
         user['questions'].append(question['attribute_name'])
+        user['question_strings'].append(question['attribute_question'])
         user['attributes'].append(question['attribute_id'])
 
         return jsonify({'success': True,

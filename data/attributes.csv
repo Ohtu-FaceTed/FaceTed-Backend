@@ -1,235 +1,235 @@
-attribute_id,attribute_name
-1,Asunnot
-101,Asuinhuone
-102,Eteinen
-103,Keittiö
-104,Kodinhoitohuone
-105,Käytävä
-106,Löylyhuone
-107,Makuuhuone
-108,Olohuone
-109,Pesuhuone
-110,Ruokailutila
-111,Tuulikaappi
-112,Vaatehuone
-113,Varastohuone
-114,WC
-115,Porras
-116,WC-pesuhuone
-117,Keittotila
-2,Talotekniikka
-201,Tekniikkatila
-202,IV-konehuone
-203,Tekniikkakomero
-204,Muuntamo
-205,Ristikytkentätila
-206,Ilmanvaihto
-207,Kasvien kasvatus
-208,Kasvihuone
-3,Asumisen yhteistoiminta
-301,Irtaimistovarasto
-302,Pukuhuone
-303,"WC, esteetön"
-304,Apuvälinevarasto
-305,Kuivaushuone
-306,Pesulatila
-307,"WC,esteetön"
-308,Kerhohuone
-309,Oleskelutila
-310,Aula
-4,Kiinteistö
-401,Jätehuone
-402,Siivoustila
-403,Varasto
-404,VSS
-405,Siivouskeskus
-406,Siivouskomero
-407,Siivous
-408,VSS-tekniikka- ja välinevaraus
-5,Osastoiva liikenne
-501,Porrasaula
-502,Porrashuone
-6,Palveluasuminen
-601,"WC-pesuhuone, esteetön"
-7,Tietotyö
-701,Keskittymistila
-702,Työpistealue
-703,Toimistotila
-704,Toimistohuone
-705,Neuvottelualue
-706,Neuvottelutila
-707,Toimistoaputila
-708,Valvomo
-709,Postinjakelu
-710,Arkistotila
-711,Palveltila
-712,Postijakelu
-8,Henkilöstö
-801,Taukotila
-802,Säilytyslokerot
-803,Kiinteistötoiminta
-9,Laitospalvelu
-901,Huoltohuone
-902,Jakelukeittiö
-903,Lääkehuone
-904,Tavaran vastaanotto
-905,Varastosyvennys
-906,Pesula
-10,Asunto
-1001,Tupa
-11,Varastointi
-1101,"Varastohuone, lämmittämätön"
-1102,Kylmävarasto
-1103,Pakastevarasto
-1104,Ulkovarasto
-12,Saunominen
-13,Kauppa
-1301,Kassa-alue
-1302,Laitetila
-1303,Myyntialue
-1304,Varastotila
-1305,Palvelupiste
-1306,Sovitustila
-1307,Varastohalli
-1308,Liiketila
-14,Muu toiminta
-1401,Valmistuskeittiö
-1402,ATK-opetustila
-1403,Kappelisali
-1404,Metallityötila
-1405,Opetuskeittiö
-1406,Puutyökonesali
-1407,Sähkötyötila
-1408,Tapaamistila
-1409,Tekstiilityötila
-15,Ravinto
-1501,Baari
-1502,Jätekylmiö
-1503,Ravintolasali
-1504,Vaatetila
-1505,Kahvilasali
-1506,Astiapalautus
-1507,Kuumennuskeittiö
-1508,Ruokasali
-1509,Ruuanjakelu
-1510,Astianpalautus
-16,Majoitus
-1601,Majoitushuone
-17,Asiakaspalvelu
-1701,Sulkutila
-1702,Hoitohuone
-1703,Itsepalvelupiste
-1704,Palvelutila
-1705,Katos
-18,Kokoontuminen
-1801,Kokoushuone
-1802,Lämpiö
-1803,Monitoimitila
-1804,Odotustila
-1805,Kokoussali
-1806,Elokuvasali
-1807,Kahvikeittiö
-1808,Sali
-1809,Kirkkosali
-1810,Sakaristo
-1811,Lähivarasto
-19,Virkistys
-1901,Kuntosali
-20,Liikenne
-2001,Kalustohalli
-2002,Lastaustila
-2003,Materiaalin käsittely
-2004,Palvelukeittiö
-2005,Tarkastusalue
-2006,Tarkastuspiste
-2007,Tarkastustila
-2008,Eläintila
-2009,Tupakointitila
-21,Auto- ja kalustosäilytys
-2101,Ajoramppi
-2102,Ajoväylä
-2103,Pysäköintihalli
-2104,Autokatos
-22,Auto- ja kalustohuolto
-2201,Huoltohalli
-2202,Työnjohtotila
-2203,Verstas
-2204,Huoltohallli
-23,Tuotanto
-2301,Palvelinsali
-2302,Sulkutilat
-2303,Tuotantotila
-2304,Allastila
-2305,Prosessihalli
-24,Terveys
-2401,Itsehoitopiste
-2402,Lepohuone
-2403,Toimenpidehuone
-2404,Toimistotyöpiste
-2405,Vastaanottohuone
-25,Sairaanhoito
-2501,Heräämö
-2502,Lastenhoitohuone
-2503,Leikkaussali
-2504,Liikuntatila
-2505,"Pesuhuone, esteetön"
-2506,Pesupiste
-2507,Potilashuone
-2508,"Pukuhuone, esteetön"
-2509,Ryhmätila
-2510,Välinehuoltotila
-2511,Työtila
-26,Kuvantaminen
-2601,Hätäsuihku
-2602,Laboratoriotyöpiste
-2603,Tutkimushuone
-27,Osastohoito
-28,Laboratorio
-2801,Laboratoriotila
-2802,Tutkimuslaitetila
-29,Harrastus
-2901,Harrastetila
-2902,Kirjastotila
-30,Liikunta
-3001,Liikuntasali
-3002,Jäähalli
-3003,Katsomo
-3004,Aitio
-31,Muut palvelut
-3101,"Löylyhuone, esteetön"
-32,Vankila-asuminen
-3201,Neuvotteluhuone
-3202,Selli
-33,Turvallisuus
-3301,Märkäeteinen
-3302,Vaatehuoltotila
-3303,"WC, näyte"
-3304,Väestönsuoja
-34,Kirjasto
-3401,Kokoelma-alue
-3402,Lukualue
-3403,Lukusali
-3404,Näyttelytila
-35,Näyttely
-3501,Näyttelyhalli
-36,Sisäuinti
-3601,Uima-allasalue
-37,Sisäliikunta
-3701,Urheiluhalli
-38,Päivähoito
-3801,Lepo- ja leikkihuone
-39,Oppiminen
-3901,Kotiluokka
-3902,Pintakäsittelytila
-3903,Puutyötila
-3904,Tekstiilityö- ja musiikkiluokka
-3905,Tulityötila
-3906,Ulkoiluvälinevarasto
-3907,Lukutila
-3908,Studiotila
-3909,Yleisopetustila
-3910,Auditorio
-40,Kokoelma
-41,Eläinten kasvatus
-4101,Eläinsuoja
-4102,Pesutila
+attribute_id,attribute_name,attribute_question
+1,Asunnot,Onko rakennuksessa asunnot?
+101,Asuinhuone,Onko rakennuksessa asuinhuone?
+102,Eteinen,Onko rakennuksessa eteinen?
+103,Keittiö,Onko rakennuksessa keittiö?
+104,Kodinhoitohuone,Onko rakennuksessa kodinhoitohuone?
+105,Käytävä,Onko rakennuksessa käytävä?
+106,Löylyhuone,Onko rakennuksessa löylyhuone?
+107,Makuuhuone,Onko rakennuksessa makuuhuone?
+108,Olohuone,Onko rakennuksessa olohuone?
+109,Pesuhuone,Onko rakennuksessa pesuhuone?
+110,Ruokailutila,Onko rakennuksessa ruokailutila?
+111,Tuulikaappi,Onko rakennuksessa tuulikaappi?
+112,Vaatehuone,Onko rakennuksessa vaatehuone?
+113,Varastohuone,Onko rakennuksessa varastohuone?
+114,WC,Onko rakennuksessa wc?
+115,Porras,Onko rakennuksessa porras?
+116,WC-pesuhuone,Onko rakennuksessa wc-pesuhuone?
+117,Keittotila,Onko rakennuksessa keittotila?
+2,Talotekniikka,Onko rakennuksessa talotekniikka?
+201,Tekniikkatila,Onko rakennuksessa tekniikkatila?
+202,IV-konehuone,Onko rakennuksessa iv-konehuone?
+203,Tekniikkakomero,Onko rakennuksessa tekniikkakomero?
+204,Muuntamo,Onko rakennuksessa muuntamo?
+205,Ristikytkentätila,Onko rakennuksessa ristikytkentätila?
+206,Ilmanvaihto,Onko rakennuksessa ilmanvaihto?
+207,Kasvien kasvatus,Onko rakennuksessa kasvien kasvatus?
+208,Kasvihuone,Onko rakennuksessa kasvihuone?
+3,Asumisen yhteistoiminta,Onko rakennuksessa asumisen yhteistoiminta?
+301,Irtaimistovarasto,Onko rakennuksessa irtaimistovarasto?
+302,Pukuhuone,Onko rakennuksessa pukuhuone?
+303,"WC, esteetön","Onko rakennuksessa wc, esteetön?"
+304,Apuvälinevarasto,Onko rakennuksessa apuvälinevarasto?
+305,Kuivaushuone,Onko rakennuksessa kuivaushuone?
+306,Pesulatila,Onko rakennuksessa pesulatila?
+307,"WC,esteetön","Onko rakennuksessa wc,esteetön?"
+308,Kerhohuone,Onko rakennuksessa kerhohuone?
+309,Oleskelutila,Onko rakennuksessa oleskelutila?
+310,Aula,Onko rakennuksessa aula?
+4,Kiinteistö,Onko rakennuksessa kiinteistö?
+401,Jätehuone,Onko rakennuksessa jätehuone?
+402,Siivoustila,Onko rakennuksessa siivoustila?
+403,Varasto,Onko rakennuksessa varasto?
+404,VSS,Onko rakennuksessa vss?
+405,Siivouskeskus,Onko rakennuksessa siivouskeskus?
+406,Siivouskomero,Onko rakennuksessa siivouskomero?
+407,Siivous,Onko rakennuksessa siivous?
+408,VSS-tekniikka- ja välinevaraus,Onko rakennuksessa vss-tekniikka- ja välinevaraus?
+5,Osastoiva liikenne,Onko rakennuksessa osastoiva liikenne?
+501,Porrasaula,Onko rakennuksessa porrasaula?
+502,Porrashuone,Onko rakennuksessa porrashuone?
+6,Palveluasuminen,Onko rakennuksessa palveluasuminen?
+601,"WC-pesuhuone, esteetön","Onko rakennuksessa wc-pesuhuone, esteetön?"
+7,Tietotyö,Onko rakennuksessa tietotyö?
+701,Keskittymistila,Onko rakennuksessa keskittymistila?
+702,Työpistealue,Onko rakennuksessa työpistealue?
+703,Toimistotila,Onko rakennuksessa toimistotila?
+704,Toimistohuone,Onko rakennuksessa toimistohuone?
+705,Neuvottelualue,Onko rakennuksessa neuvottelualue?
+706,Neuvottelutila,Onko rakennuksessa neuvottelutila?
+707,Toimistoaputila,Onko rakennuksessa toimistoaputila?
+708,Valvomo,Onko rakennuksessa valvomo?
+709,Postinjakelu,Onko rakennuksessa postinjakelu?
+710,Arkistotila,Onko rakennuksessa arkistotila?
+711,Palveltila,Onko rakennuksessa palveltila?
+712,Postijakelu,Onko rakennuksessa postijakelu?
+8,Henkilöstö,Onko rakennuksessa henkilöstö?
+801,Taukotila,Onko rakennuksessa taukotila?
+802,Säilytyslokerot,Onko rakennuksessa säilytyslokerot?
+803,Kiinteistötoiminta,Onko rakennuksessa kiinteistötoiminta?
+9,Laitospalvelu,Onko rakennuksessa laitospalvelu?
+901,Huoltohuone,Onko rakennuksessa huoltohuone?
+902,Jakelukeittiö,Onko rakennuksessa jakelukeittiö?
+903,Lääkehuone,Onko rakennuksessa lääkehuone?
+904,Tavaran vastaanotto,Onko rakennuksessa tavaran vastaanotto?
+905,Varastosyvennys,Onko rakennuksessa varastosyvennys?
+906,Pesula,Onko rakennuksessa pesula?
+10,Asunto,Onko rakennuksessa asunto?
+1001,Tupa,Onko rakennuksessa tupa?
+11,Varastointi,Onko rakennuksessa varastointi?
+1101,"Varastohuone, lämmittämätön","Onko rakennuksessa varastohuone, lämmittämätön?"
+1102,Kylmävarasto,Onko rakennuksessa kylmävarasto?
+1103,Pakastevarasto,Onko rakennuksessa pakastevarasto?
+1104,Ulkovarasto,Onko rakennuksessa ulkovarasto?
+12,Saunominen,Onko rakennuksessa saunominen?
+13,Kauppa,Onko rakennuksessa kauppa?
+1301,Kassa-alue,Onko rakennuksessa kassa-alue?
+1302,Laitetila,Onko rakennuksessa laitetila?
+1303,Myyntialue,Onko rakennuksessa myyntialue?
+1304,Varastotila,Onko rakennuksessa varastotila?
+1305,Palvelupiste,Onko rakennuksessa palvelupiste?
+1306,Sovitustila,Onko rakennuksessa sovitustila?
+1307,Varastohalli,Onko rakennuksessa varastohalli?
+1308,Liiketila,Onko rakennuksessa liiketila?
+14,Muu toiminta,Onko rakennuksessa muu toiminta?
+1401,Valmistuskeittiö,Onko rakennuksessa valmistuskeittiö?
+1402,ATK-opetustila,Onko rakennuksessa atk-opetustila?
+1403,Kappelisali,Onko rakennuksessa kappelisali?
+1404,Metallityötila,Onko rakennuksessa metallityötila?
+1405,Opetuskeittiö,Onko rakennuksessa opetuskeittiö?
+1406,Puutyökonesali,Onko rakennuksessa puutyökonesali?
+1407,Sähkötyötila,Onko rakennuksessa sähkötyötila?
+1408,Tapaamistila,Onko rakennuksessa tapaamistila?
+1409,Tekstiilityötila,Onko rakennuksessa tekstiilityötila?
+15,Ravinto,Onko rakennuksessa ravinto?
+1501,Baari,Onko rakennuksessa baari?
+1502,Jätekylmiö,Onko rakennuksessa jätekylmiö?
+1503,Ravintolasali,Onko rakennuksessa ravintolasali?
+1504,Vaatetila,Onko rakennuksessa vaatetila?
+1505,Kahvilasali,Onko rakennuksessa kahvilasali?
+1506,Astiapalautus,Onko rakennuksessa astiapalautus?
+1507,Kuumennuskeittiö,Onko rakennuksessa kuumennuskeittiö?
+1508,Ruokasali,Onko rakennuksessa ruokasali?
+1509,Ruuanjakelu,Onko rakennuksessa ruuanjakelu?
+1510,Astianpalautus,Onko rakennuksessa astianpalautus?
+16,Majoitus,Onko rakennuksessa majoitus?
+1601,Majoitushuone,Onko rakennuksessa majoitushuone?
+17,Asiakaspalvelu,Onko rakennuksessa asiakaspalvelu?
+1701,Sulkutila,Onko rakennuksessa sulkutila?
+1702,Hoitohuone,Onko rakennuksessa hoitohuone?
+1703,Itsepalvelupiste,Onko rakennuksessa itsepalvelupiste?
+1704,Palvelutila,Onko rakennuksessa palvelutila?
+1705,Katos,Onko rakennuksessa katos?
+18,Kokoontuminen,Onko rakennuksessa kokoontuminen?
+1801,Kokoushuone,Onko rakennuksessa kokoushuone?
+1802,Lämpiö,Onko rakennuksessa lämpiö?
+1803,Monitoimitila,Onko rakennuksessa monitoimitila?
+1804,Odotustila,Onko rakennuksessa odotustila?
+1805,Kokoussali,Onko rakennuksessa kokoussali?
+1806,Elokuvasali,Onko rakennuksessa elokuvasali?
+1807,Kahvikeittiö,Onko rakennuksessa kahvikeittiö?
+1808,Sali,Onko rakennuksessa sali?
+1809,Kirkkosali,Onko rakennuksessa kirkkosali?
+1810,Sakaristo,Onko rakennuksessa sakaristo?
+1811,Lähivarasto,Onko rakennuksessa lähivarasto?
+19,Virkistys,Onko rakennuksessa virkistys?
+1901,Kuntosali,Onko rakennuksessa kuntosali?
+20,Liikenne,Onko rakennuksessa liikenne?
+2001,Kalustohalli,Onko rakennuksessa kalustohalli?
+2002,Lastaustila,Onko rakennuksessa lastaustila?
+2003,Materiaalin käsittely,Onko rakennuksessa materiaalin käsittely?
+2004,Palvelukeittiö,Onko rakennuksessa palvelukeittiö?
+2005,Tarkastusalue,Onko rakennuksessa tarkastusalue?
+2006,Tarkastuspiste,Onko rakennuksessa tarkastuspiste?
+2007,Tarkastustila,Onko rakennuksessa tarkastustila?
+2008,Eläintila,Onko rakennuksessa eläintila?
+2009,Tupakointitila,Onko rakennuksessa tupakointitila?
+21,Auto- ja kalustosäilytys,Onko rakennuksessa auto- ja kalustosäilytys?
+2101,Ajoramppi,Onko rakennuksessa ajoramppi?
+2102,Ajoväylä,Onko rakennuksessa ajoväylä?
+2103,Pysäköintihalli,Onko rakennuksessa pysäköintihalli?
+2104,Autokatos,Onko rakennuksessa autokatos?
+22,Auto- ja kalustohuolto,Onko rakennuksessa auto- ja kalustohuolto?
+2201,Huoltohalli,Onko rakennuksessa huoltohalli?
+2202,Työnjohtotila,Onko rakennuksessa työnjohtotila?
+2203,Verstas,Onko rakennuksessa verstas?
+2204,Huoltohallli,Onko rakennuksessa huoltohallli?
+23,Tuotanto,Onko rakennuksessa tuotanto?
+2301,Palvelinsali,Onko rakennuksessa palvelinsali?
+2302,Sulkutilat,Onko rakennuksessa sulkutilat?
+2303,Tuotantotila,Onko rakennuksessa tuotantotila?
+2304,Allastila,Onko rakennuksessa allastila?
+2305,Prosessihalli,Onko rakennuksessa prosessihalli?
+24,Terveys,Onko rakennuksessa terveys?
+2401,Itsehoitopiste,Onko rakennuksessa itsehoitopiste?
+2402,Lepohuone,Onko rakennuksessa lepohuone?
+2403,Toimenpidehuone,Onko rakennuksessa toimenpidehuone?
+2404,Toimistotyöpiste,Onko rakennuksessa toimistotyöpiste?
+2405,Vastaanottohuone,Onko rakennuksessa vastaanottohuone?
+25,Sairaanhoito,Onko rakennuksessa sairaanhoito?
+2501,Heräämö,Onko rakennuksessa heräämö?
+2502,Lastenhoitohuone,Onko rakennuksessa lastenhoitohuone?
+2503,Leikkaussali,Onko rakennuksessa leikkaussali?
+2504,Liikuntatila,Onko rakennuksessa liikuntatila?
+2505,"Pesuhuone, esteetön","Onko rakennuksessa pesuhuone, esteetön?"
+2506,Pesupiste,Onko rakennuksessa pesupiste?
+2507,Potilashuone,Onko rakennuksessa potilashuone?
+2508,"Pukuhuone, esteetön","Onko rakennuksessa pukuhuone, esteetön?"
+2509,Ryhmätila,Onko rakennuksessa ryhmätila?
+2510,Välinehuoltotila,Onko rakennuksessa välinehuoltotila?
+2511,Työtila,Onko rakennuksessa työtila?
+26,Kuvantaminen,Onko rakennuksessa kuvantaminen?
+2601,Hätäsuihku,Onko rakennuksessa hätäsuihku?
+2602,Laboratoriotyöpiste,Onko rakennuksessa laboratoriotyöpiste?
+2603,Tutkimushuone,Onko rakennuksessa tutkimushuone?
+27,Osastohoito,Onko rakennuksessa osastohoito?
+28,Laboratorio,Onko rakennuksessa laboratorio?
+2801,Laboratoriotila,Onko rakennuksessa laboratoriotila?
+2802,Tutkimuslaitetila,Onko rakennuksessa tutkimuslaitetila?
+29,Harrastus,Onko rakennuksessa harrastus?
+2901,Harrastetila,Onko rakennuksessa harrastetila?
+2902,Kirjastotila,Onko rakennuksessa kirjastotila?
+30,Liikunta,Onko rakennuksessa liikunta?
+3001,Liikuntasali,Onko rakennuksessa liikuntasali?
+3002,Jäähalli,Onko rakennuksessa jäähalli?
+3003,Katsomo,Onko rakennuksessa katsomo?
+3004,Aitio,Onko rakennuksessa aitio?
+31,Muut palvelut,Onko rakennuksessa muut palvelut?
+3101,"Löylyhuone, esteetön","Onko rakennuksessa löylyhuone, esteetön?"
+32,Vankila-asuminen,Onko rakennuksessa vankila-asuminen?
+3201,Neuvotteluhuone,Onko rakennuksessa neuvotteluhuone?
+3202,Selli,Onko rakennuksessa selli?
+33,Turvallisuus,Onko rakennuksessa turvallisuus?
+3301,Märkäeteinen,Onko rakennuksessa märkäeteinen?
+3302,Vaatehuoltotila,Onko rakennuksessa vaatehuoltotila?
+3303,"WC, näyte","Onko rakennuksessa wc, näyte?"
+3304,Väestönsuoja,Onko rakennuksessa väestönsuoja?
+34,Kirjasto,Onko rakennuksessa kirjasto?
+3401,Kokoelma-alue,Onko rakennuksessa kokoelma-alue?
+3402,Lukualue,Onko rakennuksessa lukualue?
+3403,Lukusali,Onko rakennuksessa lukusali?
+3404,Näyttelytila,Onko rakennuksessa näyttelytila?
+35,Näyttely,Onko rakennuksessa näyttely?
+3501,Näyttelyhalli,Onko rakennuksessa näyttelyhalli?
+36,Sisäuinti,Onko rakennuksessa sisäuinti?
+3601,Uima-allasalue,Onko rakennuksessa uima-allasalue?
+37,Sisäliikunta,Onko rakennuksessa sisäliikunta?
+3701,Urheiluhalli,Onko rakennuksessa urheiluhalli?
+38,Päivähoito,Onko rakennuksessa päivähoito?
+3801,Lepo- ja leikkihuone,Onko rakennuksessa lepo- ja leikkihuone?
+39,Oppiminen,Onko rakennuksessa oppiminen?
+3901,Kotiluokka,Onko rakennuksessa kotiluokka?
+3902,Pintakäsittelytila,Onko rakennuksessa pintakäsittelytila?
+3903,Puutyötila,Onko rakennuksessa puutyötila?
+3904,Tekstiilityö- ja musiikkiluokka,Onko rakennuksessa tekstiilityö- ja musiikkiluokka?
+3905,Tulityötila,Onko rakennuksessa tulityötila?
+3906,Ulkoiluvälinevarasto,Onko rakennuksessa ulkoiluvälinevarasto?
+3907,Lukutila,Onko rakennuksessa lukutila?
+3908,Studiotila,Onko rakennuksessa studiotila?
+3909,Yleisopetustila,Onko rakennuksessa yleisopetustila?
+3910,Auditorio,Onko rakennuksessa auditorio?
+40,Kokoelma,Onko rakennuksessa kokoelma?
+41,Eläinten kasvatus,Onko rakennuksessa eläinten kasvatus?
+4101,Eläinsuoja,Onko rakennuksessa eläinsuoja?
+4102,Pesutila,Onko rakennuksessa pesutila?
