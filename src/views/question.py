@@ -1,8 +1,7 @@
-from src import app
 from src.sessionManagement import generate_id, users
 from src.question_selection import next_question
 from flask import jsonify, session
-
+from . import views as app
 
 @app.route('/question', methods=['GET'])
 def question():

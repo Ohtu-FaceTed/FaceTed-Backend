@@ -12,14 +12,17 @@ db = SQLAlchemy(app)
 
 
 from flask_cors import CORS
-from src import answer
-from src import question
-from src import previous
+#from src import answer
+#from src import question
+#from src import previous
 
 app.config["SECRET_KEY"] = os.urandom(32)
 # load actual secret key
 app.config.from_pyfile('../config.py')
 CORS(app, supports_credentials=True)
+
+from . import views
+views.init_app(app)
 
 from .naive_bayes_classifier import NaiveBayesClassifier
 from .building_data import BuildingData
@@ -28,10 +31,6 @@ building_data = BuildingData('')
 classifier = NaiveBayesClassifier(building_data.observations)
 
 
-@app.route("/")
-def index():
-    name = request.args.get("name", "World")
-    return f"Hello, {escape(name)}"
 
 
 # create tables

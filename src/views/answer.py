@@ -1,10 +1,10 @@
 import src
-from src import app
 
 from src.question_selection import next_question
 from src.sessionManagement import users, generate_id
 
 from flask import request, jsonify, session
+from . import views as app
 
 
 @app.route('/answer', methods=['POST'])
