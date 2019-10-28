@@ -12,7 +12,9 @@ DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102'],
                                                       'Eteinen'],
                                    'attribute_question': ['Onko rakennuksessa asunnot?',
                                                           'Onko rakennuksessa asuinhuone?',
-                                                          'Onko rakennuksessa eteinen?']})
+                                                          'Onko rakennuksessa eteinen?'],
+                                   'group_id': ['0', '0', '0'],
+                                   'active': [1, 1, 1]})
 
 
 def load_attributes(attribute_file):
@@ -139,11 +141,13 @@ class BuildingData:
         self._attributes_dict = {
             attr_id: {'attribute_id': attr_id,
                       'attribute_name': attr_name,
-                      'attribute_question': attr_question}
-            for ind, (attr_id, attr_name, attr_question) in self._attributes.iterrows()}
+                      'attribute_question': attr_question,
+                      'group_id' : gr_id,
+                      'active' : active}
+            for ind, (attr_id, attr_name, attr_question, gr_id, active) in self._attributes.iterrows()}
         self._attributes_names_dict = {
             attr_id: attr_name
-            for ind, (attr_id, attr_name, attr_question) in self._attributes.iterrows()}
+            for ind, (attr_id, attr_name, attr_question, gr_id, active) in self._attributes.iterrows()}
 
         # Pre-generate dictionary for accesing building class names by class_id
         self._building_classes_dict = {class_id: class_name for ind,
