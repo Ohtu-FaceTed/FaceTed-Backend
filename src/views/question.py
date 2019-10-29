@@ -3,6 +3,7 @@ from src.question_selection import next_question
 from flask import jsonify, session
 from . import views as app
 
+
 @app.route('/question', methods=['GET'])
 def question():
     # remove users previous state

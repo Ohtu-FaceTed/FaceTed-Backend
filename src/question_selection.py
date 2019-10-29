@@ -59,8 +59,9 @@ def best_questions(prior, answered_questions):
 
     # Get the conditional probability table and the prior
     cond_p = src.classifier.conditional_probabilities[free_attributes]
-    prior = prior if prior is not None else np.ones(cond_p.shape[0]) / cond_p.shape[0]
-    #prior = np.ones(cond_p.shape[0]) / cond_p.shape[0] if not users[session['user']
+    prior = prior if prior is not None else np.ones(
+        cond_p.shape[0]) / cond_p.shape[0]
+    # prior = np.ones(cond_p.shape[0]) / cond_p.shape[0] if not users[session['user']
     #                                                                ]['probabilities'] else users[session['user']]['probabilities'][-1]
 
     # Calculate and normalize posteriors for yes and no answers
