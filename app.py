@@ -1,4 +1,5 @@
 import src
+from config import ProductionConfig
 import argparse
 
 
@@ -20,7 +21,7 @@ if __name__ == "__main__":
     src.building_data = src.BuildingData(args.data_directory)
     src.classifier = src.NaiveBayesClassifier(src.building_data.observations)
 
-    app = src.create_app()
+    app = src.create_app(ProductionConfig)
 
     if not args.profile:
         app.run(debug=args.debug, port=args.port, host=args.host)

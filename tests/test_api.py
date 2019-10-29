@@ -2,12 +2,13 @@ import src
 from src import create_app
 from flask import session
 from src.sessionManagement import users
+from src.config import TestingConfig
 import pytest
 
 
 @pytest.fixture(scope='module')
 def backend():
-    app = create_app()
+    app = create_app(TestingConfig)
     app.config['TESTING'] = True
 
     test_client = app.test_client()

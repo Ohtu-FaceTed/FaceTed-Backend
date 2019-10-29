@@ -3,15 +3,16 @@ from flask import Flask
 from flask_cors import CORS
 
 
-def create_app():
+def create_app(config):
     app = Flask(__name__)
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///../app.db"
+    app.config.from_object(config)
+    #app.config["SQLALCHEMY_DATABASE_URI"] = 
     # prints for debugging
-    app.config["SQLALCHEMY_ECHO"] = True
-    app.config["SECRET_KEY"] = os.urandom(32)
+    #app.config["SQLALCHEMY_ECHO"] = True
+    #app.config["SECRET_KEY"] = os.urandom(32)
     # load actual secret key
-    app.config.from_pyfile('../config.py')
+    #app.config.from_pyfile('../config.py')
 
     # Enable cross-origin request support
     CORS(app, supports_credentials=True)
