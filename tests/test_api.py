@@ -1,5 +1,5 @@
 import src
-from src import app
+from src import create_app
 from flask import session
 from src.sessionManagement import users
 import pytest
@@ -7,6 +7,7 @@ import pytest
 
 @pytest.fixture(scope='module')
 def backend():
+    app = create_app()
     app.config['TESTING'] = True
 
     test_client = app.test_client()
