@@ -1,7 +1,5 @@
 import numpy as np
 import src
-from src.sessionManagement import users
-from flask import session
 
 
 def entropy(probabilities):
@@ -16,6 +14,8 @@ def entropy(probabilities):
 
 def new_entropy(attribute):
     '''Calculates new entropy for question considering both answers'''
+    from flask import session
+    from src.sessionManagement import users
     # selects the previous probabilities as prior for calculating posterior
     prior = None
     if users[session['user']]['probabilities']:
@@ -33,6 +33,8 @@ def new_entropy(attribute):
 
 def best_questions_old():
     '''Sorts remaining questions from best to worst based on their entropies'''
+    from flask import session
+    from src.sessionManagement import users
     # Questions ordered from lowest to highest entropy
     entropies = []
     for i in src.building_data.attribute_name.keys():
@@ -47,18 +49,19 @@ def best_questions_old():
     return entropies
 
 
-def best_questions():
+def best_questions(prior, answered_questions):
     '''Returns attribute with lowest resultant entropy of posteriors'''
 
     # Find the attributes that have been asked and that can be asked
-    used_attributes = users[session['user']]['attributes']
+    # used_attributes = users[session['user']]['attributes']
     free_attributes = [x for x in src.building_data.observations.columns if x not in [
-        'class_id', 'count'] and x not in used_attributes]
+        'class_id', 'count'] and x not in answered_questions]
 
     # Get the conditional probability table and the prior
     cond_p = src.classifier.conditional_probabilities[free_attributes]
-    prior = np.ones(cond_p.shape[0]) / cond_p.shape[0] if not users[session['user']
-                                                                    ]['probabilities'] else users[session['user']]['probabilities'][-1]
+    prior = prior if prior is not None else np.ones(cond_p.shape[0]) / cond_p.shape[0]
+    #prior = np.ones(cond_p.shape[0]) / cond_p.shape[0] if not users[session['user']
+    #                                                                ]['probabilities'] else users[session['user']]['probabilities'][-1]
 
     # Calculate and normalize posteriors for yes and no answers
     p_yes = cond_p * prior[:, None]
@@ -75,9 +78,9 @@ def best_questions():
     return entropy
 
 
-def next_question():
+def next_question(prior, answered_questions):
     '''Returns best question to be asked next'''
-    best = best_questions()
+    best = best_questions(prior, answered_questions)
     if best:
         ident = best[0][0]
         return src.building_data.attribute[ident]
