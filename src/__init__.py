@@ -1,4 +1,3 @@
-import os
 from flask import Flask
 from flask_cors import CORS
 
@@ -7,12 +6,12 @@ def create_app(config):
     app = Flask(__name__)
 
     app.config.from_object(config)
-    # app.config["SQLALCHEMY_DATABASE_URI"] =
+
     # prints for debugging
     #app.config["SQLALCHEMY_ECHO"] = True
-    #app.config["SECRET_KEY"] = os.urandom(32)
-    # load actual secret key
-    # app.config.from_pyfile('../config.py')
+
+    # load production secret key
+    app.config.from_pyfile('../secret_key.py')
 
     # Enable cross-origin request support
     CORS(app, supports_credentials=True)

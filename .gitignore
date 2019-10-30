@@ -5,4 +5,5 @@ venv/
 htmlcov/
 .coverage
 *.db
+#secret_key.py
 
