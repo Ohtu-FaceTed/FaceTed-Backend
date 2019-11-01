@@ -1,1 +1,12 @@
-#secret key used in production to be stored here
+class ProductionConfig():
+    TESTING = False
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///../app.db'
+    SQLALCHEMY_ECHO = False
+    SECRET_KEY = '12345567890'  # Unsecure default
+
+
+class TestingConfig():
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///../test.db'
+    SQLALCHEMY_ECHO = True
+    SECRET_KEY = '12345567890'  # Unsecure default
