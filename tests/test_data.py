@@ -22,6 +22,13 @@ def test_observation_attribute_ids_in_attributes(external_building_data):
                (attribute_id in attribute_name.keys())
 
 
+def test_attribute_group_ids_in_attribute_groups(external_building_data):
+    attributes = external_building_data._attributes
+    attribute_groups = external_building_data.attribute_groups
+    for group_id in attributes['group_id'].dropna():
+        assert group_id in attribute_groups.group_id.values
+
+
 def test_attributes_are_loaded_from_file(external_building_data):
     attributes = external_building_data._attributes
     # Check that the loaded attributes are different from DEFAULT_ATTRIBUTES

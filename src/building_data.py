@@ -7,14 +7,18 @@ import pandas as pd
 #   attribute_id: numerical attribute identifier (string, unique)
 #   attribute_name: common name for class (string)
 #   attribute_question: question form of attribute (string)
-DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102'],
+#   group_id: identifier of attribute group to which attribute belongs to (string)
+#   active: indicates if the attribute should be used (boolean)
+DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102', '114', '116'],
                                    'attribute_name': ['Asunnot', 'Asuinhuone',
-                                                      'Eteinen'],
+                                                      'Eteinen', 'WC', 'WC-pesuhuone'],
                                    'attribute_question': ['Onko rakennuksessa asunnot?',
                                                           'Onko rakennuksessa asuinhuone?',
-                                                          'Onko rakennuksessa eteinen?'],
-                                   'group_id': ['0', '0', '0'],
-                                   'active': [1, 1, 1]})
+                                                          'Onko rakennuksessa eteinen?',
+                                                          'Onko rakennuksessa WC?',
+                                                          'Onko rakennuksessa WC-pesuhuone?'],
+                                   'group_id': ['NaN', 'NaN', 'NaN', '1', '1'],
+                                   'active': [True, True, True, True, True]})
 
 
 def load_attributes(attribute_file):
@@ -22,7 +26,7 @@ def load_attributes(attribute_file):
     df = pd.read_csv(attribute_file, dtype=str)
 
     # Check that the required fields are present
-    for required_field in ['attribute_id', 'attribute_name', 'attribute_question']:
+    for required_field in ['attribute_id', 'attribute_name', 'attribute_question', 'group_id', 'active']:
         if required_field not in df:
             raise ValueError(
                 f"The attribute data ({attribute_file}) does not contain a '{required_field}' column!")
@@ -31,6 +35,9 @@ def load_attributes(attribute_file):
     if len(df.index) < 1:
         raise ValueError(
             f"The attribute data ({attribute_file}) does not contain any rows!")
+
+    # Change active column type to boolean
+    df.active = df.active.astype(bool)
 
     # Ensure columns are imported as strings
     df.columns = df.columns.astype(str)
@@ -111,6 +118,36 @@ def load_observations(observation_file):
     return df
 
 
+# The attribute groups dataframe should have at least the following columns:
+#   group_id: attribute group identifier (string, unique)
+#   group_name: common name for all group members (string)
+#   group_question: question form of attribute group (string)
+DEFAULT_ATTRIBUTE_GROUPS = pd.DataFrame({'group_id': ['1'],
+                                         'group_name': ['WC:t'],
+                                         'group_question': ['Minkälaisia WC-tiloja rakennuksessa on?']})
+
+
+def load_attribute_groups(attribute_groups_file):
+    '''Attempts to load attribute groups data from file into Pandas dataframe'''
+    df = pd.read_csv(attribute_groups_file, dtype=str)
+
+    # Check that the required fields are present
+    for required_field in ['group_id', 'group_name', 'group_question']:
+        if required_field not in df:
+            raise ValueError(
+                f"The attribute groups data ({attribute_groups_file}) does not contain a '{required_field}' column!")
+
+    # Check that there is at least one row of data
+    if len(df.index) < 1:
+        raise ValueError(
+            f"The attribute groups data ({attribute_groups_file}) does not contain any rows!")
+
+    # Ensure columns are imported as strings
+    df.columns = df.columns.astype(str)
+
+    return df
+
+
 class BuildingData:
     def __init__(self, data_directory):
         '''Initializes a BuildingData object using the data files in data_directory'''
@@ -119,6 +156,8 @@ class BuildingData:
         building_classes_file = os.path.join(
             data_directory, 'building_classes.csv')
         observation_file = os.path.join(data_directory, 'observations.csv')
+        attribute_groups_file = os.path.join(
+            data_directory, 'attribute_groups.csv')
 
         # Try to load the data
         try:
@@ -126,6 +165,8 @@ class BuildingData:
             self._building_classes = load_building_classes(
                 building_classes_file)
             self.observations = load_observations(observation_file)
+            self.attribute_groups = load_attribute_groups(
+                attribute_groups_file)
         # If we experience any error in loading, replace all the data with the
         # default values
         except Exception as e:
@@ -135,6 +176,7 @@ class BuildingData:
             self._attributes = DEFAULT_ATTRIBUTES
             self._building_classes = DEFAULT_BUILDING_CLASSES
             self.observations = DEFAULT_OBSERVATIONS
+            self.attribute_groups = DEFAULT_ATTRIBUTE_GROUPS
 
         # Pre-generate dictionaries for accessing attribute features and names
         # by atrribute_id
@@ -142,8 +184,8 @@ class BuildingData:
             attr_id: {'attribute_id': attr_id,
                       'attribute_name': attr_name,
                       'attribute_question': attr_question,
-                      'group_id' : gr_id,
-                      'active' : active}
+                      'group_id': gr_id,
+                      'active': active}
             for ind, (attr_id, attr_name, attr_question, gr_id, active) in self._attributes.iterrows()}
         self._attributes_names_dict = {
             attr_id: attr_name
