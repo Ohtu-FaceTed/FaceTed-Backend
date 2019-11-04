@@ -53,6 +53,7 @@ def answer():
         user['probabilities'].append(probabilities)
         user['answers'].append(response)
         question = next_question(user['probabilities'][-1], user['attributes'])
+        question['type'] = 'simple'
         user['questions'].append(question['attribute_name'])
         user['question_strings'].append(question['attribute_question'])
         user['attributes'].append(question['attribute_id'])

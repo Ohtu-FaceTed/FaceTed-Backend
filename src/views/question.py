@@ -15,6 +15,8 @@ def question():
     users[ident] = {'probabilities': [], 'answers': [],
                     'questions': [], 'question_strings': [], 'attributes': []}
     question = next_question(None, [])
+    question['type'] = 'simple'
+    print(question)
     users[ident]['questions'].append(question['attribute_name'])
     users[ident]['question_strings'].append(question['attribute_question'])
     users[ident]['attributes'].append(question['attribute_id'])
