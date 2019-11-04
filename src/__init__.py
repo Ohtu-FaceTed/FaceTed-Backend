@@ -20,6 +20,7 @@ from src.models import attribute
 from src.models import answer_question
 from src.models import session
 from src.models import building_class
+from src.models import question_grouper
 
 
 app.config["SECRET_KEY"] = os.urandom(32)
