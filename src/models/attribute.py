@@ -13,6 +13,6 @@ class Attribute(db.Model):
     grouping_id = Column(Integer, ForeignKey(
         "question_group.id"), nullable=True)
     part_of_group = relationship("question_group")
-    
+
     def __repr__(self):
         return f"<Attribute(attribute_id='{self.attribute_id}', attribute_name='{self.attribute_name}', attribute_question='{self.attribute_question}')>"
