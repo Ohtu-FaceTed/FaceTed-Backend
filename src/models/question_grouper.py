@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from src import db
+from . import db
 
 
 class QuestionGroup(db.Model):
