@@ -29,6 +29,7 @@ def previous():
     # if user has no previous data a new question is created and saved
     if len(user['questions']) == 0:
         question = next_question(None, [])
+        question['type'] = 'simple'
         users[ident]['questions'].append(question['attribute_name'])
         users[ident]['question_strings'].append(question['attribute_question'])
         users[ident]['attributes'].append(question['attribute_id'])
@@ -44,7 +45,7 @@ def previous():
         attribute_id = user['attributes'][-1]
         question = user['questions'][-1]
         question_string = user['question_strings'][-1]
-        return {"attribute_id": attribute_id, "attribute_name": question, "attribute_question": question_string}
+        return {"type": 'simple', "attribute_id": attribute_id, "attribute_name": question, "attribute_question": question_string}
 
     # deletes previously saved values
     user['probabilities'] = user['probabilities'][: -2]
@@ -71,6 +72,7 @@ def previous():
     # Saves current state
     user['probabilities'].append(probabilities)
     question = next_question(user['probabilities'][-1], user['attributes'])
+    question['type'] = 'simple'
     user['questions'].append(question['attribute_name'])
     user['question_strings'].append(question['attribute_question'])
     user['attributes'].append(question['attribute_id'])
