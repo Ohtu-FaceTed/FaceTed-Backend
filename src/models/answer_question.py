@@ -12,10 +12,10 @@ class AnswerQuestion(db.Model):
     answer_id = Column(Integer, ForeignKey('answer.id'))
     session_id = Column(Integer, ForeignKey('session.id'))
 
-    attribute = relationship("attribute")
-    answer = relationship("answer")
+    attribute = relationship("Attribute")
+    answer = relationship("Answer")
 
-    session = relationship("session", back_populates="answer_question")
+    session = relationship("Session", back_populates="answered_questions")
 
     def __init__(self, question, answer, session):
         self.question_id = question.id
