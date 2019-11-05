@@ -1,22 +1,14 @@
-from .. import app
-
-# Commented out due to odd nonfunctionality for now, delete file if we cant get this working from here
-
-# # SQLAlchemy import and setup
-# from flask_sqlalchemy import SQLAlchemy
-# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
-# # prints for debugging
-# app.config["SQLALCHEMY_ECHO"] = True
-
-# db = SQLAlchemy(app)
-
-# # create tables
-# try:
-#     db.create_all()
-# except:
-#     pass
+from flask_sqlalchemy import SQLAlchemy
 
 
-#from sqlalchemy.ext.declarative import declarative_base
+db = SQLAlchemy()
 
-#Base = declarative_base()
+
+def init_app(app):
+    db.init_app(app)
+
+    with app.app_context():
+        try:
+            db.create_all()
+        except Exception as e:
+            print('Failed to create tables:', e)

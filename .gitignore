@@ -4,5 +4,6 @@ venv/
 *.pyc
 htmlcov/
 .coverage
-app.db
+*.db
+#secret_key.py
 

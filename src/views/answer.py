@@ -1,10 +1,10 @@
 import src
-from src import app
 
 from src.question_selection import next_question
 from src.sessionManagement import users, generate_id
 
 from flask import request, jsonify, session
+from . import views as app
 
 
 @app.route('/answer', methods=['POST'])
@@ -52,7 +52,7 @@ def answer():
         # Saves current state
         user['probabilities'].append(probabilities)
         user['answers'].append(response)
-        question = next_question()
+        question = next_question(user['probabilities'][-1], user['attributes'])
         user['questions'].append(question['attribute_name'])
         user['question_strings'].append(question['attribute_question'])
         user['attributes'].append(question['attribute_id'])

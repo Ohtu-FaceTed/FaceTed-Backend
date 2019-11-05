@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, Table, ForeignKey, DateTime, func
 from sqlalchemy.orm import relationship
-from src import db
+from . import db
 
 
 class AnswerQuestion(db.Model):
