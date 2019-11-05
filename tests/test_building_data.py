@@ -6,42 +6,47 @@ from src.building_data import *
 
 def test_load_attributes_fails_without_attribute_id():
     df = DEFAULT_ATTRIBUTES.drop(columns=['attribute_id'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
-            load_attributes(tmp_file.name)
+            load_attributes(tmp_file)
 
 
 def test_load_attributes_fails_without_attribute_name():
     df = DEFAULT_ATTRIBUTES.drop(columns=['attribute_name'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
-            load_attributes(tmp_file.name)
+            load_attributes(tmp_file)
 
 
 def test_load_attributes_fails_without_attribute_question():
     df = DEFAULT_ATTRIBUTES.drop(columns=['attribute_question'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
-            load_attributes(tmp_file.name)
+            load_attributes(tmp_file)
 
 
 def test_load_attributes_fails_without_data_rows():
     df = DEFAULT_ATTRIBUTES.drop(index=[0, 1, 2])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
-            load_attributes(tmp_file.name)
+            load_attributes(tmp_file)
 
 
 @pytest.fixture
 def default_attributes():
     df = DEFAULT_ATTRIBUTES
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
-        attributes = load_attributes(tmp_file.name)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
+        attributes = load_attributes(tmp_file)
 
     return attributes
 
@@ -71,34 +76,38 @@ def test_attribute_dataframe_values_are_strings(default_attributes):
 
 def test_load_building_classes_fails_without_class_id():
     df = DEFAULT_BUILDING_CLASSES.drop(columns=['class_id'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
-            load_building_classes(tmp_file.name)
+            load_building_classes(tmp_file)
 
 
 def test_load_building_classes_fails_without_class_name():
     df = DEFAULT_BUILDING_CLASSES.drop(columns=['class_name'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
-            load_building_classes(tmp_file.name)
+            load_building_classes(tmp_file)
 
 
 def test_load_building_classes_fails_without_data_rows():
     df = DEFAULT_BUILDING_CLASSES.drop(index=[0, 1, 2])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
-            load_building_classes(tmp_file.name)
+            load_building_classes(tmp_file)
 
 
 @pytest.fixture
 def default_building_classes():
     df = DEFAULT_BUILDING_CLASSES
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
-        building_classes = load_building_classes(tmp_file.name)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
+        building_classes = load_building_classes(tmp_file)
 
     return building_classes
 
@@ -128,51 +137,57 @@ def test_building_classes_dataframe_values_are_strings(default_building_classes)
 
 def test_load_observations_fails_without_class_id():
     df = DEFAULT_OBSERVATIONS.drop(columns=['class_id'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
-            load_observations(tmp_file.name)
+            load_observations(tmp_file)
 
 
 def test_load_observations_fails_without_count():
     df = DEFAULT_OBSERVATIONS.drop(columns=['count'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
-            load_observations(tmp_file.name)
+            load_observations(tmp_file)
 
 
 def test_load_observations_fails_without_an_attribute_column():
     df = DEFAULT_OBSERVATIONS.drop(columns=['1', '101', '102'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
-            load_observations(tmp_file.name)
+            load_observations(tmp_file)
 
 
 def test_load_observations_fails_without_data_rows():
     df = DEFAULT_OBSERVATIONS.drop(index=[0, 1, 2])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
-            load_observations(tmp_file.name)
+            load_observations(tmp_file)
 
 
 def test_load_observations_fails_if_a_count_is_zero():
     df = DEFAULT_OBSERVATIONS.copy()
     df.loc[1, 'count'] = 0
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
-            load_observations(tmp_file.name)
+            load_observations(tmp_file)
 
 
 @pytest.fixture
 def default_observations():
     df = DEFAULT_OBSERVATIONS
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
-        observations = load_observations(tmp_file.name)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
+        observations = load_observations(tmp_file)
 
     return observations
 
