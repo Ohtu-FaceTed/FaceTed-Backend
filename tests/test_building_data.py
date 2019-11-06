@@ -33,18 +33,18 @@ def test_load_attributes_fails_without_attribute_question():
 
 def test_load_attributes_fails_without_group_id():
     df = DEFAULT_ATTRIBUTES.drop(columns=['group_id'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
         with pytest.raises(ValueError):
-            load_attributes(tmp_file.name)
+            load_attributes(tmp_file)
 
 
 def test_load_attributes_fails_without_activity_status():
     df = DEFAULT_ATTRIBUTES.drop(columns=['active'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
         with pytest.raises(ValueError):
-            load_attributes(tmp_file.name)
+            load_attributes(tmp_file)
 
 
 def test_load_attributes_fails_without_data_rows():
@@ -250,42 +250,43 @@ def test_observations_class_ids_are_strings(default_observations):
 
 def test_load_attribute_groups_fails_without_group_id():
     df = DEFAULT_ATTRIBUTE_GROUPS.drop(columns=['group_id'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
         with pytest.raises(ValueError):
-            load_attribute_groups(tmp_file.name)
+            load_attribute_groups(tmp_file)
 
 
 def test_load_attribute_groups_fails_without_group_name():
     df = DEFAULT_ATTRIBUTE_GROUPS.drop(columns=['group_name'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
         with pytest.raises(ValueError):
-            load_attribute_groups(tmp_file.name)
+            load_attribute_groups(tmp_file)
 
 
 def test_load_attribute_groups_fails_without_group_question():
     df = DEFAULT_ATTRIBUTE_GROUPS.drop(columns=['group_question'])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
         with pytest.raises(ValueError):
-            load_attribute_groups(tmp_file.name)
+            load_attribute_groups(tmp_file)
 
 
 def test_load_attribute_groups_fails_without_data_rows():
     df = DEFAULT_ATTRIBUTE_GROUPS.drop(index=[0])
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
         with pytest.raises(ValueError):
-            load_attribute_groups(tmp_file.name)
+            load_attribute_groups(tmp_file)
 
 
 @pytest.fixture
 def default_attribute_groups():
     df = DEFAULT_ATTRIBUTE_GROUPS
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        df.to_csv(tmp_file.name, index=False)
-        attribute_groups = load_attribute_groups(tmp_file.name)
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
+        attribute_groups = load_attribute_groups(tmp_file)
 
     return attribute_groups
 
