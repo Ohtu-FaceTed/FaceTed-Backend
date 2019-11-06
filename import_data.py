@@ -41,7 +41,8 @@ if __name__ == '__main__':
                 for i, x in attributes_df.iterrows():
                     db.session.add(Attribute(attribute_id=x.attribute_id,
                                              attribute_name=x.attribute_name,
-                                             attribute_question=x.attribute_question))
+                                             attribute_question=x.attribute_question,
+                                             grouping_id=x.group_id))
                 db.session.commit()
             except IntegrityError as e:
                 print('Caught integrity error:', e.args[0])
