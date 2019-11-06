@@ -5,8 +5,8 @@ import pandas as pd
 from sqlalchemy.exc import IntegrityError
 
 from src import create_app
-from src.models import db, Answer, Attribute, BuildingClass
-from src.building_data import load_attributes, load_building_classes
+from src.models import db, Answer, Attribute, BuildingClass, QuestionGroup
+from src.building_data import load_attributes, load_building_classes, load_attribute_groups
 from config import ProductionConfig
 
 
@@ -79,4 +79,21 @@ if __name__ == '__main__':
             print('Caught integrity error:', e.args[0])
             db.session.rollback()
         
-    # TODO: load attributes groupings
+    # load attributes groupings
+    attribute_groups_path = os.path.join(args.data_directory, 'attribute_groups.csv')
+    if os.path.isfile(attribute_groups_path):
+        attribute_groups_df = load_attribute_groups(attribute_groups_path)
+        
+        with app.app_context():
+            try:
+                for i, x in attribute_groups_df.iterrows():
+                    db.session.add(QuestionGroup(grouping_key=x.group_id,
+                                                 group_name=x.group_name,
+                                                 group_question=x.group_question))
+                db.session.commit()
+            except IntegrityError as e:
+                print('Caught integrity error:', e.args[0])
+                db.session.rollback()
+                
+    else:
+        print(f'Could not find attribute_groups.csv at: {attribute_groups_path}')
