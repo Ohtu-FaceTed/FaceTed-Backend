@@ -2,6 +2,9 @@ from flask import request, jsonify, session
 
 from . import views as app
 from src.sessionManagement import users
+from src.models import db
+from src.models.session import Session
+
 
 @app.route('/feedback', methods=['POST'])
 def feedback():
@@ -19,12 +22,15 @@ def feedback():
                         'message': 'Please supply "language", "class_id", "class_name" and "response" in query'})
     else:
         if 'user' in session:
-            #TODO: save answer vector with building class to database
+            # save selected building class to database
+            sess = Session.query.filter_by(session_ident=session['user']).first()
+            sess.selected_class = class_id
+            db.session.commit()
 
-            #remove session and data related to it
+            # remove session and data related to it
             users.pop(session['user'], None)
             session.pop('user', None)
-            
+
             return jsonify({'success': True})
 
         return jsonify({'success': False})
