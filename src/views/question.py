@@ -14,10 +14,9 @@ def question():
     ident = generate_id()
     session['user'] = ident
     users[ident] = {'probabilities': [], 'answers': [],
-                    'questions': [], 'question_strings': [], 'attributes': [],
-                    'db_session': Session(ident)}
+                    'questions': [], 'question_strings': [], 'attributes': []}
     # Add the session to the database
-    db.session.add(users[ident]['db_session'])
+    db.session.add(Session(ident))
     db.session.commit()
     question = next_question(None, [])
     users[ident]['questions'].append(question['attribute_name'])

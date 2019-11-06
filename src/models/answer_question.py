@@ -20,7 +20,7 @@ class AnswerQuestion(db.Model):
     def __init__(self, question, answer, session):
         self.question_id = question.id
         self.answer_id = answer.id
-        self.session_id = answer.id
+        self.session_id = session.id
 
     def __repr__(self):
         return f"<AnswerQuestion(question_id='{self.question_id}', answer_id='{self.answer_id}')>"
