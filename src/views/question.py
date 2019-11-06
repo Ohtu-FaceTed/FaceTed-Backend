@@ -2,6 +2,7 @@ from src.sessionManagement import generate_id, users
 from src.question_selection import next_question
 from flask import jsonify, session
 from . import views as app
+from ..models import db, Session
 
 
 @app.route('/question', methods=['GET'])
@@ -14,6 +15,9 @@ def question():
     session['user'] = ident
     users[ident] = {'probabilities': [], 'answers': [],
                     'questions': [], 'question_strings': [], 'attributes': []}
+    # Add the session to the database
+    db.session.add(Session(ident))
+    db.session.commit()
     question = next_question(None, [])
     question['type'] = 'simple'
     users[ident]['questions'].append(question['attribute_name'])
