@@ -5,7 +5,7 @@ import pandas as pd
 from sqlalchemy.exc import IntegrityError
 
 from src import create_app
-from src.models import db, Attribute, BuildingClass
+from src.models import db, Answer, Attribute, BuildingClass
 from src.building_data import load_attributes, load_building_classes
 from config import ProductionConfig
 
@@ -68,3 +68,15 @@ if __name__ == '__main__':
                 
     else:
         print(f'Could not find building_classes.csv at: {building_classes_path}')
+
+    # Load answer types
+    with app.app_context():
+        try:
+            for x in ['yes', 'no', 'skip']:
+                db.session.add(Answer(value=x))
+            db.session.commit()
+        except IntegrityError as e:
+            print('Caught integrity error:', e.args[0])
+            db.session.rollback()
+        
+    # TODO: load attributes groupings
