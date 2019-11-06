@@ -13,7 +13,6 @@ def init_app(app):
     from .building_class import BuildingClass
     from .session import Session
 
-
     with app.app_context():
         try:
             db.create_all()
