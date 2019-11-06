@@ -17,8 +17,8 @@ class AnswerQuestion(db.Model):
 
     session = relationship("Session", back_populates="answered_questions")
 
-    def __init__(self, question, answer, session):
-        self.question_id = question.id
+    def __init__(self, attribute, answer, session):
+        self.attribute_id = attribute.id
         self.answer_id = answer.id
         self.session_id = session.id
 
