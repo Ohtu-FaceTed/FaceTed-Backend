@@ -11,4 +11,4 @@ class QuestionGroup(db.Model):
     group_question = Column(String(64), nullable=False)
 
     def __repr__(self):
-        return f"<QuestionGroup(grouping_key='{self.grouping_key}')>"
+        return f"<QuestionGroup(grouping_key='{self.grouping_key}, group_name='{self.group_name}', group_question='{self.group_question}')>"
