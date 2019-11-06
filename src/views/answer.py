@@ -44,11 +44,15 @@ def answer():
         # Add the response to the database. First find the appropriate rows 
         # from attribute, answer, and session tables, then create the new 
         # AnswerQuestion
-        db_attribute = Attribute.query.filter_by(attribute_id=attribute_id).first()
-        db_answer = Answer.query.filter_by(value=response).first()
-        db_session = Session.query.filter_by(session_ident=session['user']).first()
-        db.session.add(AnswerQuestion(db_attribute, db_answer, db_session))
-        db.session.commit()
+        try:
+            db_attribute = Attribute.query.filter_by(attribute_id=attribute_id).first()
+            db_answer = Answer.query.filter_by(value=response).first()
+            db_session = Session.query.filter_by(session_ident=session['user']).first()
+            db.session.add(AnswerQuestion(db_attribute, db_answer, db_session))
+            db.session.commit()
+        except AttributeError as e:
+            print('It seems one or more of attribute, answer or session have not been populated correctly:', e.args[0])
+            db.session.rollback()
 
         # selects the previous probabilities as prior for calculating posterior
         if len(user['probabilities']) > 0:
