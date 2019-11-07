@@ -6,7 +6,7 @@ class BuildingClass(db.Model):
     __tablename__ = 'building_class'
 
     id = Column(Integer, primary_key=True)
-    class_id = Column(String(24), nullable=False)
+    class_id = Column(String(24), nullable=False, unique=True)
     class_name = Column(String(64), nullable=False)
 
     def __repr__(self):

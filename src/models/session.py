@@ -10,9 +10,9 @@ class Session(db.Model):
     session_ident = Column(String(128), nullable=False)
     buildclass_id = Column(Integer, ForeignKey(
         "building_class.id"), nullable=True)
-    selected_class = relationship("building_class")
+    selected_class = relationship("BuildingClass")
     answered_questions = relationship(
-        "answer_question", back_populates="session")
+        "AnswerQuestion", back_populates="session")
 
     def __repr__(self):
         return f"<Answer(session_ident='{self.sessionIdent}')>"
