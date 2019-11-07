@@ -35,6 +35,7 @@ def test_load_attributes_fails_without_group_id():
     df = DEFAULT_ATTRIBUTES.drop(columns=['group_id'])
     with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
         df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
             load_attributes(tmp_file)
 
@@ -43,6 +44,7 @@ def test_load_attributes_fails_without_activity_status():
     df = DEFAULT_ATTRIBUTES.drop(columns=['active'])
     with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
         df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
             load_attributes(tmp_file)
 
@@ -252,6 +254,7 @@ def test_load_attribute_groups_fails_without_group_id():
     df = DEFAULT_ATTRIBUTE_GROUPS.drop(columns=['group_id'])
     with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
         df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
             load_attribute_groups(tmp_file)
 
@@ -260,6 +263,7 @@ def test_load_attribute_groups_fails_without_group_name():
     df = DEFAULT_ATTRIBUTE_GROUPS.drop(columns=['group_name'])
     with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
         df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
             load_attribute_groups(tmp_file)
 
@@ -268,6 +272,7 @@ def test_load_attribute_groups_fails_without_group_question():
     df = DEFAULT_ATTRIBUTE_GROUPS.drop(columns=['group_question'])
     with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
         df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
             load_attribute_groups(tmp_file)
 
@@ -276,6 +281,7 @@ def test_load_attribute_groups_fails_without_data_rows():
     df = DEFAULT_ATTRIBUTE_GROUPS.drop(index=[0])
     with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
         df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
         with pytest.raises(ValueError):
             load_attribute_groups(tmp_file)
 
