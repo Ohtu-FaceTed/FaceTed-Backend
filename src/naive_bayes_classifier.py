@@ -26,22 +26,27 @@ class NaiveBayesClassifier:
     def calculate_posterior(self, attribute, value, prior=None, normalize=True):
         '''Calculates the posterior probability for each building class given attribute and value'''
 
+        prior_probability = prior
+        posterior = None
         # Assume uniform prior if none is provided
-        if prior is None:
-            prior = np.ones(self.observations.shape[0])
+        if prior_probability is None:
+            prior_probability = np.ones(self.observations.shape[0])
 
         # Extract the likelihood from the conditional probability table
-        if value == 'yes':
-            likelihood = self.conditional_probabilities[attribute]
-        elif value == 'no':
-            likelihood = 1 - self.conditional_probabilities[attribute]
-        else:
-            likelihood = 1
+        for (val, attr) in zip(value, attribute): 
+            if val == 'yes':
+                likelihood = self.conditional_probabilities[attr]
+            elif val == 'no':
+                likelihood = 1 - self.conditional_probabilities[attr]
+            else:
+                likelihood = 1
 
-        # Calculate the posterior and normalize if requested
-        posterior = prior * likelihood
-        if normalize:
-            posterior /= posterior.sum()
+            # Calculate the posterior and normalize if requested
+            posterior = prior_probability * likelihood
+
+            if normalize:
+                posterior /= posterior.sum()
+            prior_probability = posterior
 
         # Create Pandas dataframe with building class and posterior
         df = pd.DataFrame({'class_id': self.conditional_probabilities.class_id,

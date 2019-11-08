@@ -1,5 +1,6 @@
 import numpy as np
 import src
+from .models import db, QuestionGroup, Attribute
 
 
 def best_questions(prior, answered_questions):
@@ -7,9 +8,9 @@ def best_questions(prior, answered_questions):
 
     # Find the attributes that have been asked and that can be asked
     # used_attributes = users[session['user']]['attributes']
+    # Attribute.query.filter_by(attribute_id=x).first().grouping_id is not 'NaN'
     free_attributes = [x for x in src.building_data.observations.columns if x not in [
         'class_id', 'count'] and x not in answered_questions]
-
     # Get the conditional probability table and the prior
     cond_p = src.classifier.conditional_probabilities[free_attributes]
     prior = prior if prior is not None else np.ones(
@@ -34,10 +35,46 @@ def best_questions(prior, answered_questions):
 
 def next_question(prior, answered_questions):
     '''Returns best question to be asked next'''
+
     best = best_questions(prior, answered_questions)
     if best:
         ident = best[0][0]
-        return src.building_data.attribute[ident]
+        # attribute = Attribute.query.filter_by(attribute_id=ident).first()
+        attribute = src.building_data.attribute[ident]
+
+        # Checks if attribute is part of a group 
+        # if attribute.group_id is not 'NaN':      
+        if not np.isnan(attribute['group_id']):
+            groups = src.building_data.attribute_groups
+            attributes = src.building_data._attributes
+            group = groups.loc[groups['group_id'] == attribute['group_id']]
+            selected = attributes.loc[attributes['group_id'].isin(group['group_id'])]
+            new_attributes = []
+            group_question =None
+            for _, (attribute_id, attribute_name) in selected.iterrows():
+                new_attributes.append({'attribute_id': attribute_id,
+                                         'attribute_name': attribute_name})
+            if len(group['group_question']) > 0:
+                group_question = group['group_question'].values[0]
+            #group = QuestionGroup.query.filter_by(grouping_key=attribute.group_id).first()
+            #attributes = Attribute.query.filter(group_id=group.grouping_key).all()   
+     
+            group = {
+                'type': 'multi',
+                'attribute_question': group_question,
+                'attributes': new_attributes
+                #'attribute_question': group.group_question,
+                #'attributes': attributes
+            }
+            return group
+        else:
+            question = {
+                'type': 'simple',
+                'attribute_id': attribute['attribute_id'],
+                'attribute_name': attribute['attribute_name'], 
+                'attribute_question': attribute['attribute_question'] 
+            }
+            return question
     else:
         # All questions asked
-        return {"attribute_id": '', "attribute_name": '', 'attribute_question': ''}
+        return {'attribute_id': '', 'attribute_name': '', 'attribute_question': ''}
