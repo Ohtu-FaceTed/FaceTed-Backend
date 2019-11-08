@@ -1,11 +1,15 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_wtf.csrf import CSRFProtect
 
+csrf = CSRFProtect()
 
 def create_app(config):
     app = Flask(__name__)
 
     app.config.from_object(config)
+    
+    csrf.init_app(app)
 
     # prints for debugging
     #app.config["SQLALCHEMY_ECHO"] = True

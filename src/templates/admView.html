@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+
+
+<div class="container text-center">
+
+    <div class="container">
+        <table id="table_id" style="margin-top:2rem;" class="table tablez table-striped table-dark table-sm">
+            <thead>
+                <tr>
+                    <th>Attribute</th>
+                    <th>Attribute name</th>
+                    <th>Active</th>
+                    <th>Grouping id</th>
+                    <th>Question string</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attr in attributes %}
+                <tr>
+                    <td>{{ attr.attribute_id }}</td>
+                    <td>{{ attr.attribute_name }}</td>
+                    <td>
+                        {% if attr.active %}
+                        <form style="display:inline;" method="POST"
+                            action="{{ url_for('views.setActive', attribute_id=attr.id) }}">
+                            <button data-toggle="tooltip" title="Mark as inactive" class="btn btn-sm btn-warning"
+                                type="submit"><span data-feather="refresh-cw"></span> </button>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        </form>
+                        {% else %}
+                        <form style="display:inline;" method="POST"
+                            action="{{ url_for('views.setActive', attribute_id=attr.id) }}">
+                            <button data-toggle="tooltip" title="Mark as active" class="btn btn-sm btn-success" type="submit">
+                                <span data-feather="refresh-cw"> </button>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        </form>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ attr.part_of_group.grouping_key or 'Not grouped' }} 
+                    </td>
+                    <td>
+                        {{ attr.attribute_question }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script async defer type="text/javascript">
+    $(document).ready(function () {
+        $('.tablez').DataTable({
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "pageLength": 25
+        });
+    });
+</script>
+{% endblock %}
