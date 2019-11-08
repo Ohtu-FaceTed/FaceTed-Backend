@@ -18,6 +18,7 @@ def answer():
         for resp in content['response']:
             attribute_id.append(resp['attribute_id'])
             response.append(resp['response'])
+
     except TypeError:
         return jsonify({'success': False,
                         'message': 'Please supply "language", "attribute_id", and "response" in query'})
@@ -37,7 +38,8 @@ def answer():
                 ident = generate_id()
                 session['user'] = ident
                 users[ident] = {'type': [], 'probabilities': [], 'answers': [], 
-                                'attributes': [], 'multi_attributes': [], 'question_strings': []}
+                                'attribute_ids': [], 'attributes': [], 'multi_attributes': [], 'question_strings': [],
+                                'total_attributes': []}
                 # Add the session to the database
                 db.session.add(Session(ident))
                 db.session.commit()
@@ -65,6 +67,7 @@ def answer():
             attribute_id, response, prior)
         probabilities = posterior['posterior']
         new_building_classes = []
+
         for _, (class_id, score) in posterior.iterrows():
             new_building_classes.append({'class_id': class_id,
                                          'class_name': src.building_data.building_class_name[class_id],
@@ -72,18 +75,21 @@ def answer():
 
         # Saves current state
         user['probabilities'].append(probabilities)
-        db_session = Session.query.filter_by(session_ident=session['user']).first()
-        answered = [question.attribute_id for question in db_session.answered_questions]
-        question = next_question(user['probabilities'][-1], answered)
+        question = next_question(user['probabilities'][-1], user['total_attributes'])
+
         if question['type'] == 'multi':
             user['type'].append('multi')
             user['multi_attributes'].append(question['attributes'])
+            for attribute in question['attributes']:
+                user['total_attributes'].append(attribute['attribute_id'])
         else:
             user['type'].append('simple')
-            user['attributes'].append(question['attribute_id']) 
+            user['attribute_ids'].append(question['attribute_id']) 
+            user['total_attributes'].append(question['attribute_id'])
+            user['attributes'].append(question['attribute_name'])
         user['question_strings'].append(question['attribute_question'])     
-        user['answers'].append(answer)   
-
+        user['answers'].append(response)   
+        
         return jsonify({'success': True,
                         'new_question': question,
                         'building_classes': new_building_classes})

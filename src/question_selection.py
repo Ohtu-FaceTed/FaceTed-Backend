@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import src
 from .models import db, QuestionGroup, Attribute
 
@@ -39,32 +40,29 @@ def next_question(prior, answered_questions):
     best = best_questions(prior, answered_questions)
     if best:
         ident = best[0][0]
-        # attribute = Attribute.query.filter_by(attribute_id=ident).first()
         attribute = src.building_data.attribute[ident]
 
         # Checks if attribute is part of a group 
         # if attribute.group_id is not 'NaN':      
-        if not np.isnan(attribute['group_id']):
+        if not pd.isnull(attribute['group_id']):
             groups = src.building_data.attribute_groups
             attributes = src.building_data._attributes
             group = groups.loc[groups['group_id'] == attribute['group_id']]
             selected = attributes.loc[attributes['group_id'].isin(group['group_id'])]
             new_attributes = []
-            group_question =None
-            for _, (attribute_id, attribute_name) in selected.iterrows():
-                new_attributes.append({'attribute_id': attribute_id,
-                                         'attribute_name': attribute_name})
+            group_question = None
+
+            for index, row in selected.iterrows():
+                new_attributes.append({'attribute_id': row['attribute_id'],
+                                         'attribute_name': row['attribute_name']})
+
             if len(group['group_question']) > 0:
                 group_question = group['group_question'].values[0]
-            #group = QuestionGroup.query.filter_by(grouping_key=attribute.group_id).first()
-            #attributes = Attribute.query.filter(group_id=group.grouping_key).all()   
      
             group = {
                 'type': 'multi',
                 'attribute_question': group_question,
                 'attributes': new_attributes
-                #'attribute_question': group.group_question,
-                #'attributes': attributes
             }
             return group
         else:
