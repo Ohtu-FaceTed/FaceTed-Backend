@@ -63,7 +63,6 @@ def previous():
     else:
         user['answers'].pop()
         user['attributes'] = user['attributes'][: -2]
-    #user['questions'] = user['questions'][: -2]
     user['question_strings'] = user['question_strings'][: -2]
     
 
