@@ -3,7 +3,7 @@ from config import TestingConfig
 from src.models import Session, AnswerQuestion
 import pytest
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def backend():
     app = create_app(TestingConfig)
 
