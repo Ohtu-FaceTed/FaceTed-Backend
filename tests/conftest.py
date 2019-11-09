@@ -14,6 +14,7 @@ def backend():
 
     yield test_client
 
+    # cleanup
     Session.query.delete()
     AnswerQuestion.query.delete()
 
