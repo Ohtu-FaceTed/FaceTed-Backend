@@ -31,30 +31,32 @@ def responses(backend):
         response = backend.get('/question')
         json = response.get_json()
         responses['id'] = session['user']
-        attribute_id = json['attribute_id']
-        responses['questions'].append(json['attribute_name'])
-        responses['question_strings'].append(
-            json['attribute_question'])
-        for x in range(3):
-            response = backend.post(
-                '/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': answer})
-            json = response.get_json()
-            attribute_id = json['new_question']['attribute_id']
-            responses['questions'].append(
-                json['new_question']['attribute_name'])
+        if json['type'] == 'simple':
+            attribute_id = json['attribute_id']
+            responses['questions'].append(json['attribute_name'])
             responses['question_strings'].append(
-                json['new_question']['attribute_question'])
-            responses['attributes'].append(attribute_id)
-            if len(responses['probabilities']) > 0:
-                prior = responses['probabilities'][-1]
-            posterior = src.classifier.calculate_posterior(
-                attribute_id, answer, prior)
-            new = posterior['posterior']
-            responses['probabilities'].append(new)
-            responses['answers'].append(answer)
-            if answer == 'yes':
-                answer = 'now'
-    return responses
+                json['attribute_question'])
+            for x in range(3):
+                response = backend.post(
+                    '/answer', json={"language":"suomi","response":[{"attribute_id":attribute_id,"response":answer}]}
+                )
+                json = response.get_json()
+                attribute_id = json['new_question']['attribute_id']
+                responses['questions'].append(
+                    json['new_question']['attribute_name'])
+                responses['question_strings'].append(
+                    json['new_question']['attribute_question'])
+                responses['attributes'].append(attribute_id)
+                if len(responses['probabilities']) > 0:
+                    prior = responses['probabilities'][-1]
+                posterior = src.classifier.calculate_posterior(
+                    attribute_id, answer, prior)
+                new = posterior['posterior']
+                responses['probabilities'].append(new)
+                responses['answers'].append(answer)
+                if answer == 'yes':
+                    answer = 'now'
+        return responses
 
 
 def test_get_root_succeeds(backend):
@@ -71,8 +73,9 @@ def test_get_question_succeeds(backend):
 def test_get_question_returns_json(backend):
     response = backend.get('/question')
     json = response.get_json()
-    assert 'attribute_id' in json
-    assert 'attribute_name' in json
+    if json['type'] == 'simple':
+        assert 'attribute_id' in json
+        assert 'attribute_name' in json
 
 
 def test_get_answer_fails(backend):
@@ -101,23 +104,28 @@ def test_post_answer_requires_all_fields(backend):
     assert json['success'] == False
 
     response = backend.post(
-        '/answer', json={'attribute_id': '1', 'response': 'yes'})
+        '/answer', json={"language":"suomi","response":[{"attribute_id":"1","response":"yes"}]}
+    )
     json = response.get_json()
     assert json['success'] == True
 
 
 def test_post_answer_returns_new_question(backend):
     response = backend.post(
-        '/answer', json={'language': 1, 'attribute_id': '1', 'response': 'yes'})
+        '/answer', json={"language":"suomi","response":[{"attribute_id":"1","response":"yes"}]}
+    )
     json = response.get_json()
     assert 'new_question' in json
-    assert 'attribute_id' in json['new_question']
-    assert 'attribute_name' in json['new_question']
-
+    assert 'type' in json['new_question']
+    assert 'attribute_question' in json['new_question']
+    if json['new_question']['type'] == 'simple':
+        assert 'attribute_id' in json['new_question']
+        assert 'attribute_name' in json['new_question']
 
 def test_post_answer_returns_building_classes(backend):
     response = backend.post(
-        '/answer', json={'language': 1, 'attribute_id': '1', 'response': 'yes'})
+        '/answer', json={"language":"suomi","response":[{"attribute_id":"1","response":"yes"}]}
+    )
     json = response.get_json()
     assert 'building_classes' in json
     for item in json['building_classes']:
@@ -151,12 +159,16 @@ def test_session_gets_recreated_for_client_requesting_first_question(backend):
 
 def test_if_user_in_session_user_data_is_created_after_first_question(backend):
     with backend:
-        backend.get('/question')
-        users.pop(session['user'], None)
-        assert session['user'] not in users
-        backend.post(
-            '/answer', json={'attribute_id': '1', 'response': 'yes'})
-        assert session['user'] in users
+        response = backend.get('/question')
+        json = response.get_json()
+        if json['type'] == 'simple':
+            attribute_id = json['attribute_id']
+            users.pop(session['user'], None)
+            assert session['user'] not in users
+            backend.post(
+                '/answer', json={"language":"suomi","response":[{"attribute_id":attribute_id,"response":"yes"}]}
+                )
+            assert session['user'] in users
 
 
 def test_same_questions_not_repeated_during_session(responses):
@@ -170,7 +182,7 @@ def test_same_questions_not_repeated_during_session(responses):
 
 def test_prior_questions_are_saved_during_session(responses):
     user = users[responses['id']]
-    assert user['questions'] == responses['questions']
+    assert user['attributes'] == responses['questions']
 
 
 def test_prior_question_strings_are_saved_during_session(responses):
@@ -200,24 +212,25 @@ def test_returned_building_classes_are_based_on_prior_probabilities(backend):
     with backend:
         response = backend.get('/question')
         json = response.get_json()
-        attribute_id = json['attribute_id']
-        prob = src.classifier.calculate_posterior(attribute_id, 'yes', None)
-        prior = prob['posterior']
-        response = backend.post(
-            '/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': 'yes'})
-        json = response.get_json()
-        attribute_id = json['new_question']['attribute_id']
-        posterior = src.classifier.calculate_posterior(
-            attribute_id, 'yes', prior)
-        response = backend.post(
-            '/answer', json={'language': 'suomi', 'attribute_id': attribute_id, 'response': 'yes'})
-        json = response.get_json()
-        building_classes = json['building_classes']
-        for _, (class_id, score) in posterior.iterrows():
-            new_building_classes.append({'class_id': class_id,
-                                         'class_name': src.building_data.building_class_name[class_id],
-                                         'score': score})
-        assert building_classes == new_building_classes
+        if json['type'] == 'simple':
+            attribute_id = json['attribute_id']
+            prob = src.classifier.calculate_posterior(attribute_id, 'yes', None)
+            prior = prob['posterior']
+            response = backend.post(
+                '/answer', json={"language":"suomi","response":[{"attribute_id":attribute_id,"response":"yes"}]})
+            json = response.get_json()
+            attribute_id = json['new_question']['attribute_id']
+            posterior = src.classifier.calculate_posterior(
+                attribute_id, 'yes', prior)
+            response = backend.post(
+                '/answer', json={"language":"suomi","response":[{"attribute_id":attribute_id,"response":"yes"}]})
+            json = response.get_json()
+            building_classes = json['building_classes']
+            for _, (class_id, score) in posterior.iterrows():
+                new_building_classes.append({'class_id': class_id,
+                                            'class_name': src.building_data.building_class_name[class_id],
+                                            'score': score})
+            assert building_classes == new_building_classes
 
 
 def test_requesting_previous_question_returns_correct_question(responses, backend):
@@ -239,24 +252,26 @@ def test_if_user_returs_to_first_question_no_building_classes_are_sent(backend):
     with backend:
         response = backend.get('/question')
         json = response.get_json()
-        question = json['attribute_name']
-        attribute_id = json['attribute_id']
-        backend.post(
-            '/answer', json={'attribute_id': attribute_id, 'response': 'yes'})
-        previous = backend.get('/previous')
-        json = previous.get_json()
-        assert 'building_classes' not in json
-        assert json['attribute_name'] == question
+        if json['type'] == 'simple':
+            question = json['attribute_name']
+            attribute_id = json['attribute_id']
+            backend.post(
+                '/answer', json={"language":"suomi","response":[{"attribute_id":attribute_id,"response":"yes"}]})
+            previous = backend.get('/previous')
+            json = previous.get_json()
+            assert 'building_classes' not in json
+            assert json['attribute_name'] == question
 
 
 def test_if_user_in_session_user_data_is_created_when_asking_previous_question(backend):
     with backend:
         response = backend.get('/question')
         json = response.get_json()
-        attribute_id = json['attribute_id']
-        backend.post(
-            '/answer', json={'attribute_id': attribute_id, 'response': 'yes'})
-        users.pop(session['user'], None)
-        assert session['user'] not in users
-        backend.get('/previous')
-        assert session['user'] in users
+        if json['type'] == 'simple':
+            attribute_id = json['attribute_id']
+            backend.post(
+                '/answer', json={"language":"suomi","response":[{"attribute_id":attribute_id,"response":"yes"}]})
+            users.pop(session['user'], None)
+            assert session['user'] not in users
+            backend.get('/previous')
+            assert session['user'] in users
