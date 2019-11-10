@@ -10,6 +10,7 @@ def init_app(app):
         from . import index
         from . import previous
         from . import question
+        from . import adminView
 
         # Register blueprint
         app.register_blueprint(views)

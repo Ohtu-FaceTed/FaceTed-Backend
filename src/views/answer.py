@@ -45,8 +45,8 @@ def answer():
                 db.session.commit()
                 user = users[ident]
 
-        # Add the response to the database. First find the appropriate rows 
-        # from attribute, answer, and session tables, then create the new 
+        # Add the response to the database. First find the appropriate rows
+        # from attribute, answer, and session tables, then create the new
         # AnswerQuestion
         for (attribute, resp) in zip(attribute_id, response): 
             try:
