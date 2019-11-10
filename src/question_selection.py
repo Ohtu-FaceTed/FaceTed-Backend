@@ -10,8 +10,12 @@ def best_questions(prior, answered_questions):
     # Find the attributes that have been asked and that can be asked
     # used_attributes = users[session['user']]['attributes']
     # Attribute.query.filter_by(attribute_id=x).first().grouping_id is not 'NaN'
+    
+    non_active = src.building_data._attributes.loc[src.building_data._attributes['active'] == False]
+    na_attributes = non_active['attribute_id'].tolist()
     free_attributes = [x for x in src.building_data.observations.columns if x not in [
-        'class_id', 'count'] and x not in answered_questions]
+        'class_id', 'count'] and x not in answered_questions and x not in na_attributes] #in na_attributes]
+    
     # Get the conditional probability table and the prior
     cond_p = src.classifier.conditional_probabilities[free_attributes]
     prior = prior if prior is not None else np.ones(
@@ -30,6 +34,8 @@ def best_questions(prior, answered_questions):
         (p_no * np.log(p_no)).sum(axis=0)
     entropy = entropy.sort_values()
     entropy = [(i, x) for i, x in zip(entropy.index, entropy)]
+
+    #print(type(entropy[0]))
 
     return entropy
 
