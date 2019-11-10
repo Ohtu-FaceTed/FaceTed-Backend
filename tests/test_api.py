@@ -4,13 +4,16 @@ from src.models import init_app
 from src import create_app
 from flask import session, jsonify
 from src.sessionManagement import users
+from src.models import Session, AnswerQuestion
 from config import TestingConfig
 import pytest
+from . import init_test_db
 
 
 @pytest.fixture(scope='module')
 def backend():
     app = create_app(TestingConfig)
+    init_test_db(app)
 
     test_client = app.test_client()
 
@@ -344,3 +347,49 @@ def test_if_user_in_session_user_data_is_created_when_asking_previous_question(b
             assert session['user'] not in users
             backend.get('/previous')
             assert session['user'] in users
+
+def test_get_question_adds_session_to_database(backend):
+    with backend:
+        sessions_old = Session.query.all()
+        backend.get('/question')
+        sessions_new = Session.query.all()
+
+        assert len(sessions_new) == len(sessions_old) + 1
+        assert sessions_new[-1].session_ident == session['user']
+
+def test_post_answer_adds_answer_to_database(backend):
+    with backend:
+        response = backend.get('/question')
+        sessions = Session.query.all()
+
+        attribute_id = response.get_json()['attribute_id']
+
+        answer_question_old = AnswerQuestion.query.all()
+        backend.post(
+            '/answer', json={'attribute_id': attribute_id, 'response': 'yes'})
+        answer_question_new = AnswerQuestion.query.all()
+
+        assert len(answer_question_new) == len(answer_question_old) + 1
+        assert answer_question_new[-1].session_id == sessions[-1].id
+        assert answer_question_new[-1].attribute.attribute_id == attribute_id
+        assert answer_question_new[-1].answer.value == 'yes'
+
+
+@pytest.fixture
+def clean_backend():
+    app = create_app(TestingConfig)
+    init_test_db(app)
+
+    test_client = app.test_client()
+
+    ctxt = app.app_context()
+    ctxt.push()
+
+    yield test_client
+
+    ctxt.pop()
+
+def test_initially_database_contains_no_sessions(clean_backend):
+    with clean_backend:
+        sessions = Session.query.all()
+        assert len(sessions) == 0
