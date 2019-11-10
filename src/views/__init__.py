@@ -11,6 +11,7 @@ def init_app(app):
         from . import previous
         from . import question
         from . import feedback
+        from . import adminView
 
         # Register blueprint
         app.register_blueprint(views)
