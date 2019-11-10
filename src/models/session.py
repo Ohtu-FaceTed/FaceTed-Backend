@@ -15,7 +15,7 @@ class Session(db.Model):
         "AnswerQuestion", back_populates="session")
 
     def __repr__(self):
-        return f"<Answer(session_ident='{self.sessionIdent}')>"
+        return f"<Session(session_ident='{self.session_ident}')>"
 
     def __init__(self, sess):
         self.session_ident = sess

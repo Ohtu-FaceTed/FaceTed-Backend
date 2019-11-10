@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 # Create db object
 db = SQLAlchemy()
 
-# Note these must be imported after creating the db object, since they use 
+# Note these must be imported after creating the db object, since they use
 # db.Model as a superclass
 from .building_class import BuildingClass
 from .attribute import Attribute

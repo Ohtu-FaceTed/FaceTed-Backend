@@ -31,8 +31,26 @@ def test_load_attributes_fails_without_attribute_question():
             load_attributes(tmp_file)
 
 
+def test_load_attributes_fails_without_group_id():
+    df = DEFAULT_ATTRIBUTES.drop(columns=['group_id'])
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
+        with pytest.raises(ValueError):
+            load_attributes(tmp_file)
+
+
+def test_load_attributes_fails_without_activity_status():
+    df = DEFAULT_ATTRIBUTES.drop(columns=['active'])
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
+        with pytest.raises(ValueError):
+            load_attributes(tmp_file)
+
+
 def test_load_attributes_fails_without_data_rows():
-    df = DEFAULT_ATTRIBUTES.drop(index=[0, 1, 2])
+    df = DEFAULT_ATTRIBUTES.drop(index=[0, 1, 2, 3, 4])
     with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
         df.to_csv(tmp_file, index=False)
         tmp_file.seek(0)
@@ -67,11 +85,28 @@ def test_attribute_dataframe_has_attribute_name(default_attributes):
     assert 'attribute_name' in default_attributes
 
 
-def test_attribute_dataframe_values_are_strings(default_attributes):
-    for x in default_attributes.attribute_id:
-        assert isinstance(x, str)
-    for x in default_attributes.attribute_name:
-        assert isinstance(x, str)
+def test_attribute_dataframe_has_attribute_question(default_attributes):
+    assert 'attribute_question' in default_attributes
+
+
+def test_attribute_dataframe_has_group_id(default_attributes):
+    assert 'group_id' in default_attributes
+
+
+def test_attribute_dataframe_has_activity_status(default_attributes):
+    assert 'active' in default_attributes
+
+
+def test_attribute_dataframe_activity_status_values_are_boolean(default_attributes):
+    for x in default_attributes.active:
+        assert isinstance(x, bool)
+
+
+def test_other_attribute_dataframe_values_are_strings(default_attributes):
+    default_attributes = default_attributes.drop(columns=['active'])
+    for x in default_attributes:
+        for y in default_attributes[x].dropna():
+            assert isinstance(y, str)
 
 
 def test_load_building_classes_fails_without_class_id():
@@ -212,6 +247,82 @@ def test_observations_has_at_least_one_building_class_and_attribute(default_obse
 
 def test_observations_class_ids_are_strings(default_observations):
     for x in default_observations.class_id:
+        assert isinstance(x, str)
+
+
+def test_load_attribute_groups_fails_without_group_id():
+    df = DEFAULT_ATTRIBUTE_GROUPS.drop(columns=['group_id'])
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
+        with pytest.raises(ValueError):
+            load_attribute_groups(tmp_file)
+
+
+def test_load_attribute_groups_fails_without_group_name():
+    df = DEFAULT_ATTRIBUTE_GROUPS.drop(columns=['group_name'])
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
+        with pytest.raises(ValueError):
+            load_attribute_groups(tmp_file)
+
+
+def test_load_attribute_groups_fails_without_group_question():
+    df = DEFAULT_ATTRIBUTE_GROUPS.drop(columns=['group_question'])
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
+        with pytest.raises(ValueError):
+            load_attribute_groups(tmp_file)
+
+
+def test_load_attribute_groups_fails_without_data_rows():
+    df = DEFAULT_ATTRIBUTE_GROUPS.drop(index=[0])
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
+        with pytest.raises(ValueError):
+            load_attribute_groups(tmp_file)
+
+
+@pytest.fixture
+def default_attribute_groups():
+    df = DEFAULT_ATTRIBUTE_GROUPS
+    with tempfile.TemporaryFile(mode='w+t', newline='') as tmp_file:
+        df.to_csv(tmp_file, index=False)
+        tmp_file.seek(0)
+        attribute_groups = load_attribute_groups(tmp_file)
+
+    return attribute_groups
+
+
+def test_attribute_groups_is_dataframe(default_attribute_groups):
+    assert isinstance(default_attribute_groups, pd.DataFrame)
+
+
+def test_attribute_groups_dataframe_is_not_empty(default_attribute_groups):
+    assert len(default_attribute_groups.index) > 0
+
+
+def test_attribute_groups_dataframe_has_group_id(default_attribute_groups):
+    assert 'group_id' in default_attribute_groups
+
+
+def test_attribute_groups_dataframe_has_group_name(default_attribute_groups):
+    assert 'group_name' in default_attribute_groups
+
+
+def test_attribute_groups_dataframe_has_group_question(default_attribute_groups):
+    assert 'group_question' in default_attribute_groups
+
+
+def test_attribute_groups_dataframe_values_are_strings(default_attribute_groups):
+    for x in default_attribute_groups.group_id:
+        assert isinstance(x, str)
+    for x in default_attribute_groups.group_name:
+        assert isinstance(x, str)
+    for x in default_attribute_groups.group_question:
         assert isinstance(x, str)
 
 

@@ -130,6 +130,9 @@ def test_post_answer_returns_building_classes(backend):
 
 
 def test_session_gets_created_for_client_requesting_first_question(backend):
+    with backend.session_transaction() as sess:
+        sess.pop('user', None)
+        assert 'user' not in sess
     with backend:
         backend.get('/question')
         assert 'user' in session
