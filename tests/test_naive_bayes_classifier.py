@@ -36,34 +36,38 @@ def default_classifier():
 
 
 def test_calculate_posterior_normalizes_probabilities_by_default(default_classifier):
-    res = default_classifier.calculate_posterior("1", "yes")
+    res = default_classifier.calculate_posterior(["1"], ["yes"])
     assert np.isclose(res['posterior'].sum(), 1.0)
-    res = default_classifier.calculate_posterior("1", "no")
+    res = default_classifier.calculate_posterior(["1"], ["no"])
     assert np.isclose(res['posterior'].sum(), 1.0)
-    res = default_classifier.calculate_posterior("1", "skip")
+    res = default_classifier.calculate_posterior(["1"], ["skip"])
     assert np.isclose(res['posterior'].sum(), 1.0)
 
 
 def test_calculate_posterior_unnormalized_probabilities_are_probabilities(default_classifier):
     res_true = default_classifier.calculate_posterior(
-        "1", "yes", normalize=False)
+        ["1"], ["yes"], normalize=False)
     assert (0 <= res_true['posterior']).all() and (
         res_true['posterior'] <= 1).all()
     res_false = default_classifier.calculate_posterior(
-        "1", "no", normalize=False)
+        ["1"], ["no"], normalize=False)
     assert (0 <= res_false['posterior']).all() and (
         res_false['posterior'] <= 1).all()
     res_false = default_classifier.calculate_posterior(
-        "1", "skip", normalize=False)
+        ["1"], ["skip"], normalize=False)
     assert (0 <= res_false['posterior']).all() and (
         res_false['posterior'] == 1).all()
 
 
 def test_calculate_posterior_unnormalized_probabilities_are_bernoulli(default_classifier):
     res_true = default_classifier.calculate_posterior(
-        "1", "yes", normalize=False)
+        ["1"], ["yes"], normalize=False)
     res_false = default_classifier.calculate_posterior(
-        "1", "no", normalize=False)
+        ["1"], ["no"], normalize=False)
+    print(default_classifier.conditional_probabilities)
+    print(res_true)
+    print(res_false)
+    print(res_true['posterior']+res_false['posterior'])
     assert np.isclose(res_true['posterior'] +
                       res_false['posterior'], 1.0).all()
 
@@ -76,5 +80,5 @@ def test_skip_returns_prior_in_calculate_posterior(default_classifier):
     prior /= prior.sum()
 
     # Calculate the posterior and check that it's equal to the prior
-    res_skip = default_classifier.calculate_posterior("1", "skip", prior=prior)
+    res_skip = default_classifier.calculate_posterior(["1"], ["skip"], prior=prior)
     assert np.isclose(prior, res_skip['posterior']).all()
