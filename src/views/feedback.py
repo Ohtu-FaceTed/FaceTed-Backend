@@ -22,8 +22,10 @@ def feedback():
     else:
         if 'user' in session:
             # save selected building class to database
-            sess = Session.query.filter_by(session_ident=session['user']).first()
-            selected_class = BuildingClass.query.filter_by(class_id=class_id).first()
+            sess = Session.query.filter_by(
+                session_ident=session['user']).first()
+            selected_class = BuildingClass.query.filter_by(
+                class_id=class_id).first()
             sess.selected_class = selected_class
             db.session.commit()
 

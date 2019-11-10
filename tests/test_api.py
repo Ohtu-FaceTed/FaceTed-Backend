@@ -348,6 +348,7 @@ def test_if_user_in_session_user_data_is_created_when_asking_previous_question(b
             backend.get('/previous')
             assert session['user'] in users
 
+
 def test_get_question_adds_session_to_database(backend):
     with backend:
         sessions_old = Session.query.all()
@@ -356,6 +357,7 @@ def test_get_question_adds_session_to_database(backend):
 
         assert len(sessions_new) == len(sessions_old) + 1
         assert sessions_new[-1].session_ident == session['user']
+
 
 def test_post_answer_adds_answer_to_database(backend):
     with backend:
@@ -388,6 +390,7 @@ def clean_backend():
     yield test_client
 
     ctxt.pop()
+
 
 def test_initially_database_contains_no_sessions(clean_backend):
     with clean_backend:

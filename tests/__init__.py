@@ -10,13 +10,13 @@ def init_test_db(app):
         [db.session.remove(x) for x in Session.query.all()]
 
         # Initialize attribute table
-        db.session.add(Attribute(attribute_id='1', 
+        db.session.add(Attribute(attribute_id='1',
                                  attribute_name='Asunnot',
                                  attribute_question='Onko rakennuksessa asunnot?'))
-        db.session.add(Attribute(attribute_id='101', 
+        db.session.add(Attribute(attribute_id='101',
                                  attribute_name='Asuinhuone',
                                  attribute_question='Onko rakennuksessa asuinhuone?'))
-        db.session.add(Attribute(attribute_id='102', 
+        db.session.add(Attribute(attribute_id='102',
                                  attribute_name='Eteinen',
                                  attribute_question='Onko rakennuksessa eteinen?'))
 
