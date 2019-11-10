@@ -13,8 +13,8 @@ from ..models import db, Attribute, Session, QuestionGroup
 def previous():
     user = None
     prior = None
-    attribute_id = ''
-    response = ''
+    attribute_id = []
+    response = []
 
     if 'user' in session:
         # access users session data
@@ -70,7 +70,7 @@ def previous():
     # deletes previously saved values
     for i in range(2):
         if user['type'][-1] == 'multi':
-            user['total_attributes'] = user['total_attributes'][: -len(user['type'][-1]) or None] 
+            user['total_attributes'] = user['total_attributes'][: -len(user['multi_attributes'][-1]) or None] 
             user['multi_attributes'].pop()
 
         else:    
@@ -88,7 +88,8 @@ def previous():
     if len(user['probabilities']) > 0:
         prior = user['probabilities'][-1]
     if user['type'][-1] == 'multi':
-        attribute_id = user['multi_attributes'][-1]
+        for attribute in user['multi_attributes'][-1]:
+            attribute_id.append(attribute['attribute_id']) 
     else:
         attribute_id = [user['attribute_ids'][-1]]
     
