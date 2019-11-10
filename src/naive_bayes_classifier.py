@@ -33,7 +33,7 @@ class NaiveBayesClassifier:
             prior_probability = np.ones(self.observations.shape[0])
 
         # Extract the likelihood from the conditional probability table
-        for (val, attr) in zip(value, attribute): 
+        for (val, attr) in zip(value, attribute):
             if val == 'yes':
                 likelihood = self.conditional_probabilities[attr]
             elif val == 'no':

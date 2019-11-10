@@ -31,5 +31,5 @@ def question():
         users[ident]['total_attributes'].append(question['attribute_id'])
         users[ident]['attributes'].append(question['attribute_name'])
     users[ident]['question_strings'].append(question['attribute_question'])
-    
+
     return jsonify(question)

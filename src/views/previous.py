@@ -23,7 +23,7 @@ def previous():
         else:
             ident = generate_id()
             session['user'] = ident
-            users[ident] = {'type': [], 'probabilities': [], 'answers': [], 
+            users[ident] = {'type': [], 'probabilities': [], 'answers': [],
                             'attribute_ids': [], 'attributes': [], 'multi_attributes': [], 'question_strings': [],
                             'total_attributes': []}
             user = users[ident]
@@ -35,13 +35,14 @@ def previous():
             user['type'].append('multi')
             user['multi_attributes'].append(question['attributes'])
             for attribute in question['attributes']:
-                users[ident]['total_attributes'].append(attribute['attribute_id'])
+                users[ident]['total_attributes'].append(
+                    attribute['attribute_id'])
         else:
             user['type'].append('simple')
             user['attribute_ids'].append(question['attribute_id'])
             user['total_attributes'].append(question['attribute_id'])
             user['attributes'].append(question['attribute_name'])
-        user['question_strings'].append(question['attribute_question']) 
+        user['question_strings'].append(question['attribute_question'])
         return jsonify(question)
 
     # if user returns to the first question, only the question is returned
@@ -49,10 +50,11 @@ def previous():
         if len(user['probabilities']) == 1:
             user['probabilities'].pop()
         if user['type'][-1] == 'multi':
-            user['total_attributes'] = user['total_attributes'][: -len(user['type'[-1]]) or None] 
+            user['total_attributes'] = user['total_attributes'][: -
+                                                                len(user['type'[-1]]) or None]
             user['multi_attributes'].pop()
-        else: 
-            user['attribute_ids'].pop() 
+        else:
+            user['attribute_ids'].pop()
             user['attributes'].pop()
             user['total_attributes'].pop()
         user['question_strings'].pop()
@@ -60,20 +62,21 @@ def previous():
         user['type'].pop()
 
         if user['type'][-1] == 'multi':
-            return {"type": 'multi', "attributes": user['multi_attributes'][-1], 
-                    "attribute_question":  user['question_strings'][-1]}
+            return {"type": 'multi', "attributes": user['multi_attributes'][-1],
+                    "attribute_question": user['question_strings'][-1]}
 
         else:
-            return {"type": 'simple', "attribute_id": user['attribute_ids'][-1], "attribute_name": user['attributes'][-1], 
+            return {"type": 'simple', "attribute_id": user['attribute_ids'][-1], "attribute_name": user['attributes'][-1],
                     "attribute_question": user['question_strings'][-1]}
 
     # deletes previously saved values
     for i in range(2):
         if user['type'][-1] == 'multi':
-            user['total_attributes'] = user['total_attributes'][: -len(user['multi_attributes'][-1]) or None] 
+            user['total_attributes'] = user['total_attributes'][: -
+                                                                len(user['multi_attributes'][-1]) or None]
             user['multi_attributes'].pop()
 
-        else:    
+        else:
             user['attribute_ids'].pop()
             user['attributes'].pop()
             user['total_attributes'].pop()
@@ -83,16 +86,16 @@ def previous():
         user['question_strings'].pop()
 
     user['answers'].pop()
-    
+
     # selects the values that led to previous probabilities
     if len(user['probabilities']) > 0:
         prior = user['probabilities'][-1]
     if user['type'][-1] == 'multi':
         for attribute in user['multi_attributes'][-1]:
-            attribute_id.append(attribute['attribute_id']) 
+            attribute_id.append(attribute['attribute_id'])
     else:
         attribute_id = [user['attribute_ids'][-1]]
-    
+
     response = user['answers'][-1]
 
     posterior = src.classifier.calculate_posterior(
@@ -106,7 +109,8 @@ def previous():
 
     # Saves current state
     user['probabilities'].append(probabilities)
-    question = next_question(user['probabilities'][-1], user['total_attributes'])
+    question = next_question(
+        user['probabilities'][-1], user['total_attributes'])
 
     if question['type'] == 'multi':
         user['type'].append('multi')
@@ -115,11 +119,11 @@ def previous():
             user['total_attributes'].append(attribute['attribute_id'])
     else:
         user['type'].append('simple')
-        user['attribute_ids'].append(question['attribute_id']) 
+        user['attribute_ids'].append(question['attribute_id'])
         user['total_attributes'].append(question['attribute_id'])
         user['attributes'].append(question['attribute_name'])
 
-    user['question_strings'].append(question['attribute_question'])       
+    user['question_strings'].append(question['attribute_question'])
 
     return jsonify({'success': True,
                     'new_question': question,

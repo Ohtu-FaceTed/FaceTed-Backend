@@ -6,13 +6,13 @@ from unittest import mock
 @pytest.fixture
 def attributes():
     attributes = pd.DataFrame({'attribute_id': ['1', '101', '102'],
-                                   'attribute_name': ['Asunnot', 'Asuinhuone',
-                                                      'Eteinen'],
-                                   'attribute_question': ['Onko rakennuksessa asunnot?',
-                                                          'Onko rakennuksessa asuinhuone?',
-                                                          'Onko rakennuksessa eteinen?',],
-                                   'group_id': ['NaN', 'NaN', 'NaN'],
-                                   'active': [False, False, False]})
+                               'attribute_name': ['Asunnot', 'Asuinhuone',
+                                                  'Eteinen'],
+                               'attribute_question': ['Onko rakennuksessa asunnot?',
+                                                      'Onko rakennuksessa asuinhuone?',
+                                                      'Onko rakennuksessa eteinen?', ],
+                               'group_id': ['NaN', 'NaN', 'NaN'],
+                               'active': [False, False, False]})
     return attributes
 
 
@@ -40,7 +40,7 @@ def test_non_active_attributes_are_not_selected(attributes):
         assert '1' not in attribute_id
 
 
-#def test_for_multi_question_first_of_best_questions_is_in_question_group():
+# def test_for_multi_question_first_of_best_questions_is_in_question_group():
 #    questions = best_questions(None, [])
 #    best_question = next_question(None, [])
 #    if best_question['type'] == 'multi':
@@ -48,5 +48,3 @@ def test_non_active_attributes_are_not_selected(attributes):
 #        for attribute in best_question['attributes']:
 #            attributes.append(attribute['attribute_id'])
 #        assert questions[0][0] in attributes
-
-
