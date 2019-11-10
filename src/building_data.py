@@ -17,7 +17,7 @@ DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102', '114', '1
                                                           'Onko rakennuksessa eteinen?',
                                                           'Onko rakennuksessa WC?',
                                                           'Onko rakennuksessa WC-pesuhuone?'],
-                                   'group_id': ['NaN', 'NaN', 'NaN', '1', '1'],
+                                   'group_id': [None, None, None, '1', '1'],
                                    'active': [True, True, True, True, True]})
 
 
