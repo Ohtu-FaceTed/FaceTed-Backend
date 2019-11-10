@@ -30,14 +30,20 @@ def test_for_simple_question_next_question_is_first_of_best_questions():
 
 
 def test_non_active_attributes_are_not_selected(attributes):
-    r = mock.Mock()
-    r.content = attributes
-    with mock.patch('src.building_data._attributes', return_value=r) as attr:
-        questions = best_questions(None, [])
-        attribute_id = []
-        for q in questions:
-            attribute_id.append(q[0])
-        assert '1' not in attribute_id
+    #r = mock.Mock()
+    #r.content = attributes
+    #print(src.building_data.__dict__)
+    #with mock.patch.('src.question_selection.src.building_data', '_attributes', new=attributes) as attr:
+    tmp = src.building_data._attributes.copy()
+    src.building_data._attributes = attributes
+
+    questions = best_questions(None, [])
+    attribute_id = []
+    for q in questions:
+        attribute_id.append(q[0])
+    assert '1' not in attribute_id
+
+    src.building_data._attributes = tmp
 
 
 # def test_for_multi_question_first_of_best_questions_is_in_question_group():
