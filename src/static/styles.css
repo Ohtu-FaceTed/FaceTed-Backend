@@ -1,0 +1,17 @@
+.even {
+    background-color:inherit !important;
+  }
+
+.table a {
+    color:white
+}
+
+.table a:hover {
+    color:white;
+}
+
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.4;
+}
