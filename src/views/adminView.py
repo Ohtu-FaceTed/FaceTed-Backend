@@ -16,5 +16,6 @@ def setActive(attribute_id):
         attr.active = False
     else:
         attr.active = True
-        db.session.commit()
+        
+    db.session.commit()
     return redirect(url_for("views.admin_view"))
