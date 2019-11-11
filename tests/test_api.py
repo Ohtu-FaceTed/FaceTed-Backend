@@ -82,7 +82,6 @@ def next_questions(backend, first_question):
                     )
 
             json = response.get_json()
-
             if json['new_question']['type'] == 'simple':
                 question_type = 'simple'
                 attribute_id = json['new_question']['attribute_id']
@@ -90,6 +89,7 @@ def next_questions(backend, first_question):
                 responses['total_attributes'].append(attribute_id)
                 responses['questions'].append(
                     json['new_question']['attribute_name'])
+                responses['type'].append(json['new_question']['type'])
             else:
                 question_type = 'multi'
                 multi_id = []
@@ -302,7 +302,7 @@ def test_requesting_previous_question_returns_correct_question(next_questions, b
     with backend:
         response = backend.get('/previous')
         json = response.get_json()
-        if json['type'] == 'simple':
+        if json['new_question']['type'] == 'simple':
             question = json['new_question']['attribute_name']
             attribute = json['new_question']['attribute_id']
             question_string = json['new_question']['attribute_question']

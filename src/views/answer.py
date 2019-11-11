@@ -94,8 +94,7 @@ def answer():
             user['attributes'].append(question['attribute_name'])
         user['question_strings'].append(question['attribute_question'])
 
-        for ans in response:
-            user['answers'].append(ans)
+        user['answers'].append(response)
 
         return jsonify({'success': True,
                         'new_question': question,
