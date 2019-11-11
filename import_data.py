@@ -31,6 +31,35 @@ if __name__ == '__main__':
     # Create app to register database
     app = create_app(config)
 
+    # load attributes groupings
+    attribute_groups_path = os.path.join(args.data_directory, 'attribute_groups.csv')
+    if os.path.isfile(attribute_groups_path):
+        attribute_groups_df = load_attribute_groups(attribute_groups_path)
+        
+        with app.app_context():
+            try:
+                for i, x in attribute_groups_df.iterrows():
+                    db.session.add(QuestionGroup(grouping_key=x.group_id,
+                                                 group_name=x.group_name,
+                                                 group_question=x.group_question))
+                db.session.commit()
+            except IntegrityError as e:
+                print('Caught integrity error:', e.args[0])
+                db.session.rollback()                
+    else:
+        print(f'Could not find attribute_groups.csv at: {attribute_groups_path}')
+
+
+    # Load answer types
+    with app.app_context():
+        try:
+            for x in ['yes', 'no', 'skip']:
+                db.session.add(Answer(value=x))
+            db.session.commit()
+        except IntegrityError as e:
+            print('Caught integrity error:', e.args[0])
+            db.session.rollback()
+
     # Load attributes
     attribute_path = os.path.join(args.data_directory, 'attributes.csv')
     if os.path.isfile(attribute_path):
@@ -42,7 +71,8 @@ if __name__ == '__main__':
                     db.session.add(Attribute(attribute_id=x.attribute_id,
                                              attribute_name=x.attribute_name,
                                              attribute_question=x.attribute_question,
-                                             grouping_id=x.group_id))
+                                             grouping_id=x.group_id,
+                                             active=x.active))
                 db.session.commit()
             except IntegrityError as e:
                 print('Caught integrity error:', e.args[0])
@@ -70,31 +100,7 @@ if __name__ == '__main__':
     else:
         print(f'Could not find building_classes.csv at: {building_classes_path}')
 
-    # Load answer types
-    with app.app_context():
-        try:
-            for x in ['yes', 'no', 'skip']:
-                db.session.add(Answer(value=x))
-            db.session.commit()
-        except IntegrityError as e:
-            print('Caught integrity error:', e.args[0])
-            db.session.rollback()
+    
         
-    # load attributes groupings
-    attribute_groups_path = os.path.join(args.data_directory, 'attribute_groups.csv')
-    if os.path.isfile(attribute_groups_path):
-        attribute_groups_df = load_attribute_groups(attribute_groups_path)
-        
-        with app.app_context():
-            try:
-                for i, x in attribute_groups_df.iterrows():
-                    db.session.add(QuestionGroup(grouping_key=x.group_id,
-                                                 group_name=x.group_name,
-                                                 group_question=x.group_question))
-                db.session.commit()
-            except IntegrityError as e:
-                print('Caught integrity error:', e.args[0])
-                db.session.rollback()
-                
-    else:
-        print(f'Could not find attribute_groups.csv at: {attribute_groups_path}')
+    
+    
