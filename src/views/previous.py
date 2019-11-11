@@ -6,14 +6,15 @@ from src.sessionManagement import users, generate_id
 
 from flask import jsonify, session
 from . import views as app
+from ..models import db, Attribute, Session, QuestionGroup
 
 
 @app.route('/previous', methods=['GET'])
 def previous():
     user = None
     prior = None
-    attribute_id = ''
-    response = ''
+    attribute_id = []
+    response = []
 
     if 'user' in session:
         # access users session data
@@ -22,42 +23,79 @@ def previous():
         else:
             ident = generate_id()
             session['user'] = ident
-            users[ident] = {'probabilities': [],
-                            'answers': [], 'questions': [], 'question_strings': [], 'attributes': []}
+            users[ident] = {'type': [], 'probabilities': [], 'answers': [],
+                            'attribute_ids': [], 'attributes': [], 'multi_attributes': [], 'question_strings': [],
+                            'total_attributes': []}
             user = users[ident]
 
     # if user has no previous data a new question is created and saved
-    if len(user['questions']) == 0:
+    if len(user['question_strings']) == 0:
         question = next_question(None, [])
-        question['type'] = 'simple'
-        users[ident]['questions'].append(question['attribute_name'])
-        users[ident]['question_strings'].append(question['attribute_question'])
-        users[ident]['attributes'].append(question['attribute_id'])
+        if question['type'] == 'multi':
+            user['type'].append('multi')
+            user['multi_attributes'].append(question['attributes'])
+            for attribute in question['attributes']:
+                users[ident]['total_attributes'].append(
+                    attribute['attribute_id'])
+        else:
+            user['type'].append('simple')
+            user['attribute_ids'].append(question['attribute_id'])
+            user['total_attributes'].append(question['attribute_id'])
+            user['attributes'].append(question['attribute_name'])
+        user['question_strings'].append(question['attribute_question'])
         return jsonify(question)
 
     # if user returns to the first question, only the question is returned
-    if len(user['probabilities']) < 2 and len(user['questions']) > 0:
+    if len(user['probabilities']) < 2 and len(user['question_strings']) > 0:
         if len(user['probabilities']) == 1:
             user['probabilities'].pop()
-        user['attributes'].pop()
-        user['questions'].pop()
+        if user['type'][-1] == 'multi':
+            user['total_attributes'] = user['total_attributes'][: -
+                                                                len(user['type'[-1]]) or None]
+            user['multi_attributes'].pop()
+        else:
+            user['attribute_ids'].pop()
+            user['attributes'].pop()
+            user['total_attributes'].pop()
         user['question_strings'].pop()
-        attribute_id = user['attributes'][-1]
-        question = user['questions'][-1]
-        question_string = user['question_strings'][-1]
-        return {"type": 'simple', "attribute_id": attribute_id, "attribute_name": question, "attribute_question": question_string}
+        user['answers'].pop()
+        user['type'].pop()
+
+        if user['type'][-1] == 'multi':
+            return {"type": 'multi', "attributes": user['multi_attributes'][-1],
+                    "attribute_question": user['question_strings'][-1]}
+
+        else:
+            return {"type": 'simple', "attribute_id": user['attribute_ids'][-1], "attribute_name": user['attributes'][-1],
+                    "attribute_question": user['question_strings'][-1]}
 
     # deletes previously saved values
-    user['probabilities'] = user['probabilities'][: -2]
+    for i in range(2):
+        if user['type'][-1] == 'multi':
+            user['total_attributes'] = user['total_attributes'][: -
+                                                                len(user['multi_attributes'][-1]) or None]
+            user['multi_attributes'].pop()
+
+        else:
+            user['attribute_ids'].pop()
+            user['attributes'].pop()
+            user['total_attributes'].pop()
+
+        user['type'].pop()
+        user['probabilities'].pop()
+        user['question_strings'].pop()
+
     user['answers'].pop()
-    user['questions'] = user['questions'][: -2]
-    user['question_strings'] = user['question_strings'][: -2]
-    user['attributes'] = user['attributes'][: -2]
 
     # selects the values that led to previous probabilities
     if len(user['probabilities']) > 0:
         prior = user['probabilities'][-1]
-    attribute_id = user['attributes'][-1]
+    if user['type'][-1] == 'multi':
+        for attribute in user['multi_attributes'][-1]:
+            attribute_id.append(attribute['attribute_id'])
+    else:
+        attribute_id = [user['attribute_ids'][-1]]
+
     response = user['answers'][-1]
 
     posterior = src.classifier.calculate_posterior(
@@ -71,11 +109,21 @@ def previous():
 
     # Saves current state
     user['probabilities'].append(probabilities)
-    question = next_question(user['probabilities'][-1], user['attributes'])
-    question['type'] = 'simple'
-    user['questions'].append(question['attribute_name'])
+    question = next_question(
+        user['probabilities'][-1], user['total_attributes'])
+
+    if question['type'] == 'multi':
+        user['type'].append('multi')
+        user['multi_attributes'].append(question['attributes'])
+        for attribute in question['attributes']:
+            user['total_attributes'].append(attribute['attribute_id'])
+    else:
+        user['type'].append('simple')
+        user['attribute_ids'].append(question['attribute_id'])
+        user['total_attributes'].append(question['attribute_id'])
+        user['attributes'].append(question['attribute_name'])
+
     user['question_strings'].append(question['attribute_question'])
-    user['attributes'].append(question['attribute_id'])
 
     return jsonify({'success': True,
                     'new_question': question,

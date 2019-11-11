@@ -2,6 +2,7 @@ from src.sessionManagement import generate_id, users
 from src.question_selection import next_question
 from flask import jsonify, session
 from . import views as app
+from ..models import db, Session
 
 
 @app.route('/question', methods=['GET'])
@@ -12,11 +13,23 @@ def question():
 
     ident = generate_id()
     session['user'] = ident
-    users[ident] = {'probabilities': [], 'answers': [],
-                    'questions': [], 'question_strings': [], 'attributes': []}
+    users[ident] = {'type': [], 'probabilities': [], 'answers': [],
+                    'attribute_ids': [], 'attributes': [], 'multi_attributes': [], 'question_strings': [],
+                    'total_attributes': []}
+    # Add the session to the database
+    db.session.add(Session(ident))
+    db.session.commit()
     question = next_question(None, [])
-    question['type'] = 'simple'
-    users[ident]['questions'].append(question['attribute_name'])
+    if question['type'] == 'multi':
+        users[ident]['type'].append('multi')
+        users[ident]['multi_attributes'].append(question['attributes'])
+        for attribute in question['attributes']:
+            users[ident]['total_attributes'].append(attribute['attribute_id'])
+    else:
+        users[ident]['type'].append('simple')
+        users[ident]['attribute_ids'].append(question['attribute_id'])
+        users[ident]['total_attributes'].append(question['attribute_id'])
+        users[ident]['attributes'].append(question['attribute_name'])
     users[ident]['question_strings'].append(question['attribute_question'])
-    users[ident]['attributes'].append(question['attribute_id'])
+
     return jsonify(question)
