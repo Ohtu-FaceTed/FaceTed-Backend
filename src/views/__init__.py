@@ -10,6 +10,7 @@ def init_app(app):
         from . import index
         from . import previous
         from . import question
+        from . import feedback
         from . import adminView
         from . import feedback
 
