@@ -77,7 +77,7 @@ def next_questions(backend, first_question):
                     res = {'attribute_id': attribute, 'response': ['no']}
                     multi_answer.append(res)
                     answer.append('no')
-                    response = backend.post(
+                response = backend.post(
                         '/answer', json={'language': 'suomi', 'response': multi_answer}
                     )
 
@@ -110,7 +110,7 @@ def next_questions(backend, first_question):
                 attribute_id, answer, prior)
             new = posterior['posterior']
             responses['probabilities'].append(new)
-            responses['answers'].append(answer)
+            responses['answers'].append([answer])
     return responses
 
 
