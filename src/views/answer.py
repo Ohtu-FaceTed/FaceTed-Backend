@@ -17,7 +17,9 @@ def answer():
         response = []
         for resp in content['response']:
             attribute_id.append(resp['attribute_id'])
-            response.append(resp['response'])
+            response.append(resp['response'][0])
+        #print('answer(), attribute_id:', attribute_id)
+        #print('answer(), response:', response)
 
     except TypeError:
         return jsonify({'success': False,
@@ -30,20 +32,18 @@ def answer():
         user = None
         prior = None
 
-        if 'user' in session:
-            # access users session data
-            if session['user'] in users:
-                user = users[session['user']]
-            else:
-                ident = generate_id()
-                session['user'] = ident
-                users[ident] = {'type': [], 'probabilities': [], 'answers': [],
-                                'attribute_ids': [], 'attributes': [], 'multi_attributes': [], 'question_strings': [],
-                                'total_attributes': []}
-                # Add the session to the database
-                db.session.add(Session(ident))
-                db.session.commit()
-                user = users[ident]
+        if 'user' not in session or session['user'] not in users:
+            ident = generate_id()
+            session['user'] = ident
+            users[ident] = {'type': [], 'probabilities': [], 'answers': [],
+                            'attribute_ids': [], 'attributes': [], 'multi_attributes': [], 'question_strings': [],
+                            'total_attributes': []}
+            # Add the session to the database
+            db.session.add(Session(ident))
+            db.session.commit()
+            user = users[ident]
+        else:
+            user = users[session['user']]
 
         # Add the response to the database. First find the appropriate rows
         # from attribute, answer, and session tables, then create the new
@@ -51,12 +51,15 @@ def answer():
         for (attribute, resp) in zip(attribute_id, response):
             try:
                 db_attribute = Attribute.query.filter_by(
-                    attribute_id=attribute)
-                db_answer = Answer.query.filter_by(value=resp)
+                    attribute_id=attribute).first()
+                db_answer = Answer.query.filter_by(value=resp).first()
                 db_session = Session.query.filter_by(
-                    session_ident=session['user'])
+                    session_ident=session['user']).first()
                 db.session.add(AnswerQuestion(
                     db_attribute, db_answer, db_session))
+                #print('answer(), db_answer:', db_answer)
+                #print('answer(), db_attribute:', db_attribute)
+                #assert 1==0
                 db.session.commit()
             except AttributeError as e:
                 print(

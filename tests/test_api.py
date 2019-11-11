@@ -10,16 +10,16 @@ import pytest
 from . import init_test_db
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture  # (scope='module')
 def backend():
     app = create_app(TestingConfig)
     init_test_db(app)
 
     test_client = app.test_client()
 
-    src.building_data = src.BuildingData('./data')
-    src.classifier = src.NaiveBayesClassifier(src.building_data.observations)
-    init_app(app)
+    #src.building_data = src.BuildingData('./data')
+    #src.classifier = src.NaiveBayesClassifier(src.building_data.observations)
+    # init_app(app)
 
     ctxt = app.app_context()
     ctxt.push()
@@ -64,7 +64,7 @@ def next_questions(backend, first_question):
     attribute_id = first_question[1]
     question_type = responses['type']
 
-    for x in range(3):
+    for x in range(2):
         answer = []
         response = None
 
@@ -81,8 +81,8 @@ def next_questions(backend, first_question):
                     multi_answer.append(res)
                     answer.append('no')
                 response = backend.post(
-                        '/answer', json={'language': 'suomi', 'response': multi_answer}
-                    )
+                    '/answer', json={'language': 'suomi', 'response': multi_answer}
+                )
 
             json = response.get_json()
             if json['new_question']['type'] == 'simple':
@@ -181,15 +181,16 @@ def test_post_answer_returns_new_question(backend):
 
 
 def test_post_answer_returns_building_classes(backend):
-    response = backend.post(
-        '/answer', json={"language": "suomi", "response": [{"attribute_id": "1", "response": ["yes"]}]}
-    )
-    json = response.get_json()
-    assert 'building_classes' in json
-    for item in json['building_classes']:
-        assert 'class_id' in item
-        assert 'class_name' in item
-        assert 'score' in item
+    with backend:
+        response = backend.post(
+            '/answer', json={"language": "suomi", "response": [{"attribute_id": "1", "response": ["yes"]}]}
+        )
+        json = response.get_json()
+        assert 'building_classes' in json
+        for item in json['building_classes']:
+            assert 'class_id' in item
+            assert 'class_name' in item
+            assert 'score' in item
 
 
 def test_session_gets_created_for_client_requesting_first_question(backend):
@@ -253,7 +254,8 @@ def test_prior_question_strings_are_saved_during_session(next_questions):
 
 def test_users_answers_are_saved_during_session(next_questions):
     user = users[next_questions['id']]
-    assert user['answers'] == next_questions['answers']
+    assert user['answers'] == [x[0]
+                               for x in next_questions['answers']]  # FIXME
 
 
 def test_prior_probabilities_are_saved_during_session(next_questions):
@@ -368,7 +370,7 @@ def test_post_answer_adds_answer_to_database(backend):
 
         answer_question_old = AnswerQuestion.query.all()
         backend.post(
-            '/answer', json={'attribute_id': attribute_id, 'response': 'yes'})
+            '/answer', json={"language": "suomi", "response": [{'attribute_id': attribute_id, 'response': ['yes']}]})
         answer_question_new = AnswerQuestion.query.all()
 
         assert len(answer_question_new) == len(answer_question_old) + 1

@@ -32,8 +32,8 @@ def test_for_simple_question_next_question_is_first_of_best_questions():
 def test_non_active_attributes_are_not_selected(attributes):
     #r = mock.Mock()
     #r.content = attributes
-    #print(src.building_data.__dict__)
-    #with mock.patch.('src.question_selection.src.building_data', '_attributes', new=attributes) as attr:
+    # print(src.building_data.__dict__)
+    # with mock.patch.('src.question_selection.src.building_data', '_attributes', new=attributes) as attr:
     tmp = src.building_data._attributes.copy()
     src.building_data._attributes = attributes
 

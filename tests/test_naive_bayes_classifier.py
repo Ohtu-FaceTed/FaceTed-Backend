@@ -67,7 +67,7 @@ def test_calculate_posterior_unnormalized_probabilities_are_bernoulli(default_cl
     print(default_classifier.conditional_probabilities)
     print(res_true)
     print(res_false)
-    print(res_true['posterior']+res_false['posterior'])
+    print(res_true['posterior'] + res_false['posterior'])
     assert np.isclose(res_true['posterior'] +
                       res_false['posterior'], 1.0).all()
 
@@ -80,5 +80,6 @@ def test_skip_returns_prior_in_calculate_posterior(default_classifier):
     prior /= prior.sum()
 
     # Calculate the posterior and check that it's equal to the prior
-    res_skip = default_classifier.calculate_posterior(["1"], ["skip"], prior=prior)
+    res_skip = default_classifier.calculate_posterior(
+        ["1"], ["skip"], prior=prior)
     assert np.isclose(prior, res_skip['posterior']).all()
