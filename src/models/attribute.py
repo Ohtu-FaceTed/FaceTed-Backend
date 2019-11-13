@@ -15,5 +15,6 @@ class Attribute(db.Model):
     part_of_group = relationship("QuestionGroup")
     active = Column(Boolean, nullable=True)
     attribute_tooltip = Column(String(1000), nullable=True)
+
     def __repr__(self):
         return f"<Attribute(attribute_id='{self.attribute_id}', attribute_name='{self.attribute_name}', attribute_question='{self.attribute_question}')>"

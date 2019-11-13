@@ -20,11 +20,11 @@ DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102', '114', '1
                                                           'Onko rakennuksessa WC-pesuhuone?'],
                                    'group_id': [None, None, None, '1', '1'],
                                    'active': [True, True, True, True, True],
-                                   'attribute_tooltip':['Onko rakennuksessa asunnot?',
-                                                          'Onko rakennuksessa asuinhuone?',
-                                                          'Onko rakennuksessa eteinen?',
-                                                          'Onko rakennuksessa WC?',
-                                                          'Onko rakennuksessa WC-pesuhuone?']},)
+                                   'attribute_tooltip': ['Onko rakennuksessa asunnot?',
+                                                         'Onko rakennuksessa asuinhuone?',
+                                                         'Onko rakennuksessa eteinen?',
+                                                         'Onko rakennuksessa WC?',
+                                                         'Onko rakennuksessa WC-pesuhuone?']},)
 
 
 def load_attributes(attribute_file):
@@ -32,7 +32,7 @@ def load_attributes(attribute_file):
     df = pd.read_csv(attribute_file, dtype=str)
 
     # Check that the required fields are present
-    for required_field in ['attribute_id', 'attribute_name', 'attribute_question', 'group_id', 'active','attribute_tooltip']:
+    for required_field in ['attribute_id', 'attribute_name', 'attribute_question', 'group_id', 'active', 'attribute_tooltip']:
         if required_field not in df:
             raise ValueError(
                 f"The attribute data ({attribute_file}) does not contain a '{required_field}' column!")
@@ -189,7 +189,7 @@ class BuildingData:
                       'attribute_question': attr_question,
                       'group_id': gr_id,
                       'active': active,
-                      'arribute_tooltip':attribute_tooltip}
+                      'arribute_tooltip': attribute_tooltip}
             for ind, (attr_id, attr_name, attr_question, gr_id, active, attribute_tooltip) in self._attributes.iterrows()}
         self._attributes_names_dict = {
             attr_id: attr_name
