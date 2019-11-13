@@ -29,27 +29,22 @@ DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102', '114', '1
 
 def load_attributes(attribute_file):
     '''Attempts to load attribute data from file into Pandas dataframe'''
-    print(attribute_file)
     df = pd.read_csv(attribute_file, dtype=str)
-    
-    print(df)
+
     # Check that the required fields are present
     for required_field in ['attribute_id', 'attribute_name', 'attribute_question', 'group_id', 'active','attribute_tooltip']:
         if required_field not in df:
             raise ValueError(
                 f"The attribute data ({attribute_file}) does not contain a '{required_field}' column!")
-    print("columns checked")
     # Check that there is at least one row of data
     if len(df.index) < 1:
         raise ValueError(
             f"The attribute data ({attribute_file}) does not contain any rows!")
-    print("rows checked")
     # Change active column type to boolean
     df.active = df.active.astype(bool)
 
     # Ensure columns are imported as strings
     df.columns = df.columns.astype(str)
-    print(df)
     return df
 
 
@@ -160,7 +155,6 @@ class BuildingData:
     def __init__(self, data_directory):
         '''Initializes a BuildingData object using the data files in data_directory'''
         # Construct full paths to data files given data_directory
-        print(data_directory)
         attribute_file = os.path.join(data_directory, 'attributes.csv')
         building_classes_file = os.path.join(
             data_directory, 'building_classes.csv')
@@ -170,9 +164,7 @@ class BuildingData:
 
         # Try to load the data
         try:
-            print("muuta")
             self._attributes = load_attributes(attribute_file)
-            print("jotain kivaa")
             self._building_classes = load_building_classes(
                 building_classes_file)
             self.observations = load_observations(observation_file)
