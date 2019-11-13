@@ -21,7 +21,6 @@ if __name__ == '__main__':
     parser.add_argument('--verbose', action='store_true',
         help='Turn on SQL command echo')
     args = parser.parse_args()
-    print(args)
 
     # Use a testing config for echoing database commands, but change the
     # database URI to the target file
@@ -73,7 +72,8 @@ if __name__ == '__main__':
                                              attribute_name=x.attribute_name,
                                              attribute_question=x.attribute_question,
                                              grouping_id=x.group_id,
-                                             active=x.active))
+                                             active=x.active,
+                                             attribute_tooltip= x.attribute_tooltip))
                 db.session.commit()
             except IntegrityError as e:
                 print('Caught integrity error:', e.args[0])
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     else:
         print(f'Could not find attribute.csv at: {attribute_path}')
 
-    # Load attributes
+    # Load classifications
     building_classes_path = os.path.join(args.data_directory, 'building_classes.csv')
     if os.path.isfile(building_classes_path):
         building_classes_df = load_building_classes(building_classes_path)
