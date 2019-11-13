@@ -15,10 +15,10 @@ def answer():
     try:
         content = request.get_json()
         language = content['language']
-        
+
         browser_languages = request.accept_languages
         best_match_language = get_best_match_language(browser_languages)
-        
+
         attribute_id = []
         response = []
         for resp in content['response']:
@@ -96,7 +96,8 @@ def answer():
             user['type'].append('multi')
             user['multi_attributes'].append(question['attributes'])
             for attribute in question['attributes']:
-                attribute['attribute_name'] = select_question_by_language(attribute['attribute_name'], best_match_language)
+                attribute['attribute_name'] = select_question_by_language(
+                    attribute['attribute_name'], best_match_language)
                 user['total_attributes'].append(attribute['attribute_id'])
         else:
             user['type'].append('simple')
@@ -106,15 +107,12 @@ def answer():
 
         lang_parsed_question = select_question_by_language(
             question['attribute_question'], best_match_language)
-        
+
         question['attribute_question'] = lang_parsed_question
         user['question_strings'].append(lang_parsed_question)
-        
+
         user['answers'].append(response)
 
         return jsonify({'success': True,
                         'new_question': question,
                         'building_classes': new_building_classes})
-
-
-
