@@ -21,6 +21,7 @@ if __name__ == '__main__':
     parser.add_argument('--verbose', action='store_true',
         help='Turn on SQL command echo')
     args = parser.parse_args()
+    print(args)
 
     # Use a testing config for echoing database commands, but change the
     # database URI to the target file

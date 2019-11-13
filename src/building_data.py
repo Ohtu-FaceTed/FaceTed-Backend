@@ -9,6 +9,7 @@ import pandas as pd
 #   attribute_question: question form of attribute (string)
 #   group_id: identifier of attribute group to which attribute belongs to (string)
 #   active: indicates if the attribute should be used (boolean)
+#   attribute_tooltip: tooltip on mouse over for given attribute (string)
 DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102', '114', '116'],
                                    'attribute_name': ['Asunnot', 'Asuinhuone',
                                                       'Eteinen', 'WC', 'WC-pesuhuone'],
@@ -18,30 +19,37 @@ DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102', '114', '1
                                                           'Onko rakennuksessa WC?',
                                                           'Onko rakennuksessa WC-pesuhuone?'],
                                    'group_id': [None, None, None, '1', '1'],
-                                   'active': [True, True, True, True, True]})
+                                   'active': [True, True, True, True, True],
+                                   'attribute_tooltip':['Onko rakennuksessa asunnot?',
+                                                          'Onko rakennuksessa asuinhuone?',
+                                                          'Onko rakennuksessa eteinen?',
+                                                          'Onko rakennuksessa WC?',
+                                                          'Onko rakennuksessa WC-pesuhuone?']},)
 
 
 def load_attributes(attribute_file):
     '''Attempts to load attribute data from file into Pandas dataframe'''
+    print(attribute_file)
     df = pd.read_csv(attribute_file, dtype=str)
-
+    
+    print(df)
     # Check that the required fields are present
-    for required_field in ['attribute_id', 'attribute_name', 'attribute_question', 'group_id', 'active']:
+    for required_field in ['attribute_id', 'attribute_name', 'attribute_question', 'group_id', 'active','attribute_tooltip']:
         if required_field not in df:
             raise ValueError(
                 f"The attribute data ({attribute_file}) does not contain a '{required_field}' column!")
-
+    print("columns checked")
     # Check that there is at least one row of data
     if len(df.index) < 1:
         raise ValueError(
             f"The attribute data ({attribute_file}) does not contain any rows!")
-
+    print("rows checked")
     # Change active column type to boolean
     df.active = df.active.astype(bool)
 
     # Ensure columns are imported as strings
     df.columns = df.columns.astype(str)
-
+    print(df)
     return df
 
 
@@ -152,6 +160,7 @@ class BuildingData:
     def __init__(self, data_directory):
         '''Initializes a BuildingData object using the data files in data_directory'''
         # Construct full paths to data files given data_directory
+        print(data_directory)
         attribute_file = os.path.join(data_directory, 'attributes.csv')
         building_classes_file = os.path.join(
             data_directory, 'building_classes.csv')
@@ -161,7 +170,9 @@ class BuildingData:
 
         # Try to load the data
         try:
+            print("muuta")
             self._attributes = load_attributes(attribute_file)
+            print("jotain kivaa")
             self._building_classes = load_building_classes(
                 building_classes_file)
             self.observations = load_observations(observation_file)
@@ -171,7 +182,7 @@ class BuildingData:
         # default values
         except Exception as e:
             print(
-                f'Failed to read building data: {e.args[0]}', file=sys.stderr)
+                f'Failed to read building data: {e}', file=sys.stderr)
             print('Substituting placeholder data!', file=sys.stderr)
             self._attributes = DEFAULT_ATTRIBUTES
             self._building_classes = DEFAULT_BUILDING_CLASSES
@@ -185,11 +196,12 @@ class BuildingData:
                       'attribute_name': attr_name,
                       'attribute_question': attr_question,
                       'group_id': gr_id,
-                      'active': active}
-            for ind, (attr_id, attr_name, attr_question, gr_id, active) in self._attributes.iterrows()}
+                      'active': active,
+                      'arribute_tooltip':attribute_tooltip}
+            for ind, (attr_id, attr_name, attr_question, gr_id, active, attribute_tooltip) in self._attributes.iterrows()}
         self._attributes_names_dict = {
             attr_id: attr_name
-            for ind, (attr_id, attr_name, attr_question, gr_id, active) in self._attributes.iterrows()}
+            for ind, (attr_id, attr_name, attr_question, gr_id, active, attribute_tooltip) in self._attributes.iterrows()}
 
         # Pre-generate dictionary for accesing building class names by class_id
         self._building_classes_dict = {class_id: class_name for ind,
