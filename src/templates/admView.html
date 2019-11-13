@@ -18,6 +18,7 @@
                     <th>Active</th>
                     <th>Grouping id</th>
                     <th>Question string</th>
+                    <th>Tooltip info</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,6 +48,9 @@
                     </td>
                     <td>
                         {{ attr.attribute_question }}
+                    </td>
+                    <td>
+                        {{ attr.attribute_tooltip }}
                     </td>
                 </tr>
                 {% endfor %}

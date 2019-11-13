@@ -17,7 +17,8 @@ def answer():
         response = []
         for resp in content['response']:
             attribute_id.append(resp['attribute_id'])
-            if not isinstance(resp['response'], str): # FIXME: remove the lists in tests
+            # FIXME: remove the lists in tests
+            if not isinstance(resp['response'], str):
                 response.append(resp['response'][0])
             else:
                 response.append(resp['response'])
