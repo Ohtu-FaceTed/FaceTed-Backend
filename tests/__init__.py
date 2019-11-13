@@ -19,27 +19,32 @@ def init_test_db(app):
                                  attribute_name='Asunnot',
                                  attribute_question='Onko rakennuksessa asunnot?',
                                  grouping_id=None,
-                                 active=True))
+                                 active=True,
+                                 attribute_tooltip=''))
         db.session.add(Attribute(attribute_id='101',
                                  attribute_name='Asuinhuone',
                                  attribute_question='Onko rakennuksessa asuinhuone?',
                                  grouping_id=None,
-                                 active=True))
+                                 active=True,
+                                 attribute_tooltip=''))
         db.session.add(Attribute(attribute_id='102',
                                  attribute_name='Eteinen',
                                  attribute_question='Onko rakennuksessa eteinen?',
                                  grouping_id=None,
-                                 active=True))
+                                 active=True,
+                                 attribute_tooltip=''))
         db.session.add(Attribute(attribute_id='114',
                                  attribute_name='WC',
                                  attribute_question='Onko rakennuksessa WC?',
                                  grouping_id='1',
-                                 active=True))
+                                 active=True,
+                                 attribute_tooltip=''))
         db.session.add(Attribute(attribute_id='116',
                                  attribute_name='WC-pesuhuone',
                                  attribute_question='Onko rakennuksessa WC-pesuhuone?',
                                  grouping_id='1',
-                                 active=True))
+                                 active=True,
+                                 attribute_tooltip=''))
 
         # Initialize building_classes table
         db.session.add(BuildingClass(class_id='0110',

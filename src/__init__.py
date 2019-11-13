@@ -33,5 +33,5 @@ def create_app(config):
 from .naive_bayes_classifier import NaiveBayesClassifier
 from .building_data import BuildingData
 # Default objects. These should be overriden by the app
-building_data = BuildingData('data')
+building_data = BuildingData('')
 classifier = NaiveBayesClassifier(building_data.observations)
