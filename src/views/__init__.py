@@ -4,7 +4,7 @@ from flask import Blueprint
 views = Blueprint('views', __name__)
 
 default_language = 'fi'
-supported_languages = ['en', 'fi', 'se']
+supported_languages = ['en', 'fi', 'sv']
 
 
 def init_app(app):
