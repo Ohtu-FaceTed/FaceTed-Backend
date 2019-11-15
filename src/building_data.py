@@ -9,16 +9,22 @@ import pandas as pd
 #   attribute_question: question form of attribute (string)
 #   group_id: identifier of attribute group to which attribute belongs to (string)
 #   active: indicates if the attribute should be used (boolean)
+#   attribute_tooltip: tooltip on mouse over for given attribute (string)
 DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102', '114', '116'],
                                    'attribute_name': ['Asunnot', 'Asuinhuone',
                                                       'Eteinen', 'WC', 'WC-pesuhuone'],
-                                   'attribute_question': ['Onko rakennuksessa asunnot?',
-                                                          'Onko rakennuksessa asuinhuone?',
-                                                          'Onko rakennuksessa eteinen?',
-                                                          'Onko rakennuksessa WC?',
-                                                          'Onko rakennuksessa WC-pesuhuone?'],
+                                   'attribute_question': ['{"fi":"Onko rakennuksessa asunnot?", "sv":"[Svenska]Onko rakennuksessa asunnot?", "en":"[English]Onko rakennuksessa asunnot?"}',
+                                                          '{"fi":"Onko rakennuksessa asuinhuone?", "sv":"[Svenska]Onko rakennuksessa asuinhuone?", "en":"[English]Onko rakennuksessa asuinhuone?"}',
+                                                          '{"fi":"Onko rakennuksessa eteinen?", "sv":"[Svenska]Onko rakennuksessa eteinen?", "en":"[English]Onko rakennuksessa eteinen?"}',
+                                                          '{"fi":"Onko rakennuksessa wc?", "sv":"[Svenska]Onko rakennuksessa wc?", "en":"[English]Onko rakennuksessa wc?"}',
+                                                          '{"fi":"Onko rakennuksessa wc-pesuhuone?", "sv":"[Svenska]Onko rakennuksessa wc-pesuhuone?", "en":"[English]Onko rakennuksessa wc-pesuhuone?"}'],
                                    'group_id': [None, None, None, '1', '1'],
-                                   'active': [True, True, True, True, True]})
+                                   'active': [True, True, True, True, True],
+                                   'attribute_tooltip': ['Onko rakennuksessa asunnot?',
+                                                         'Onko rakennuksessa asuinhuone?',
+                                                         'Onko rakennuksessa eteinen?',
+                                                         'Onko rakennuksessa WC?',
+                                                         'Onko rakennuksessa WC-pesuhuone?']},)
 
 
 def load_attributes(attribute_file):
@@ -26,22 +32,19 @@ def load_attributes(attribute_file):
     df = pd.read_csv(attribute_file, dtype=str)
 
     # Check that the required fields are present
-    for required_field in ['attribute_id', 'attribute_name', 'attribute_question', 'group_id', 'active']:
+    for required_field in ['attribute_id', 'attribute_name', 'attribute_question', 'group_id', 'active', 'attribute_tooltip']:
         if required_field not in df:
             raise ValueError(
                 f"The attribute data ({attribute_file}) does not contain a '{required_field}' column!")
-
     # Check that there is at least one row of data
     if len(df.index) < 1:
         raise ValueError(
             f"The attribute data ({attribute_file}) does not contain any rows!")
-
     # Change active column type to boolean
     df.active = df.active.astype(bool)
 
     # Ensure columns are imported as strings
     df.columns = df.columns.astype(str)
-
     return df
 
 
@@ -171,7 +174,7 @@ class BuildingData:
         # default values
         except Exception as e:
             print(
-                f'Failed to read building data: {e.args[0]}', file=sys.stderr)
+                f'Failed to read building data: {e}', file=sys.stderr)
             print('Substituting placeholder data!', file=sys.stderr)
             self._attributes = DEFAULT_ATTRIBUTES
             self._building_classes = DEFAULT_BUILDING_CLASSES
@@ -185,11 +188,12 @@ class BuildingData:
                       'attribute_name': attr_name,
                       'attribute_question': attr_question,
                       'group_id': gr_id,
-                      'active': active}
-            for ind, (attr_id, attr_name, attr_question, gr_id, active) in self._attributes.iterrows()}
+                      'active': active,
+                      'arribute_tooltip': attribute_tooltip}
+            for ind, (attr_id, attr_name, attr_question, gr_id, active, attribute_tooltip) in self._attributes.iterrows()}
         self._attributes_names_dict = {
             attr_id: attr_name
-            for ind, (attr_id, attr_name, attr_question, gr_id, active) in self._attributes.iterrows()}
+            for ind, (attr_id, attr_name, attr_question, gr_id, active, attribute_tooltip) in self._attributes.iterrows()}
 
         # Pre-generate dictionary for accesing building class names by class_id
         self._building_classes_dict = {class_id: class_name for ind,

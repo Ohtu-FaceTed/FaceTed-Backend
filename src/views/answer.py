@@ -1,10 +1,12 @@
 import src
+import json
 
 from src.question_selection import next_question
 from src.sessionManagement import users, generate_id
 
 from flask import request, jsonify, session
 from . import views as app
+from . import select_question_by_language, get_best_match_language
 from ..models import db, Answer, AnswerQuestion, Attribute, Session
 
 
@@ -12,12 +14,17 @@ from ..models import db, Answer, AnswerQuestion, Attribute, Session
 def answer():
     try:
         content = request.get_json()
-        # language = content['language'] FIXME: To be implemented
+        language = content['language']
+
+        browser_languages = request.accept_languages
+        best_match_language = get_best_match_language(browser_languages)
+
         attribute_id = []
         response = []
         for resp in content['response']:
             attribute_id.append(resp['attribute_id'])
-            if not isinstance(resp['response'], str): # FIXME: remove the lists in tests
+            # FIXME: remove the lists in tests
+            if not isinstance(resp['response'], str):
                 response.append(resp['response'][0])
             else:
                 response.append(resp['response'])
@@ -60,9 +67,6 @@ def answer():
                     session_ident=session['user']).first()
                 db.session.add(AnswerQuestion(
                     db_attribute, db_answer, db_session))
-                #print('answer(), db_answer:', db_answer)
-                #print('answer(), db_attribute:', db_attribute)
-                #assert 1==0
                 db.session.commit()
             except AttributeError as e:
                 print(
@@ -92,13 +96,20 @@ def answer():
             user['type'].append('multi')
             user['multi_attributes'].append(question['attributes'])
             for attribute in question['attributes']:
+                attribute['attribute_name'] = select_question_by_language(
+                    attribute['attribute_name'], best_match_language)
                 user['total_attributes'].append(attribute['attribute_id'])
         else:
             user['type'].append('simple')
             user['attribute_ids'].append(question['attribute_id'])
             user['total_attributes'].append(question['attribute_id'])
             user['attributes'].append(question['attribute_name'])
-        user['question_strings'].append(question['attribute_question'])
+
+        lang_parsed_question = select_question_by_language(
+            question['attribute_question'], best_match_language)
+
+        question['attribute_question'] = lang_parsed_question
+        user['question_strings'].append(lang_parsed_question)
 
         user['answers'].append(response)
 
