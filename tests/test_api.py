@@ -291,9 +291,10 @@ def test_returned_building_classes_are_based_on_prior_probabilities(backend):
             json = response.get_json()
             building_classes = json['building_classes']
             for _, (class_id, score) in posterior.iterrows():
-                new_building_classes.append({'class_id': class_id,
-                                             'class_name': src.building_data.building_class_name[class_id],
-                                             'score': score})
+                if class_id in src.building_data.building_class_name:
+                    new_building_classes.append({'class_id': class_id,
+                                                 'class_name': src.building_data.building_class_name[class_id],
+                                                 'score': score})
             assert building_classes == new_building_classes
 
 
@@ -365,6 +366,7 @@ def test_post_answer_adds_answer_to_database(backend):
     with backend:
         response = backend.get('/question')
         sessions = Session.query.all()
+        print('response:', response.get_json())
 
         attribute_id = response.get_json()['attribute_id']
 
