@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import pytest
 from src.naive_bayes_classifier import *
-from src.building_data import DEFAULT_OBSERVATIONS
 
 
 @pytest.fixture
