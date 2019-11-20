@@ -24,7 +24,7 @@ def create_app(config):
 
     from . import models
     models.init_app(app)
-        
+
     login_manager = LoginManager()
     login_manager.init_app(app)
 
@@ -47,5 +47,3 @@ from .building_data import BuildingData
 # Default objects. These should be overriden by the app
 building_data = BuildingData('')
 classifier = NaiveBayesClassifier(building_data.observations)
-
-

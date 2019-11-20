@@ -3,6 +3,7 @@ from ..models import db, Answer, AnswerQuestion, Attribute, Session
 from flask import redirect, render_template, request, url_for, jsonify
 from flask_login import login_required
 
+
 @app.route("/801fc3", methods=["GET"])
 @login_required
 def admin_view():

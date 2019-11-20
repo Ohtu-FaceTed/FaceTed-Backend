@@ -13,6 +13,7 @@ from .session import Session
 from .question_grouper import QuestionGroup
 from .admin import Admin
 
+
 def init_app(app):
     '''Initializes the database using the provided app'''
     db.init_app(app)
