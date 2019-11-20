@@ -89,10 +89,11 @@ def answer():
 
         question['attribute_question'] = lang_parsed_question
 
-        # Save response
-        user['server_responses'].append({
+        json = {
             'new_question': question,
             'building_classes': new_building_classes
-        })
-
-        return jsonify(user['server_responses'][-1])
+        }
+        # Save response
+        user['server_responses'].append(json)
+        json['success'] = True
+        return jsonify(json)
