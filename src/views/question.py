@@ -18,28 +18,33 @@ def question():
 
     ident = generate_id()
     session['user'] = ident
-    users[ident] = {'type': [], 'probabilities': [], 'answers': [],
-                    'attribute_ids': [], 'attributes': [], 'multi_attributes': [], 'question_strings': [],
-                    'total_attributes': []}
+    users[ident] = {'probabilities': [], 'attributes': []}
     # Add the session to the database
     db.session.add(Session(ident))
     db.session.commit()
     question = next_question(None, [])
+
     if question['type'] == 'multi':
-        users[ident]['type'].append('multi')
-        users[ident]['multi_attributes'].append(question['attributes'])
         for attribute in question['attributes']:
-            users[ident]['total_attributes'].append(attribute['attribute_id'])
+            users[ident]['attributes'].append(attribute['attribute_id'])
+    
     else:
-        users[ident]['type'].append('simple')
-        users[ident]['attribute_ids'].append(question['attribute_id'])
-        users[ident]['total_attributes'].append(question['attribute_id'])
-        users[ident]['attributes'].append(question['attribute_name'])
+        users[ident]['attributes'].append(question['attribute_id'])
+
+    #    users[ident]['type'].append('multi')
+    #    users[ident]['multi_attributes'].append(question['attributes'])
+    #    for attribute in question['attributes']:
+    #        users[ident]['total_attributes'].append(attribute['attribute_id'])
+    #else:
+    #    users[ident]['type'].append('simple')
+    #    users[ident]['attribute_ids'].append(question['attribute_id'])
+    #    users[ident]['total_attributes'].append(question['attribute_id'])
+    #    users[ident]['attributes'].append(question['attribute_name'])
 
     questions = json.loads(question['attribute_question'])
     lang_parsed_question = select_question_by_language(
         question['attribute_question'], best_match_language)
     question['attribute_question'] = lang_parsed_question
-    users[ident]['question_strings'].append(lang_parsed_question)
+    #users[ident]['question_strings'].append(lang_parsed_question)
 
     return jsonify(question)
