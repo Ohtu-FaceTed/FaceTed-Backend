@@ -8,7 +8,7 @@ from src.sessionManagement import users, generate_id
 from flask import request, jsonify, session
 from . import views as app
 from . import select_question_by_language, get_best_match_language
-from ..models import db, Answer, AnswerQuestion, Attribute, Session
+from ..models import db, Session
 
 
 @app.route('/answer', methods=['POST'])
