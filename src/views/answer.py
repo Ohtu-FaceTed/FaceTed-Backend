@@ -73,11 +73,11 @@ def answer():
                     'It seems one or more of attribute, answer or session have not been populated correctly:', e.args[0])
                 db.session.rollback()
         """
-        user[user_responses].append(zip(attribute_id, response))
+        user['user_responses'].append(zip(attribute_id, response))
 
         # selects the previous probabilities as prior for calculating posterior
         if len(user['server_responses']) > 0:
-            prior = user['server_responses'].building_classes.drop(columns=['class_id'])
+            prior = user['server_responses'][-1]['building_classes'].drop(columns=['class_id'])
         #if len(user['probabilities']) > 0:
         #    prior = user['probabilities'][-1]
 
