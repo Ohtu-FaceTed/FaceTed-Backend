@@ -24,28 +24,10 @@ def question():
     db.session.commit()
     question = next_question(None, [])
 
-    #if question['type'] == 'multi':
-    #    for attribute in question['attributes']:
-    #        users[ident]['attributes'].append(attribute['attribute_id'])
-    
-    #else:
-    #    users[ident]['attributes'].append(question['attribute_id'])
-
-    #    users[ident]['type'].append('multi')
-    #    users[ident]['multi_attributes'].append(question['attributes'])
-    #    for attribute in question['attributes']:
-    #        users[ident]['total_attributes'].append(attribute['attribute_id'])
-    #else:
-    #    users[ident]['type'].append('simple')
-    #    users[ident]['attribute_ids'].append(question['attribute_id'])
-    #    users[ident]['total_attributes'].append(question['attribute_id'])
-    #    users[ident]['attributes'].append(question['attribute_name'])
-
     questions = json.loads(question['attribute_question'])
     lang_parsed_question = select_question_by_language(
         question['attribute_question'], best_match_language)
     question['attribute_question'] = lang_parsed_question
-    #users[ident]['question_strings'].append(lang_parsed_question)
     users[ident]['server_responses'].append(question)
 
     return jsonify(question)

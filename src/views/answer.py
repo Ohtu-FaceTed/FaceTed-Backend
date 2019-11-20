@@ -78,7 +78,7 @@ def answer():
             for one in resp:
                 asked_attributes.append(one[0])
         question = next_question(prior, asked_attributes)
-
+        print(question)
         if question['type'] == 'multi':
             for attribute in question['attributes']:
                 attribute['attribute_name'] = select_question_by_language(

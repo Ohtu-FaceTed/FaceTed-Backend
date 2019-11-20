@@ -32,42 +32,57 @@ def backend():
 @pytest.fixture
 def responses(backend):
 
-    responses = {'server_responses': [], 'user_responses': []}
-    question_type = None
-    attribute_id = None
+    responses = {'id': '', 'server_responses': [], 'user_responses': []}
+    question_type = ''
 
     with backend:
         response = backend.get('/question')
         json = response.get_json()
+        responses['id'] = session['user']
         question_type = json['type']
         responses['server_responses'].append(json)
-        if question_type == 'simple':
-            attribute_id = json['attribute_id']
-        elif question_type == 'multi': 
-            attribute_id = json['attributes']
 
-        for x in range(3):  
+        for x in range(2):  
+
             answer = []
+            attribute_id = []
 
             if question_type == 'simple':
-                if x > 0:
-                    attribute_id = responses['server_responses'][-1]['new_question']['attribute_id']
-                answer = ['yes']
+                attribute = ''
+                resp = responses['server_responses'][-1]
+                if x == 0:
+                    attribute = resp['attribute_id']
+                elif x > 0:
+                    attribute = resp['new_question']['attribute_id']
+                answer.append('yes')
+                attribute_id.append(attribute)
                 response = backend.post(
-                    '/answer', json={'language': 'fi', 'response': [{'attribute_id': attribute_id, 'response': answer}]}
+                    '/answer', json={'language': 'fi', 'response': [{'attribute_id': attribute, 'response': 'yes'}]}
                 )
                 
-            elif question_type == 'multi':               
+            elif question_type == 'multi': 
+                attributes = []
                 multi_answer = []
-                for attribute in responses['server_responses'][-1]['new_question']['attributes']:
-                    res = {'attribute_id': attribute['attribute_id'], 'response': ['no']}
+                if x == 0:
+                    attributes = responses['server_responses'][-1]['attributes']
+                elif x > 0:
+                    attributes = responses['server_responses'][-1]['new_question']['attributes']
+                
+                for attribute in attributes:
+                    res = {'attribute_id': attribute['attribute_id'], 'response': 'no'}
+                    attribute_id.append(attribute['attribute_id'])
                     multi_answer.append(res)
                     answer.append('no')
                 response = backend.post(
                     '/answer', json={'language': 'fi', 'response': multi_answer}   
                 )     
             json = response.get_json()
-            responses['server_responses'].append(json)
+            new = {
+                'new_question': json['new_question'],
+                'building_classes': json['building_classes']
+            }
+            responses['server_responses'].append(new)
+            responses['user_responses'].append(list(zip(attribute_id, answer)))
             question_type = json['new_question']['type']
 
     return responses
@@ -189,36 +204,36 @@ def test_if_user_in_session_user_data_is_created_after_first_question(backend):
             assert session['user'] in users
 
 
-def test_same_questions_not_repeated_during_session(next_questions):
-    questions = next_questions['question_strings']
-    attributes = next_questions['total_attributes']
-    unique_questions = list(set(questions))
-    unique_attributes = list(set(attributes))
-    assert len(unique_questions) == len(questions)
-    assert len(unique_attributes) == len(attributes)
+def test_same_questions_not_repeated_during_session(responses):
+    total_attributes = []
+    for response in responses['user_responses']:
+        for pair in response:
+            total_attributes.append(pair[0])
+    unique_attributes = list(set(total_attributes))
+    assert len(unique_attributes) == len(total_attributes)
 
 
-def test_prior_questions_are_saved_during_session(next_questions):
-    user = users[next_questions['id']]
-    assert user['total_attributes'] == next_questions['total_attributes']
+def test_prior_server_responses_are_saved_during_session(responses):
+    user = users[responses['id']]
+    assert len(user['server_responses']) == len(responses['server_responses'])
 
 
-def test_prior_question_strings_are_saved_during_session(next_questions):
-    user = users[next_questions['id']]
-    assert user['question_strings'] == next_questions['question_strings']
+def test_user_responses_are_saved_during_session(responses):
+    user = users[responses['id']]
+    assert user['user_responses'] == responses['user_responses']
 
 
-def test_users_answers_are_saved_during_session(next_questions):
-    user = users[next_questions['id']]
-    assert user['answers'] == [x[0]
-                               for x in next_questions['answers']]  # FIXME
-
-
-def test_prior_probabilities_are_saved_during_session(next_questions):
-    user = users[next_questions['id']]
-    prob = user['probabilities']
-    comp = next_questions['probabilities']
-    assert len(prob) == len(comp)
+def test_building_clases_are_saved_during_session(responses):
+    user = users[responses['id']]
+    user_classes = []
+    test_classes = []
+    for response in user['server_responses']:
+        if 'building_classes' in response:
+            user_classes.append(response['building_classes'])
+    for response in responses['server_responses']:
+        if 'building_classes' in response:
+            test_classes.append(response['building_classes'])
+    assert len(user_classes) == len(test_classes)
 
 
 def test_returned_building_classes_are_based_on_prior_probabilities(backend):
@@ -253,25 +268,25 @@ def test_returned_building_classes_are_based_on_prior_probabilities(backend):
             assert building_classes == new_building_classes
 
 
-def test_requesting_previous_question_returns_correct_question(next_questions, backend):
-    previous_question_string = next_questions['question_strings'][-2]
-    previous_type = next_questions['type'][-2]
-    previous_attribute = ''
-    previous_question = ''
-    if previous_type == 'simple':
-        previous_attribute = next_questions['attributes'][-2]
-        previous_question = next_questions['questions'][-2]
+def test_requesting_previous_question_returns_correct_question(responses, backend):
+    previous_question = responses['server_responses'][-2]['new_question']
+    previous_attribute = None
+    attribute_name = ''
+    previous_question_string = previous_question['attribute_question']
+    if previous_question['type'] == 'simple':
+        previous_attribute = previous_question['attribute_id']
+        attribute_name = previous_question['attribute_name']
     else:
-        previous_attribute = next_questions['multi_attributes'][-2]
+        previous_attribute = previous_question['attributes']
     with backend:
         response = backend.get('/previous')
         json = response.get_json()
         if json['new_question']['type'] == 'simple':
-            question = json['new_question']['attribute_name']
-            attribute = json['new_question']['attribute_id']
+            attribute = json['new_question']['attribute_name']
+            attribute_id = json['new_question']['attribute_id']
             question_string = json['new_question']['attribute_question']
-            assert question == previous_question
-            assert attribute == previous_attribute
+            assert attribute == attribute_name
+            assert attribute_id == previous_attribute
             assert question_string == previous_question_string
         else:
             attribute = json['new_question']['attributes']
@@ -291,6 +306,15 @@ def test_if_user_returs_to_first_question_no_building_classes_are_sent(backend):
             json = previous.get_json()
             assert 'building_classes' not in json
             assert json['attribute_name'] == question
+
+
+def test_if_user_presses_return_during_first_question_same_question_is_returned(backend):
+    with backend:
+        response = backend.get('/question')
+        response_json = response.get_json()
+        previous = backend.get('/previous')
+        previous_json = previous.get_json()
+        assert response_json == previous_json
 
 
 def test_if_user_in_session_user_data_is_created_when_asking_previous_question(backend):
@@ -317,7 +341,7 @@ def test_get_question_adds_session_to_database(backend):
         assert sessions_new[-1].session_ident == session['user']
 
 
-def test_post_answer_adds_answer_to_database(backend):
+def test_post_feedback_adds_answers_to_database(backend):
     with backend:
         response = backend.get('/question')
         sessions = Session.query.all()
@@ -327,6 +351,11 @@ def test_post_answer_adds_answer_to_database(backend):
         answer_question_old = AnswerQuestion.query.all()
         backend.post(
             '/answer', json={"language": "fi", "response": [{'attribute_id': attribute_id, 'response': ['yes']}]})
+
+        backend.post('/feedback', json={
+            'class_id': '0110'
+        })
+
         answer_question_new = AnswerQuestion.query.all()
 
         assert len(answer_question_new) == len(answer_question_old) + 1
