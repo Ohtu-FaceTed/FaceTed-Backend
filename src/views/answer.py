@@ -1,5 +1,6 @@
 import src
 import json
+import numpy as np
 
 from src.question_selection import next_question
 from src.sessionManagement import users, generate_id
@@ -73,11 +74,15 @@ def answer():
                     'It seems one or more of attribute, answer or session have not been populated correctly:', e.args[0])
                 db.session.rollback()
         """
-        user['user_responses'].append(zip(attribute_id, response))
+        user['user_responses'].append(list(zip(attribute_id, response)))
 
         # selects the previous probabilities as prior for calculating posterior
-        if len(user['server_responses']) > 0:
-            prior = user['server_responses'][-1]['building_classes'].drop(columns=['class_id'])
+        if len(user['server_responses']) > 1:
+            prior = []
+            building_classes = user['server_responses'][-1]['building_classes']
+            for one in building_classes:
+                prior.append(one['score'])
+            print('prior', prior)
         #if len(user['probabilities']) > 0:
         #    prior = user['probabilities'][-1]
 
@@ -93,8 +98,10 @@ def answer():
 
         # Saves current state
         #user['probabilities'].append(probabilities)
-        question = next_question(
-            user['probabilities'][-1], user['total_attributes'])
+        asked_attributes = []
+        for one in user['user_responses']:
+            asked_attributes.extend(one[0])
+        question = next_question(prior, asked_attributes)
 
         if question['type'] == 'multi':
             #user['type'].append('multi')
@@ -119,10 +126,10 @@ def answer():
 
         #user['answers'].append(response)
 
-        user['server_responses'] = {
+        user['server_responses'].append({
             'new_question': question,
             'building_classes': new_building_classes
-        }
+        })
 
         return jsonify({'success': True,
                         'new_question': question,
