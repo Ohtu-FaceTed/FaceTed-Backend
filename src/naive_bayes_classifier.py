@@ -31,7 +31,6 @@ class NaiveBayesClassifier:
         # Assume uniform prior if none is provided
         if prior_probability is None:
             prior_probability = np.ones(self.observations.shape[0])
-        print('prior', prior_probability)
 
         # Extract the likelihood from the conditional probability table
         for (val, attr) in zip(value, attribute):

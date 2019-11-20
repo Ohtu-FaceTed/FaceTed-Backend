@@ -79,10 +79,9 @@ def answer():
         # selects the previous probabilities as prior for calculating posterior
         if len(user['server_responses']) > 1:
             prior = []
-            building_classes = user['server_responses'][-1]['building_classes']
-            for one in building_classes:
+            for one in user['server_responses'][-1]['building_classes']:
                 prior.append(one['score'])
-            print('prior', prior)
+            prior = np.array(prior)
         #if len(user['probabilities']) > 0:
         #    prior = user['probabilities'][-1]
 
