@@ -18,18 +18,18 @@ def question():
 
     ident = generate_id()
     session['user'] = ident
-    users[ident] = {'probabilities': [], 'attributes': []}
+    users[ident] = {'server_responses': [], 'user_responses': []}
     # Add the session to the database
     db.session.add(Session(ident))
     db.session.commit()
     question = next_question(None, [])
 
-    if question['type'] == 'multi':
-        for attribute in question['attributes']:
-            users[ident]['attributes'].append(attribute['attribute_id'])
+    #if question['type'] == 'multi':
+    #    for attribute in question['attributes']:
+    #        users[ident]['attributes'].append(attribute['attribute_id'])
     
-    else:
-        users[ident]['attributes'].append(question['attribute_id'])
+    #else:
+    #    users[ident]['attributes'].append(question['attribute_id'])
 
     #    users[ident]['type'].append('multi')
     #    users[ident]['multi_attributes'].append(question['attributes'])
@@ -46,5 +46,6 @@ def question():
         question['attribute_question'], best_match_language)
     question['attribute_question'] = lang_parsed_question
     #users[ident]['question_strings'].append(lang_parsed_question)
+    users[ident]['server_responses'].append(question)
 
     return jsonify(question)
