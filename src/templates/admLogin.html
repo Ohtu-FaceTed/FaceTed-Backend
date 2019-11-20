@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <h5 class="card-title text-center">Sign In</h5>
                     <div style="color:red">{{ error }}</div>
-                    <form class="form-signin center" method="POST" action="{{ url_for('views.admin_login') }}">
+                    <form class="form-signin center" method="POST" action="{{ url_for('views.auth_login') }}">
                         
                         <div class="form-label-group">
                             <input type="text" id="username" name="username" class="form-control" placeholder="Username"
