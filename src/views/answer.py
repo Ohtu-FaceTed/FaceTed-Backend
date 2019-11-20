@@ -45,9 +45,7 @@ def answer():
         if 'user' not in session or session['user'] not in users:
             ident = generate_id()
             session['user'] = ident
-            users[ident] = {'type': [], 'probabilities': [], 'answers': [],
-                            'attribute_ids': [], 'attributes': [], 'multi_attributes': [], 'question_strings': [],
-                            'total_attributes': []}
+            users[ident] = {'user_responses': [], 'server_responses': []}
             # Add the session to the database
             db.session.add(Session(ident))
             db.session.commit()
@@ -58,6 +56,8 @@ def answer():
         # Add the response to the database. First find the appropriate rows
         # from attribute, answer, and session tables, then create the new
         # AnswerQuestion
+        
+        """
         for (attribute, resp) in zip(attribute_id, response):
             try:
                 db_attribute = Attribute.query.filter_by(
@@ -72,14 +72,18 @@ def answer():
                 print(
                     'It seems one or more of attribute, answer or session have not been populated correctly:', e.args[0])
                 db.session.rollback()
+        """
+        user[user_responses].append(zip(attribute_id, response))
 
         # selects the previous probabilities as prior for calculating posterior
-        if len(user['probabilities']) > 0:
-            prior = user['probabilities'][-1]
+        if len(user['server_responses']) > 0:
+            prior = user['server_responses'].building_classes.drop(columns=['class_id'])
+        #if len(user['probabilities']) > 0:
+        #    prior = user['probabilities'][-1]
 
         posterior = src.classifier.calculate_posterior(
             attribute_id, response, prior)
-        probabilities = posterior['posterior']
+        #probabilities = posterior['posterior']
         new_building_classes = []
 
         for _, (class_id, score) in posterior.iterrows():
@@ -88,30 +92,37 @@ def answer():
                                          'score': score})
 
         # Saves current state
-        user['probabilities'].append(probabilities)
+        #user['probabilities'].append(probabilities)
         question = next_question(
             user['probabilities'][-1], user['total_attributes'])
 
         if question['type'] == 'multi':
-            user['type'].append('multi')
-            user['multi_attributes'].append(question['attributes'])
+            #user['type'].append('multi')
+            #user['multi_attributes'].append(question['attributes'])
             for attribute in question['attributes']:
                 attribute['attribute_name'] = select_question_by_language(
                     attribute['attribute_name'], best_match_language)
-                user['total_attributes'].append(attribute['attribute_id'])
+                #user['total_attributes'].append(attribute['attribute_id'])
+        """        
         else:
             user['type'].append('simple')
             user['attribute_ids'].append(question['attribute_id'])
             user['total_attributes'].append(question['attribute_id'])
             user['attributes'].append(question['attribute_name'])
+        """
 
         lang_parsed_question = select_question_by_language(
             question['attribute_question'], best_match_language)
 
         question['attribute_question'] = lang_parsed_question
-        user['question_strings'].append(lang_parsed_question)
+        #user['question_strings'].append(lang_parsed_question)
 
-        user['answers'].append(response)
+        #user['answers'].append(response)
+
+        user['server_responses'] = {
+            'new_question': question,
+            'building_classes': new_building_classes
+        }
 
         return jsonify({'success': True,
                         'new_question': question,

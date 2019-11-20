@@ -21,6 +21,29 @@ def feedback():
                         'message': 'Please supply "language", "class_id", "class_name" and "response" in query'})
     else:
         if 'user' in session:
+            user = users[session['user']]
+            # Add the responses to the database. First find the appropriate rows
+            # from attribute, answer, and session tables, then create the new
+            # AnswerQuestion
+            
+            responses = []
+            for one in user['user_responses']:
+                responses.extend(one)
+            for (attribute, resp) in responses:
+                try:
+                    db_attribute = Attribute.query.filter_by(
+                        attribute_id=attribute).first()
+                    db_answer = Answer.query.filter_by(value=resp).first()
+                    db_session = Session.query.filter_by(
+                        session_ident=session['user']).first()
+                    db.session.add(AnswerQuestion(
+                        db_attribute, db_answer, db_session))
+                    db.session.commit()
+                except AttributeError as e:
+                    print(
+                        'It seems one or more of attribute, answer or session have not been populated correctly:', e.args[0])
+                    db.session.rollback()
+
             # save selected building class to database
             sess = Session.query.filter_by(
                 session_ident=session['user']).first()
