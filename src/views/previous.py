@@ -47,12 +47,10 @@ def previous():
     if len(user['server_responses']) == 0:
         question = next_question(None, [])
         users[ident]['server_responses'].append(question)
-        
         return jsonify(question)
 
     if len(user['server_responses']) == 1:
         question = user['server_responses'][-1]
-
         return jsonify(question)
 
     # if user returns to the first question, only the question is returned
@@ -61,14 +59,12 @@ def previous():
         user['user_responses'].pop()
 
         question = user['server_responses'][-1]
-
         return jsonify(question)
   
-    if len(user['server_responses']) == 2 and len(user['user_responses']) == 1:
+    if len(user['server_responses']) > 2 and len(user['user_responses']) > 1:
         user['server_responses'].pop()
         user['user_responses'].pop()
 
         question = user['server_responses'][-1]
         question['success'] = True
-
         return jsonify(question)

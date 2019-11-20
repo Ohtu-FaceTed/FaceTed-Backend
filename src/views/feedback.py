@@ -2,7 +2,7 @@ from flask import request, jsonify, session
 
 from . import views as app
 from src.sessionManagement import users
-from src.models import db, BuildingClass, Session
+from src.models import db, Answer, AnswerQuestion, Attribute, BuildingClass, Session
 
 
 @app.route('/feedback', methods=['POST'])
