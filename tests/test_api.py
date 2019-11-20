@@ -30,90 +30,46 @@ def backend():
 
 
 @pytest.fixture
-def first_question(backend):
-    responses = {'id': '', 'type': [], 'probabilities': [], 'multi_attributes': [],
-                 'answers': [], 'questions': [], 'question_strings': [], 'attributes': [], 'total_attributes': []}
-    attribute_id = []
+def responses(backend):
+
+    responses = {'server_responses': [], 'user_responses': []}
+    question_type = None
+    attribute_id = None
 
     with backend:
         response = backend.get('/question')
         json = response.get_json()
-        responses['id'] = session['user']
         question_type = json['type']
-
+        responses['server_responses'].append(json)
         if question_type == 'simple':
-            attribute_id.append(json['attribute_id'])
-            responses['questions'].append(json['attribute_name'])
-            responses['total_attributes'].append(json['attribute_id'])
-            responses['type'].append(question_type)
-        else:
-            responses['multi_attributes'].append(json['attributes'])
-            for attribute in json['attributes']:
-                attribute_id.append(attribute['attribute_id'])
-                responses['total_attributes'].append(attribute['attribute_id'])
+            attribute_id = json['attribute_id']
+        elif question_type == 'multi': 
+            attribute_id = json['attributes']
 
-        responses['question_strings'].append(
-            json['attribute_question'])
+        for x in range(3):  
+            answer = []
 
-    return responses, attribute_id
-
-
-@pytest.fixture
-def next_questions(backend, first_question):
-    responses = first_question[0]
-    attribute_id = first_question[1]
-    question_type = responses['type']
-
-    for x in range(2):
-        answer = []
-        response = None
-
-        with backend:
             if question_type == 'simple':
+                if x > 0:
+                    attribute_id = responses['server_responses'][-1]['new_question']['attribute_id']
                 answer = ['yes']
                 response = backend.post(
                     '/answer', json={'language': 'fi', 'response': [{'attribute_id': attribute_id, 'response': answer}]}
                 )
-            else:
+                
+            elif question_type == 'multi':               
                 multi_answer = []
-                for attribute in attribute_id:
-                    res = {'attribute_id': attribute, 'response': ['no']}
+                for attribute in responses['server_responses'][-1]['new_question']['attributes']:
+                    res = {'attribute_id': attribute['attribute_id'], 'response': ['no']}
                     multi_answer.append(res)
                     answer.append('no')
                 response = backend.post(
-                    '/answer', json={'language': 'fi', 'response': multi_answer}
-                )
-
+                    '/answer', json={'language': 'fi', 'response': multi_answer}   
+                )     
             json = response.get_json()
-            if json['new_question']['type'] == 'simple':
-                question_type = 'simple'
-                attribute_id = json['new_question']['attribute_id']
-                responses['attributes'].append(attribute_id)
-                responses['total_attributes'].append(attribute_id)
-                responses['questions'].append(
-                    json['new_question']['attribute_name'])
-                responses['type'].append(json['new_question']['type'])
-            else:
-                question_type = 'multi'
-                multi_id = []
-                for attribute in json['new_question']['attributes']:
-                    multi_id.append(attribute['attribute_id'])
-                    attribute_id = multi_id
-                    responses['multi_attributes'].append(
-                        json['new_question']['attributes'])
-                    responses['total_attributes'].append(
-                        attribute['attribute_id'])
+            responses['server_responses'].append(json)
+            question_type = json['new_question']['type']
 
-            responses['question_strings'].append(
-                json['new_question']['attribute_question'])
-            prior = None
-            if len(responses['probabilities']) > 0:
-                prior = responses['probabilities'][-1]
-            posterior = src.classifier.calculate_posterior(
-                attribute_id, answer, prior)
-            new = posterior['posterior']
-            responses['probabilities'].append(new)
-            responses['answers'].append([answer])
     return responses
 
 
