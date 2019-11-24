@@ -42,3 +42,21 @@ def select_question_by_language(questionJson, language):
     else:
         print('language not defined')
         return question[default_language]
+
+
+def fix_question_language(question, language):
+    if question['type'] == 'multi':
+        question['attribute_question'] = select_question_by_language(
+            question['attribute_question'], language)
+        for attribute in question['attributes']:
+            attribute['attribute_name'] = select_question_by_language(
+                attribute['attribute_name'], language)
+            attribute['attribute_tooltip'] = select_question_by_language(
+                attribute['attribute_tooltip'], language)
+    else:
+        question['attribute_name'] = select_question_by_language(
+            question['attribute_name'], language)
+        question['attribute_question'] = select_question_by_language(
+            question['attribute_question'], language)
+        question['attribute_tooltip'] = select_question_by_language(
+            question['attribute_tooltip'], language)
