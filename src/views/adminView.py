@@ -5,10 +5,14 @@ from flask_login import login_required
 
 
 @app.route("/801fc3", methods=["GET"])
-@login_required
+#@login_required
 def admin_view():
     return render_template("admView.html", attributes=Attribute.query.all())
 
+@app.route("/801fc3r", methods=["GET"])
+#@login_required
+def results_view():
+    return render_template("resultsview.html", sessions=Session.query.all())
 
 @app.route("/de95b/<attribute_id>", methods=["POST"])
 @login_required
