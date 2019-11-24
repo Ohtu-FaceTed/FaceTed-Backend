@@ -9,8 +9,7 @@ from ..models import db, Session
 
 @app.route('/question', methods=['GET'])
 def question():
-    browser_languages = request.accept_languages
-    best_match_language = get_best_match_language(browser_languages)
+    best_match_language = get_best_match_language(request)
 
     # remove users previous state
     if 'user' in session:
