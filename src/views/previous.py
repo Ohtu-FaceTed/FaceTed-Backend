@@ -29,8 +29,7 @@ def previous():
     attribute_id = []
     response = []
 
-    browser_languages = request.accept_languages
-    best_match_language = get_best_match_language(browser_languages)
+    best_match_language = get_best_match_language(request)
 
     if 'user' in session:
         # access users session data
