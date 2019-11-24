@@ -189,7 +189,7 @@ class BuildingData:
                       'attribute_question': attr_question,
                       'group_id': gr_id,
                       'active': active,
-                      'arribute_tooltip': attribute_tooltip}
+                      'attribute_tooltip': attribute_tooltip}
             for ind, (attr_id, attr_name, attr_question, gr_id, active, attribute_tooltip) in self._attributes.iterrows()}
         self._attributes_names_dict = {
             attr_id: attr_name
