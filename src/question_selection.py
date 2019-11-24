@@ -61,7 +61,8 @@ def next_question(prior, answered_questions):
 
             for index, row in selected.iterrows():
                 new_attributes.append({'attribute_id': row['attribute_id'],
-                                       'attribute_name': row['attribute_name']})
+                                       'attribute_name': row['attribute_name'],
+                                       'attribute_tooltip': row['attribute_tooltip']})
 
             if len(group['group_question']) > 0:
                 group_question = group['group_question'].values[0]
@@ -77,7 +78,8 @@ def next_question(prior, answered_questions):
                 'type': 'simple',
                 'attribute_id': attribute['attribute_id'],
                 'attribute_name': attribute['attribute_name'],
-                'attribute_question': attribute['attribute_question']
+                'attribute_question': attribute['attribute_question'],
+                'attribute_tooltip': attribute['attribute_tooltip']
             }
             return question
     else:
