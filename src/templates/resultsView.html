@@ -21,10 +21,19 @@
             <tbody>
                 {% for session in sessions %}
                 <tr>
-                    <td>{{ session.selected_class.class_id}} {{ session.selected_class.class_name or None}}</td>
-                    <td>{{ session.session_ident }}</td>
                     <td>
-                        {{ session.answered_questions_string() }}
+                        <a href="{{ url_for('views.session_view', session=session.id) }}">
+                            {{ session.selected_class.class_id}} {{ session.selected_class.class_name or None}}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('views.session_view', session=session.id) }}">
+                            {{ session.session_ident }}</td>
+                    </a>
+                    <td>
+                        <a href="{{ url_for('views.session_view', session=session.id) }}">
+                            {{ session.answered_questions_string() }}
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}
