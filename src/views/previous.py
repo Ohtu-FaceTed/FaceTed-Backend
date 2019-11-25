@@ -11,7 +11,6 @@ from . import views as app
 @app.route('/previous', methods=['GET'])
 def previous():
     user = None
-
     if 'user' in session:
         # access users session data
         if session['user'] in users:
