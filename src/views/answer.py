@@ -23,13 +23,7 @@ def answer():
         response = []
         for resp in content['response']:
             attribute_id.append(resp['attribute_id'])
-            # FIXME: remove the lists in tests
-            if not isinstance(resp['response'], str):
-                response.append(resp['response'][0])
-            else:
-                response.append(resp['response'])
-        #print('answer(), attribute_id:', attribute_id)
-        #print('answer(), response:', response)
+            response.append(resp['response'])
 
     except TypeError:
         return jsonify({'success': False,
@@ -57,8 +51,7 @@ def answer():
         user['user_responses'].append(list(zip(attribute_id, response)))
         # Add the responses to the database. First find the appropriate rows
             # from attribute, answer, and session tables, then create the new
-            # AnswerQuestion
-        print(user['user_responses'][-1])    
+            # AnswerQuestion    
         for (attribute, resp) in user['user_responses'][-1]:
             try:
                 db_attribute = Attribute.query.filter_by(
@@ -74,7 +67,7 @@ def answer():
                     'It seems one or more of attribute, answer or session have not been populated correctly:', e.args[0])
                 db.session.rollback()
 
-        # selects the previous probabilities as prior for calculating posterior
+        # Select the previous probabilities as prior for calculating posterior
         if len(user['server_responses']) > 1:
             prior = []
             for one in user['server_responses'][-1]['building_classes']:
@@ -90,12 +83,13 @@ def answer():
                                          'class_name': src.building_data.building_class_name[class_id],
                                          'score': score})
 
+        # Find out which attributes have been asked already
         asked_attributes = []
         for resp in user['user_responses']:
             for one in resp:
                 asked_attributes.append(one[0])
+
         question = next_question(prior, asked_attributes)
-        print(question)
         if question['type'] == 'multi':
             for attribute in question['attributes']:
                 attribute['attribute_name'] = select_question_by_language(
