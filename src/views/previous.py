@@ -2,7 +2,7 @@ import src
 import json
 
 from src.question_selection import next_question
-from src.sessionManagement import users, generate_id
+from src.sessionManagement import users, create_session
 
 from flask import jsonify, session, request
 from . import views as app
@@ -10,22 +10,17 @@ from . import views as app
 
 @app.route('/previous', methods=['GET'])
 def previous():
-    user = None
-    if 'user' in session:
-        # access users session data
-        if session['user'] in users:
-            user = users[session['user']]
-        else:
-            ident = generate_id()
-            session['user'] = ident
-            users[ident] = {'server_responses': [], 'user_responses': []}
+    # Create session if not already
+    if 'user' not in session or session['user'] not in users:
+        create_session()
 
-            user = users[ident]
+    # Access users session data
+    user = users[session['user']]
 
     # if user has no previous data a new question is created and saved
     if len(user['server_responses']) == 0:
         question = next_question(None, [])
-        users[ident]['server_responses'].append(question)
+        user['server_responses'].append(question)
         return jsonify(question)
 
     if len(user['server_responses']) == 1:

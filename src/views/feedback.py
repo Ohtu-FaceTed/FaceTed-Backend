@@ -18,9 +18,7 @@ def feedback():
                         'message': 'Please supply "class_id" in query'})
     else:
         if 'user' in session:
-            user = users[session['user']]
-
-            # save selected building class to database
+            # Save selected building class to database
             sess = Session.query.filter_by(
                 session_ident=session['user']).first()
             selected_class = BuildingClass.query.filter_by(
@@ -28,7 +26,7 @@ def feedback():
             sess.selected_class = selected_class
             db.session.commit()
 
-            # remove session and data related to it
+            # Remove session and data related to it
             users.pop(session['user'], None)
             session.pop('user', None)
 

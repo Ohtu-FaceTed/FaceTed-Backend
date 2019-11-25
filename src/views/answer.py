@@ -3,7 +3,7 @@ import json
 import numpy as np
 
 from src.question_selection import next_question
-from src.sessionManagement import users, generate_id
+from src.sessionManagement import users, create_session
 
 from flask import request, jsonify, session
 from . import views as app
@@ -32,22 +32,14 @@ def answer():
         return jsonify({'success': False,
                         'message': 'Please supply "language", "attribute_id", and "response" in query'})
     else:
-
-        user = None
-        prior = None
-
+        # Create session if not already
         if 'user' not in session or session['user'] not in users:
-            ident = generate_id()
-            session['user'] = ident
-            users[ident] = {'user_responses': [], 'server_responses': []}
-            # Add the session to the database
-            db.session.add(Session(ident))
-            db.session.commit()
-            user = users[ident]
-        else:
-            user = users[session['user']]
+            create_session()
+            
+        # Access users session data
+        user = users[session['user']]
 
-        #Save user responses
+        # Save user responses
         user['user_responses'].append(list(zip(attribute_id, response)))
         # Add the responses to the database. First find the appropriate rows
             # from attribute, answer, and session tables, then create the new
@@ -68,6 +60,7 @@ def answer():
                 db.session.rollback()
 
         # Select the previous probabilities as prior for calculating posterior
+        prior = None
         if len(user['server_responses']) > 1:
             prior = []
             for one in user['server_responses'][-1]['building_classes']:
