@@ -9,16 +9,13 @@ from src.models import db, BuildingClass, Session
 def feedback():
     try:
         content = request.get_json()
-        # language = content['language'] FIXME: To be implemented
         class_id = content['class_id']
-        #class_name = content['class_name']
-        #response = content['response']
     except TypeError:
         return jsonify({'success': False,
-                        'message': 'Please supply "language", "class_id", "class_name" and "response" in query'})
+                        'message': 'Please supply "class_id" in query'})
     except KeyError:
         return jsonify({'success': False,
-                        'message': 'Please supply "language", "class_id", "class_name" and "response" in query'})
+                        'message': 'Please supply "class_id" in query'})
     else:
         if 'user' in session:
             user = users[session['user']]
