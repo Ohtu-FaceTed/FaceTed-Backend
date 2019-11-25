@@ -19,3 +19,10 @@ class Session(db.Model):
 
     def __init__(self, sess):
         self.session_ident = sess
+
+    def answered_questions_string(self):
+        composed_string = ""
+        for aq in self.answered_questions:
+            composed_string += aq.attribute.attribute_id + " - " + aq.answer.value + ", "
+        return composed_string
+        

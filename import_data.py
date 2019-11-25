@@ -1,11 +1,12 @@
 import argparse
 import os
 import pandas as pd
+import json
 
 from sqlalchemy.exc import IntegrityError
 
 from src import create_app
-from src.models import db, Answer, Attribute, BuildingClass, QuestionGroup
+from src.models import db, Answer, Attribute, BuildingClass, QuestionGroup, Admin
 from src.building_data import load_attributes, load_building_classes, load_attribute_groups
 from config import ProductionConfig
 
@@ -30,6 +31,14 @@ if __name__ == '__main__':
 
     # Create app to register database
     app = create_app(config)
+
+    # adds default user to db
+    with app.app_context():
+        if len(Admin.query.all()) == 0:
+            with open('data/user.json') as f:
+                data = json.load(f)
+                db.session.add(Admin(data['name'],data['username'],data['password']))
+                db.session.commit()
 
     # load attributes groupings
     attribute_groups_path = os.path.join(args.data_directory, 'attribute_groups.csv')
