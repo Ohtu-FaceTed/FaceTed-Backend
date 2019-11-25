@@ -12,7 +12,7 @@ def admin_view():
 @app.route("/801fc3r", methods=["GET"])
 @login_required
 def results_view():
-    return render_template("resultsview.html", sessions=Session.query.all())
+    return render_template("resultsView.html", sessions=Session.query.all())
 
 @app.route("/801fc3s", methods=["GET"])
 @login_required
