@@ -9,6 +9,18 @@ from flask_login import login_required
 def admin_view():
     return render_template("admView.html", attributes=Attribute.query.all())
 
+@app.route("/801fc3r", methods=["GET"])
+@login_required
+def results_view():
+    return render_template("resultsView.html", sessions=Session.query.all())
+
+@app.route("/801fc3s", methods=["GET"])
+@login_required
+def session_view():
+    session_id = request.args.get('session')
+    
+    sess = Session.query.get(session_id)
+    return render_template("sessionView.html", session=sess)
 
 @app.route("/de95b/<attribute_id>", methods=["POST"])
 @login_required
@@ -19,5 +31,6 @@ def setActive(attribute_id):
         attr.active = False
     else:
         attr.active = True
-        db.session.commit()
+        
+    db.session.commit()
     return redirect(url_for("views.admin_view"))
