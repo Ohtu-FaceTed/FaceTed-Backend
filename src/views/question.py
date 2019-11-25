@@ -21,6 +21,8 @@ def question():
     lang_parsed_question = select_question_by_language(
         question['attribute_question'], best_match_language)
     question['attribute_question'] = lang_parsed_question
+
+    # Save response
     users[ident]['server_responses'].append(question)
 
     return jsonify(question)

@@ -35,7 +35,7 @@ def answer():
         # Create session if not already
         if 'user' not in session or session['user'] not in users:
             create_session()
-            
+
         # Access users session data
         user = users[session['user']]
 
@@ -67,6 +67,7 @@ def answer():
                 prior.append(one['score'])
             prior = np.array(prior)
 
+        # Calculate new probabilities for building classes
         posterior = src.classifier.calculate_posterior(
             attribute_id, response, prior)
         new_building_classes = []
