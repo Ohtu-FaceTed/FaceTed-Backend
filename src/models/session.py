@@ -25,4 +25,3 @@ class Session(db.Model):
         for aq in self.answered_questions:
             composed_string += aq.attribute.attribute_id + " - " + aq.answer.value + ", "
         return composed_string
-        

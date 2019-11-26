@@ -37,17 +37,20 @@
                         {% else %}
                         <form style="display:inline;" method="POST"
                             action="{{ url_for('views.setActive', attribute_id=attr.id) }}">
-                            <button data-toggle="tooltip" title="Mark as active" class="btn btn-sm btn-success" type="submit">
+                            <button data-toggle="tooltip" title="Mark as active" class="btn btn-sm btn-success"
+                                type="submit">
                                 <span data-feather="refresh-cw"> </button>
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                         </form>
                         {% endif %}
                     </td>
                     <td>
-                        {{ attr.part_of_group.grouping_key or 'Not grouped' }} 
+                        {{ attr.part_of_group.grouping_key or 'Not grouped' }}
                     </td>
                     <td>
-                        {{ attr.attribute_question }}
+                        <a href="{{ url_for('views.edit_question_view', attribute_id=attr.id) }}">
+                            {{ attr.attribute_question }}
+                        </a>
                     </td>
                     <td>
                         {{ attr.attribute_tooltip }}

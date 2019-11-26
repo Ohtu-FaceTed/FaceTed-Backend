@@ -25,6 +25,7 @@ def test_if_admin_page_loads(backend):
     res = backend.get('/801fc3')
     assert("FaceTed-Man" in str(res.data))
 
+
 def test_if_results_page_loads(backend):
     res = backend.get('/801fc3r')
     assert("Selected Class" in str(res.data))
