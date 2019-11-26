@@ -16,7 +16,11 @@ def admin_view():
 def edit_question_view(attribute_id):
     attr = Attribute.query.get(attribute_id)
     json_a = json.loads(attr.attribute_question)
-    return render_template("langTemplate.html", attribute=json_a, redirect_url=url_for('views.admin_view'), post_url=url_for('views.edit_question_string', attribute_id=attr.id))
+    # Remember to edit the post_url to be the correct endpoint!
+    # Otherwise, it should be pretty straight forward to copy-paste this GET method, and the POST method for edit_question_string
+    # And then just edit out which json to be edited, and where to post, and maybe where to redirect if required.
+    return render_template("langTemplate.html", attribute=json_a, redirect_url=url_for('views.admin_view'), 
+                           post_url=url_for('views.edit_question_string', attribute_id=attr.id) )
 
 
 @app.route("/edit_question_string/<attribute_id>", methods=["POST"])
