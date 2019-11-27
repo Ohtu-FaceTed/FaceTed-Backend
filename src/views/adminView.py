@@ -58,7 +58,7 @@ def edit_attribute_name_view(attribute_id):
                            post_url=url_for('views.edit_attribute_name', attribute_id=attr.id))
 
 
-# attribute name edit post handler
+# Attribute name edit post handler.
 @app.route("/edit_attribute_name/<attribute_id>", methods=["POST"])
 @login_required
 def edit_attribute_name(attribute_id):
