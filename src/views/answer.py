@@ -73,9 +73,10 @@ def answer():
         new_building_classes = []
 
         for _, (class_id, score) in posterior.iterrows():
-            new_building_classes.append({'class_id': class_id,
-                                         'class_name': src.building_data.building_class_name[class_id],
-                                         'score': score})
+            if class_id in src.building_data.building_class_name:
+                new_building_classes.append({'class_id': class_id,
+                                             'class_name': src.building_data.building_class_name[class_id],
+                                             'score': score})
 
         # Find out which attributes have been asked already
         asked_attributes = []
