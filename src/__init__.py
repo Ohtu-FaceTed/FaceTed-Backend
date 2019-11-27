@@ -2,11 +2,12 @@ from flask import Flask
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
+from config import ProductionConfig
 
 csrf = CSRFProtect()
 
 
-def create_app(config):
+def create_app(config=ProductionConfig):
     app = Flask(__name__)
 
     app.config.from_object(config)
