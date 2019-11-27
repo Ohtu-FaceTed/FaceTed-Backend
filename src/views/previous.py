@@ -6,7 +6,7 @@ from src.sessionManagement import users, create_session
 
 from flask import jsonify, session, request
 from . import views as app
-from ..models import db, Answer, AnswerQuestion, Attribute, Session
+from ..models import db, AnswerQuestion, Attribute, Session
 
 
 @app.route('/previous', methods=['GET'])
@@ -29,7 +29,6 @@ def previous():
         return jsonify(question)
 
     else:
-
         previous_attribute = ''
         question = None
 
@@ -40,7 +39,7 @@ def previous():
             user['user_responses'].pop()
 
             question = user['server_responses'][-1]
-    
+
         if len(user['server_responses']) > 2 and len(user['user_responses']) > 1:
             user['server_responses'].pop()
             previous_attribute = user['user_responses'][-1][0][0]
@@ -53,30 +52,30 @@ def previous():
         # delete previous answer to the same question from database
         db_attribute = Attribute.query.filter_by(attribute_id=previous_attribute).first()
         db_session = Session.query.filter_by(session_ident=session['user']).first()
-        session_answer_questions = Session.AnswerQuestion.query.filter(AnswerQuestion.session.has(session_ident=db_session.session_ident).all()
+        session_answer_questions = db_session.answered_questions
 
-        if db_attribute.grouping_id is not 'NaN':
+        if db_attribute.grouping_id is not None:
 
             group_attributes = Attribute.query.filter_by(grouping_id=db_attribute.grouping_id).all()
 
             for attribute in group_attributes:
-
                 try:
                     answer_question = next(x for x in session_answer_questions if x.attribute_id == attribute.attribute_id)
                     db.session.delete(answer_question)
                     db.session.commit()
                 except AttributeError as e:
-                    print(e.args[0])
+                    print(
+                        'Deletion of previous answer from database was not successful: ', e.args[0])
                     db.session.rollback()
 
         else:
-
             try:
-                answer_question = next(x for x in session_answer_questions if x.attribute_id == previous_attribute)
+                answer_question = session_answer_questions[-1]
                 db.session.delete(answer_question)
                 db.session.commit()
             except AttributeError as e:
-                print(e.args[0])
+                print(
+                    'Deletion of previous answer from database was not successful: ', e.args[0])
                 db.session.rollback()
         
         return jsonify(question)
