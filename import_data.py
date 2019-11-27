@@ -7,7 +7,6 @@ from sqlalchemy.exc import IntegrityError
 
 from src import create_app
 from src.models import db, Answer, Attribute, BuildingClass, QuestionGroup, Admin
-#from src.building_data import load_attributes, load_building_classes, load_attribute_groups
 from config import ProductionConfig
 
 # The attribute dataframe should have at least the following columns
