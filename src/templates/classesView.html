@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+
+
+<div class="container text-center">
+
+    <div class="container">
+        <table id="table_id" style="margin-top:2rem;" class="table tablez table-striped table-dark table-sm">
+            <thead>
+                <tr>
+                    <th>Class id</th>
+                    <th>Class name</th>
+                    {# <th>Probability</th> #}
+                </tr>
+            </thead>
+            <tbody>
+                {% for class in building_classes %}
+                <tr>
+                    <td>{{ class.class_id }}</td>
+                    <td>{{ class.class_name }}</td>
+                    {#
+                    <td>
+                        <a href="{{ url_for('views.edit_class_probability, class_id=class.class_id) }}">
+                            {{ class.class_probability }}
+                        </a>
+                    </td>
+                    #}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script async defer type="text/javascript">
+    $(document).ready(function () {
+        $('.tablez').DataTable({
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "pageLength": 25
+        });
+    });
+</script>
+{% endblock %}

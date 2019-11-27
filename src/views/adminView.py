@@ -1,6 +1,6 @@
 import json
 from . import views as app
-from ..models import db, Answer, AnswerQuestion, Attribute, Session
+from ..models import db, Answer, AnswerQuestion, Attribute, BuildingClass, Session
 from flask import redirect, render_template, request, url_for, jsonify
 from flask_login import login_required
 
@@ -80,6 +80,13 @@ def edit_attribute_name(attribute_id):
         print('Data parsing failed in attribute_name_edit')
 
     return redirect(url_for("views.admin_view"))
+
+
+# building classes view
+@app.route("/801fc3c", methods=["GET"])
+@login_required
+def classes_view():
+    return render_template("classesView.html", building_classes=BuildingClass.query.all())
 
 
 # results view
