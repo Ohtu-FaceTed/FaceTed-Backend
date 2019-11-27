@@ -34,14 +34,14 @@
                         {% if attr.active %}
                         <form style="display:inline;" method="POST"
                             action="{{ url_for('views.setActive', attribute_id=attr.id) }}">
-                            <button data-toggle="tooltip" title="Mark as inactive" class="btn btn-sm btn-warning"
+                            <button data-toggle="tooltip" title="Mark as inactive" class="btn btn-sm btn-success"
                                 type="submit"><span data-feather="refresh-cw"></span> </button>
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                         </form>
                         {% else %}
                         <form style="display:inline;" method="POST"
                             action="{{ url_for('views.setActive', attribute_id=attr.id) }}">
-                            <button data-toggle="tooltip" title="Mark as active" class="btn btn-sm btn-success"
+                            <button data-toggle="tooltip" title="Mark as active" class="btn btn-sm btn-danger"
                                 type="submit">
                                 <span data-feather="refresh-cw"> </button>
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
