@@ -364,6 +364,22 @@ def test_post_feedback_adds_answers_to_database(backend):
         assert answer_question_new[-1].answer.value == 'yes'
 
 
+def test_previous_deletes_answers_from_database(backend):
+    with backend:
+        response = backend.get('/question')
+
+        attribute_id = response.get_json()['attribute_id']
+
+        answer_question_old = AnswerQuestion.query.all()
+        backend.post(
+            '/answer', json={"language": "fi", "response": [{'attribute_id': attribute_id, 'response': 'yes'}]})
+
+        answer_question_old = AnswerQuestion.query.all()
+        backend.get('/previous')
+        answer_question_new = AnswerQuestion.query.all()
+        assert len(answer_question_new) == len(answer_question_old) - 1
+
+
 @pytest.fixture
 def clean_backend():
     app = create_app(TestingConfig)
