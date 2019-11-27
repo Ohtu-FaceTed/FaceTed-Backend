@@ -110,15 +110,15 @@ def next_questions(backend, first_question):
             prior = None
             if len(responses['probabilities']) > 0:
                 prior = responses['probabilities'][-1]
-            
+
             # The attribute id given to calculate posterior must be a list
             if isinstance(attribute_id, str):
                 attribute_id_tmp = [attribute_id]
             else:
-                attribute_id_tmp = attribute_id 
+                attribute_id_tmp = attribute_id
             posterior = src.classifier.calculate_posterior(
                 attribute_id_tmp, answer, prior)
-                
+
             new = posterior['posterior']
             responses['probabilities'].append(new)
             responses['answers'].append([answer])

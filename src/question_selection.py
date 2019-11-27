@@ -12,12 +12,12 @@ def best_questions(prior, answered_questions):
                        x['active'] == True and
                        x['attribute_id'] not in answered_questions and
                        x['attribute_id'] in src.classifier.observations.columns]
-    
+
     # Get the conditional probability table and the prior
     cond_p = src.classifier.conditional_probabilities[free_attributes]
     prior = prior if prior is not None else np.ones(
         cond_p.shape[0]) / cond_p.shape[0]
-    
+
     # Calculate and normalize posteriors for yes and no answers
     p_yes = cond_p * prior[:, None]
     p_yes /= p_yes.sum(axis=0)
