@@ -60,7 +60,7 @@ def previous():
 
             for attribute in group_attributes:
                 try:
-                    answer_question = next(x for x in session_answer_questions if x.attribute_id == attribute.attribute_id)
+                    answer_question = next(x for x in session_answer_questions if x.attribute_id == attribute.id)
                     db.session.delete(answer_question)
                     db.session.commit()
                 except AttributeError as e:
