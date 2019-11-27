@@ -7,13 +7,14 @@ from src.sessionManagement import users
 from src.models import Session, AnswerQuestion
 from config import TestingConfig
 import pytest
-from . import init_test_db
+from . import init_test_db, init_classifier
 
 
 @pytest.fixture  # (scope='module')
 def backend():
     app = create_app(TestingConfig)
     init_test_db(app)
+    init_classifier()
 
     test_client = app.test_client()
 
@@ -109,8 +110,15 @@ def next_questions(backend, first_question):
             prior = None
             if len(responses['probabilities']) > 0:
                 prior = responses['probabilities'][-1]
+            
+            # The attribute id given to calculate posterior must be a list
+            if isinstance(attribute_id, str):
+                attribute_id_tmp = [attribute_id]
+            else:
+                attribute_id_tmp = attribute_id 
             posterior = src.classifier.calculate_posterior(
-                attribute_id, answer, prior)
+                attribute_id_tmp, answer, prior)
+                
             new = posterior['posterior']
             responses['probabilities'].append(new)
             responses['answers'].append([answer])
@@ -275,26 +283,33 @@ def test_returned_building_classes_are_based_on_prior_probabilities(backend):
     with backend:
         response = backend.get('/question')
         json = response.get_json()
+        print('Response 1:', json)
         if json['type'] == 'simple':
             attribute_id = json['attribute_id']
             prob = src.classifier.calculate_posterior(
-                attribute_id, 'yes', None)
+                [attribute_id], ['yes'], None)
             prior = prob['posterior']
             response = backend.post(
                 '/answer', json={"language": "fi", "response": [{"attribute_id": attribute_id, "response": ["yes"]}]})
             json = response.get_json()
+            print('Response 2:', json)
+            print('Prob 2:', prob)
             attribute_id = json['new_question']['attribute_id']
             posterior = src.classifier.calculate_posterior(
-                attribute_id, 'yes', prior)
+                [attribute_id], ['yes'], prior)
             response = backend.post(
                 '/answer', json={"language": "fi", "response": [{"attribute_id": attribute_id, "response": ["yes"]}]})
             json = response.get_json()
+            print('Response 3:', json)
+            print('Prob 3:', posterior)
             building_classes = json['building_classes']
             for _, (class_id, score) in posterior.iterrows():
                 if class_id in src.building_data.building_class_name:
                     new_building_classes.append({'class_id': class_id,
                                                  'class_name': src.building_data.building_class_name[class_id],
                                                  'score': score})
+            print('building_classes:', building_classes)
+            print('new_building_classes:', new_building_classes)
             assert building_classes == new_building_classes
 
 

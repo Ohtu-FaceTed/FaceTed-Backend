@@ -73,6 +73,10 @@ class NaiveBayesClassifier:
 
     def calculate_posterior(self, attribute, value, prior=None, normalize=True):
         '''Calculates the posterior probability for each building class given attribute and value'''
+        if isinstance(attribute, str):
+            raise ValueError('calculate_posterior(): You must provide attribute as a list or tuple of strings, not a string')
+        if isinstance(value, str):
+            raise ValueError('calculate_posterior(): You must provide the value as a list or tuple of strings, not a string')
 
         prior_probability = prior
         posterior = None
