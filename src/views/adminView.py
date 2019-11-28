@@ -81,6 +81,37 @@ def edit_attribute_name(attribute_id):
 
     return redirect(url_for("views.admin_view"))
 
+# Tooltip edit
+@app.route("/editTooltip/<attribute_id>", methods=["GET"])
+@login_required
+def edit_tooltip_view(attribute_id):
+    attr = Attribute.query.get(attribute_id)
+    json_a = json.loads(attr.attribute_tooltip)
+    return render_template("langTemplate.html", attribute=json_a, redirect_url=url_for('views.admin_view'),
+                           post_url=url_for('views.edit_tooltip', attribute_id=attr.id))
+
+# Tooltip edit post handler.
+@app.route("/edit_tooltip/<attribute_id>", methods=["POST"])
+@login_required
+def edit_tooltip(attribute_id):
+    attr = Attribute.query.get(attribute_id)
+
+    try:
+        form = request.form
+        jsoned = json.loads(attr.attribute_tooltip)
+
+        # Once the old data has been loaded, check that new data is not empty. If not empty, change the new data.
+        for key in jsoned:
+            if(len(form[key]) > 0):
+                jsoned[key] = form[key]
+
+        # Then save the new data into the attribute_tooltip as json.
+        attr.attribute_tooltip = json.dumps(jsoned)
+        db.session.commit()
+    except:
+        print('Data parsing failed in attribute_name_edit')
+
+    return redirect(url_for("views.admin_view"))
 
 # results view
 @app.route("/801fc3r", methods=["GET"])
