@@ -9,19 +9,16 @@ from src.models import db, BuildingClass, Session
 def feedback():
     try:
         content = request.get_json()
-        # language = content['language'] FIXME: To be implemented
         class_id = content['class_id']
-        #class_name = content['class_name']
-        #response = content['response']
     except TypeError:
         return jsonify({'success': False,
-                        'message': 'Please supply "language", "class_id", "class_name" and "response" in query'})
+                        'message': 'Please supply "class_id" in query'})
     except KeyError:
         return jsonify({'success': False,
-                        'message': 'Please supply "language", "class_id", "class_name" and "response" in query'})
+                        'message': 'Please supply "class_id" in query'})
     else:
         if 'user' in session:
-            # save selected building class to database
+            # Save selected building class to database
             sess = Session.query.filter_by(
                 session_ident=session['user']).first()
             selected_class = BuildingClass.query.filter_by(
@@ -29,7 +26,7 @@ def feedback():
             sess.selected_class = selected_class
             db.session.commit()
 
-            # remove session and data related to it
+            # Remove session and data related to it
             users.pop(session['user'], None)
             session.pop('user', None)
 
