@@ -10,11 +10,7 @@ from flask_login import login_required
 def admin_view():
     return render_template("admView.html", attributes=Attribute.query.all())
 
-<<<<<<< HEAD
-
-=======
   
->>>>>>> dev
 # question string edit
 @app.route("/editQuestionString/<attribute_id>", methods=["GET"])
 @login_required
