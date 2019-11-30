@@ -19,6 +19,7 @@
                     <th>Grouping id</th>
                     <th>Question string</th>
                     <th>Tooltip info</th>
+                    <th>Probability</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,6 +62,7 @@
                             {{ attr.attribute_tooltip }}
                         </a>
                     </td>
+                    <td> {{ attr.probability }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

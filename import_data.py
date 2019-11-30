@@ -6,7 +6,7 @@ import json
 from sqlalchemy.exc import IntegrityError
 
 from src import create_app
-from src.models import db, Answer, Attribute, BuildingClass, QuestionGroup, Admin
+from src.models import db, Answer, Attribute, BuildingClass, QuestionGroup, Admin, ClassAttribute
 from config import ProductionConfig
 
 # The attribute dataframe should have at least the following columns
@@ -111,6 +111,22 @@ def load_attribute_groups(attribute_groups_file):
 
     return df
 
+def load_attribute_probabilities(attribute_probabilities_file):
+    df = pd.read_csv(attribute_probabilities_file, dtype=str)
+        
+    # Check that the required fields are present
+    for required_field in ['attribute_id', 'probability']:
+        if required_field not in df:
+            raise ValueError(
+                f"The attribute probability data ({attribute_groups_file}) does not contain a '{required_field}' column!")
+    
+    if len(df.index) < 1:
+        raise ValueError(
+            f"The attribute probability data ({attribute_groups_file}) does not contain any rows!")
+    
+    df.columns = df.columns.astype(str)
+
+    return df
 
 if __name__ == '__main__':
     # Parse command line arguments
@@ -210,6 +226,24 @@ if __name__ == '__main__':
                 
     else:
         print(f'Could not find building_classes.csv at: {building_classes_path}')
+        
+        #load attribute probabilities
+    attribute_probabilities_path = os.path.join(args.data_directory, 'attribute_probabilities.csv')
+    if os.path.isfile(attribute_probabilities_path):
+        attribute_probabilities_df = load_attribute_probabilities(attribute_probabilities_path)
+        
+        with app.app_context():
+            try:
+                for i, x in attribute_probabilities_df.iterrows():
+                    attr = Attribute.query.filter_by(attribute_id=x.attribute_id).first()
+                    if attr:
+                        attr.probability = x.probability
+                        db.session.commit()
+            except IntegrityError as e:
+                print('Caught integrity error:', e.args[0])
+                db.session.rollback()                
+    else:
+        print(f'Could not find attribute_groups.csv at: {attribute_groups_path}')
 
     
         
