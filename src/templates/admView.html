@@ -57,7 +57,9 @@
                         </a>
                     </td>
                     <td>
-                        {{ attr.attribute_tooltip }}
+                        <a href="{{ url_for('views.edit_tooltip_view', attribute_id=attr.id) }}">
+                            {{ attr.attribute_tooltip }}
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}
