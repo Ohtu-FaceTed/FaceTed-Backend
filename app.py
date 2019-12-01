@@ -17,10 +17,6 @@ if __name__ == "__main__":
                         help='start Flask with profiler enabled (implies --debug, DANGEROUS!)')
     args = parser.parse_args()
 
-    # Load data from the supplied directorytand replace the default objects
-    src.building_data = src.BuildingData(args.data_directory)
-    src.classifier = src.NaiveBayesClassifier(src.building_data.observations)
-
     app = src.create_app(ProductionConfig)
 
     if not args.profile:

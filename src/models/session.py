@@ -15,7 +15,7 @@ class Session(db.Model):
         "AnswerQuestion", back_populates="session")
 
     def __repr__(self):
-        return f"<Session(session_ident='{self.session_ident}')>"
+        return f"<Session(session_ident='{self.session_ident}', answered_questions='{self.answered_questions}')>"
 
     def __init__(self, sess):
         self.session_ident = sess
@@ -25,4 +25,3 @@ class Session(db.Model):
         for aq in self.answered_questions:
             composed_string += aq.attribute.attribute_id + " - " + aq.answer.value + ", "
         return composed_string
-        

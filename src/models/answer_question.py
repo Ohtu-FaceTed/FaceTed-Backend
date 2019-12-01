@@ -23,4 +23,4 @@ class AnswerQuestion(db.Model):
         self.session_id = session.id
 
     def __repr__(self):
-        return f"<AnswerQuestion(question_id='{self.question_id}', answer_id='{self.answer_id}')>"
+        return f"<AnswerQuestion(attribute_id='{self.attribute_id}', answer_id='{self.answer_id}')>"
