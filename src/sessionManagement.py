@@ -15,6 +15,7 @@ def generate_id():
         if not ident in users:
             return ident
 
+
 def create_session():
     '''Creates and saves new session for user and returns session id'''
     ident = generate_id()
