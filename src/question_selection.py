@@ -49,7 +49,8 @@ def next_question(prior, answered_questions):
             selected = [x for x in attributes if x['group_id']
                         == attribute['group_id']]
             new_attributes = [{'attribute_id': x['attribute_id'],
-                               'attribute_name': x['attribute_name']} for x in selected]  # FIXME: is this needed?
+                               'attribute_name': x['attribute_name'],
+                               'attribute_tooltip': x['attribute_name']} for x in selected]  # FIXME: is this needed?
             group_question = None
 
             if len(group['group_question']) > 0:
@@ -66,10 +67,11 @@ def next_question(prior, answered_questions):
                 'type': 'simple',
                 'attribute_id': attribute['attribute_id'],
                 'attribute_name': attribute['attribute_name'],
-                'attribute_question': attribute['attribute_question']
+                'attribute_question': attribute['attribute_question'],
+                'attribute_tooltip': attribute['attribute_tooltip']
             }
             return question
     else:
         # FIXME: Is this coherent with the front end functionality?
         # All questions asked
-        return {'attribute_id': '', 'attribute_name': '', 'attribute_question': ''}
+        return {'attribute_id': '', 'attribute_name': '', 'attribute_question': '', 'attribute_tooltip': ''}
