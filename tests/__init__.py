@@ -21,31 +21,31 @@ def init_test_db(app):
                                  attribute_question='{"fi":"Onko rakennuksessa asunnot?", "sv":"[Svenska]Onko rakennuksessa asunnot?", "en":"[English]Onko rakennuksessa asunnot?"}',
                                  grouping_id=None,
                                  active=True,
-                                 attribute_tooltip=''))
+                                 attribute_tooltip='{"fi":"", "en":"", "sv":""}'))
         db.session.add(Attribute(attribute_id='101',
                                  attribute_name='{"fi":"Asuinhuone", "sv":"[Svenska]Asuinhuone", "en":"[English]Asuinhuone"}',
                                  attribute_question='{"fi":"Onko rakennuksessa asuinhuone?", "sv":"[Svenska]Onko rakennuksessa asuinhuone?", "en":"[English]Onko rakennuksessa asuinhuone?"}',
                                  grouping_id=None,
                                  active=True,
-                                 attribute_tooltip=''))
+                                 attribute_tooltip='{"fi":"", "en":"", "sv":""}'))
         db.session.add(Attribute(attribute_id='102',
                                  attribute_name='{"fi":"Eteinen", "sv":"[Svenska]Eteinen", "en":"[English]Eteinen"}',
                                  attribute_question='{"fi":"Onko rakennuksessa eteinen?", "sv":"[Svenska]Onko rakennuksessa eteinen?", "en":"[English]Onko rakennuksessa eteinen?"}',
                                  grouping_id=None,
                                  active=True,
-                                 attribute_tooltip=''))
+                                 attribute_tooltip='{"fi":"", "en":"", "sv":""}'))
         db.session.add(Attribute(attribute_id='114',
                                  attribute_name='{"fi":"WC", "sv":"[Svenska]WC", "en":"[English]WC"}',
                                  attribute_question='{"fi":"Onko rakennuksessa wc?", "sv":"[Svenska]Onko rakennuksessa wc?", "en":"[English]Onko rakennuksessa wc?"}',
                                  grouping_id='1',
                                  active=False,
-                                 attribute_tooltip=''))
+                                 attribute_tooltip='{"fi":"", "en":"", "sv":""}'))
         db.session.add(Attribute(attribute_id='116',
                                  attribute_name='{"fi":"WC-pesuhuone", "sv":"[Svenska]WC-pesuhuone", "en":"[English]WC-pesuhuone"}',
                                  attribute_question='{"fi":"Onko rakennuksessa wc-pesuhuone?", "sv":"[Svenska]Onko rakennuksessa wc-pesuhuone?", "en":"[English]Onko rakennuksessa wc-pesuhuone?"}',
                                  grouping_id='1',
                                  active=False,
-                                 attribute_tooltip=''))
+                                 attribute_tooltip='{"fi":"", "en":"", "sv":""}'))
 
         # Initialize building_classes table
         db.session.add(BuildingClass(class_id='0110',

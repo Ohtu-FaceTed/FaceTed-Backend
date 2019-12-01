@@ -7,7 +7,7 @@ from src.sessionManagement import users, create_session
 
 from flask import request, jsonify, session
 from . import views as app
-from . import select_question_by_language, validate_language
+from . import fix_question_language, validate_language
 from ..models import db, Answer, AnswerQuestion, Attribute, Session
 
 
@@ -42,8 +42,8 @@ def answer():
         # Save user responses
         user['user_responses'].append(list(zip(attribute_id, response)))
         # Add the responses to the database. First find the appropriate rows
-            # from attribute, answer, and session tables, then create the new
-            # AnswerQuestion    
+        # from attribute, answer, and session tables, then create the new
+        # AnswerQuestion
         for (attribute, resp) in user['user_responses'][-1]:
             try:
                 db_attribute = Attribute.query.filter_by(
@@ -85,15 +85,7 @@ def answer():
                 asked_attributes.append(one[0])
 
         question = next_question(prior, asked_attributes)
-        if question['type'] == 'multi':
-            for attribute in question['attributes']:
-                attribute['attribute_name'] = select_question_by_language(
-                    attribute['attribute_name'], best_match_language)
-
-        lang_parsed_question = select_question_by_language(
-            question['attribute_question'], best_match_language)
-
-        question['attribute_question'] = lang_parsed_question
+        fix_question_language(question, best_match_language)
 
         json = {
             'new_question': question,

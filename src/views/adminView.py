@@ -10,7 +10,7 @@ from flask_login import login_required
 def admin_view():
     return render_template("admView.html", attributes=Attribute.query.all())
 
-  
+
 # question string edit
 @app.route("/editQuestionString/<attribute_id>", methods=["GET"])
 @login_required
@@ -80,7 +80,7 @@ def edit_attribute_name(attribute_id):
         print('Data parsing failed in attribute_name_edit')
 
     return redirect(url_for("views.admin_view"))
-    
+
 
 # Tooltip edit
 @app.route("/editTooltip/<attribute_id>", methods=["GET"])
@@ -116,7 +116,7 @@ def edit_tooltip(attribute_id):
     return redirect(url_for("views.admin_view"))
 
 
-# results view 
+# results view
 @app.route("/801fc3r", methods=["GET"])
 @login_required
 def results_view():
