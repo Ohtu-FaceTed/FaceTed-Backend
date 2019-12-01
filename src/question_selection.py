@@ -84,4 +84,4 @@ def next_question(prior, answered_questions):
             return question
     else:
         # All questions asked
-        return {'attribute_id': '', 'attribute_name': '', 'attribute_question': ''}
+        return {'attribute_id': '', 'attribute_name': '', 'attribute_question': '', 'attribute_tooltip': ''}

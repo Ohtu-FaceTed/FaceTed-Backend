@@ -9,8 +9,7 @@ from ..models import db, Session
 
 @app.route('/question', methods=['GET'])
 def question():
-    browser_languages = request.accept_languages
-    best_match_language = get_best_match_language(browser_languages)
+    best_match_language = get_best_match_language(request)
 
     # remove users previous state
     if 'user' in session:
@@ -25,6 +24,7 @@ def question():
     db.session.add(Session(ident))
     db.session.commit()
     question = next_question(None, [])
+    fix_question_language(question, best_match_language)
     if question['type'] == 'multi':
         users[ident]['type'].append('multi')
         users[ident]['multi_attributes'].append(question['attributes'])
@@ -35,8 +35,6 @@ def question():
         users[ident]['attribute_ids'].append(question['attribute_id'])
         users[ident]['total_attributes'].append(question['attribute_id'])
         users[ident]['attributes'].append(question['attribute_name'])
-
-    fix_question_language(question, best_match_language)
 
     users[ident]['question_strings'].append(question['attribute_question'])
 

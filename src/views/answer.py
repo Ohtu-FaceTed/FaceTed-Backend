@@ -6,7 +6,7 @@ from src.sessionManagement import users, generate_id
 
 from flask import request, jsonify, session
 from . import views as app
-from . import fix_question_language, get_best_match_language
+from . import validate_language, fix_question_language
 from ..models import db, Answer, AnswerQuestion, Attribute, Session
 
 
@@ -14,10 +14,9 @@ from ..models import db, Answer, AnswerQuestion, Attribute, Session
 def answer():
     try:
         content = request.get_json()
-        language = content['language']
 
-        browser_languages = request.accept_languages
-        best_match_language = get_best_match_language(browser_languages)
+        language = content['language']
+        best_match_language = validate_language(language)
 
         attribute_id = []
         response = []
@@ -91,7 +90,6 @@ def answer():
         user['probabilities'].append(probabilities)
         question = next_question(
             user['probabilities'][-1], user['total_attributes'])
-
         fix_question_language(question, best_match_language)
         if question['type'] == 'multi':
             user['type'].append('multi')
@@ -105,7 +103,6 @@ def answer():
             user['attributes'].append(question['attribute_name'])
 
         user['question_strings'].append(question['attribute_question'])
-
         user['answers'].append(response)
 
         return jsonify({'success': True,

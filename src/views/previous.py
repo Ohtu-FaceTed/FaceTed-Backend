@@ -17,8 +17,7 @@ def previous():
     attribute_id = []
     response = []
 
-    browser_languages = request.accept_languages
-    best_match_language = get_best_match_language(browser_languages)
+    best_match_language = get_best_match_language(request)
 
     if 'user' in session:
         # access users session data
@@ -115,6 +114,7 @@ def previous():
     user['probabilities'].append(probabilities)
     question = next_question(
         user['probabilities'][-1], user['total_attributes'])
+    fix_question_language(question, best_match_language)
 
     if question['type'] == 'multi':
         user['type'].append('multi')
@@ -128,8 +128,6 @@ def previous():
         user['attributes'].append(question['attribute_name'])
 
     user['question_strings'].append(question['attribute_question'])
-
-    fix_question_language(question, best_match_language)
 
     return jsonify({'success': True,
                     'new_question': question,

@@ -97,6 +97,10 @@ def test_attribute_dataframe_has_activity_status(default_attributes):
     assert 'active' in default_attributes
 
 
+def test_attribute_dataframe_attribute_tooltip(default_attributes):
+    assert 'attribute_tooltip' in default_attributes
+
+
 def test_attribute_dataframe_activity_status_values_are_boolean(default_attributes):
     for x in default_attributes.active:
         assert isinstance(x, bool)
