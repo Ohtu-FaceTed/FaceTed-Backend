@@ -7,19 +7,7 @@ from src.sessionManagement import users, generate_id
 from flask import jsonify, session, request
 from . import views as app
 from ..models import db, Attribute, Session, QuestionGroup
-from . import get_best_match_language, select_question_by_language
-
-
-def fix_question_language(question, language):
-    if question['type'] == 'multi':
-        question['attribute_question'] = select_question_by_language(
-            question['attribute_question'], language)
-        for attribute in question['attributes']:
-            attribute['attribute_name'] = select_question_by_language(
-                attribute['attribute_name'], language)
-    else:
-        question['attribute_question'] = select_question_by_language(
-            question['attribute_question'], language)
+from . import get_best_match_language, fix_question_language
 
 
 @app.route('/previous', methods=['GET'])
@@ -126,6 +114,7 @@ def previous():
     user['probabilities'].append(probabilities)
     question = next_question(
         user['probabilities'][-1], user['total_attributes'])
+    fix_question_language(question, best_match_language)
 
     if question['type'] == 'multi':
         user['type'].append('multi')
@@ -139,8 +128,6 @@ def previous():
         user['attributes'].append(question['attribute_name'])
 
     user['question_strings'].append(question['attribute_question'])
-
-    fix_question_language(question, best_match_language)
 
     return jsonify({'success': True,
                     'new_question': question,

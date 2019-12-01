@@ -3,7 +3,7 @@ from src.sessionManagement import generate_id, users
 from src.question_selection import next_question
 from flask import jsonify, session, request
 from . import views as app
-from . import select_question_by_language, get_best_match_language
+from . import get_best_match_language, fix_question_language
 from ..models import db, Session
 
 
@@ -24,6 +24,7 @@ def question():
     db.session.add(Session(ident))
     db.session.commit()
     question = next_question(None, [])
+    fix_question_language(question, best_match_language)
     if question['type'] == 'multi':
         users[ident]['type'].append('multi')
         users[ident]['multi_attributes'].append(question['attributes'])
@@ -35,10 +36,6 @@ def question():
         users[ident]['total_attributes'].append(question['attribute_id'])
         users[ident]['attributes'].append(question['attribute_name'])
 
-    questions = json.loads(question['attribute_question'])
-    lang_parsed_question = select_question_by_language(
-        question['attribute_question'], best_match_language)
-    question['attribute_question'] = lang_parsed_question
-    users[ident]['question_strings'].append(lang_parsed_question)
+    users[ident]['question_strings'].append(question['attribute_question'])
 
     return jsonify(question)
