@@ -8,7 +8,6 @@ from .models import Attribute, BuildingClass, ClassAttribute
 #   count: number of observations of this class (int, positive)
 #   [attribute]: number of observations of this attribute for a given class_id (integer)
 DEFAULT_OBSERVATIONS = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
-                                     'count': [1, 1, 1],
                                      '1': [1, 1, 1],
                                      '101': [1, 0, 1],
                                      '102': [0, 1, 0]})
@@ -19,14 +18,14 @@ def load_observations(observation_file):
     df = pd.read_csv(observation_file, dtype={'class_id': str})
 
     # Check that the required fields are present
-    for required_field in ['class_id', 'count']:
+    for required_field in ['class_id']:
         if required_field not in df:
             raise ValueError(
                 f"The observations data ({observation_file}) does not contain a '{required_field}' column!")
 
     # Check that we have at least one "attribute" column in addition to
-    # class_id and count
-    if len(df.columns) < 3:
+    # class_id
+    if len(df.columns) < 2:
         raise ValueError(
             f"The observation data ({observation_file}) does not contain any attribute columns!")
 
@@ -34,11 +33,6 @@ def load_observations(observation_file):
     if len(df.index) < 1:
         raise ValueError(
             f"The observation data ({observation_file}) does not contain any rows!")
-
-    # Check counts are positive integers
-    if not np.equal(np.mod(df['count'], 1), 0).all or (df['count'] < 1).any():
-        raise ValueError(
-            "Found 'count' values in observation data that are not positive integers")
 
     # Ensure that the column labels are interpreted as strings
     df.columns = df.columns.astype(str)
@@ -56,7 +50,7 @@ def calculate_conditional_probabilities(observations):
         df.columns != 'class_id') & (df.columns != 'count')]
 
     # Convert the observation values into probabilities with Laplace smoothing
-    df[attribute_cols] = (df[attribute_cols] + 1) / (df['count'][:, None] + 2)
+    df[attribute_cols] = (df[attribute_cols] + 1) / 3
 
     return df
 
@@ -99,9 +93,7 @@ class NaiveBayesClassifier:
                 # If a custom probability is provided, that is the new probability
                 if x.custom_probability is not None:
                     new_prob = x.custom_probability
-                    if not x.class_has_attribute:
-                        new_prob = 1 - new_prob
-
+                    
                 # Replace the corresponding entry in the conditional probability table
                 attribute_id = x.attribute.attribute_id
                 class_id = x.answer.class_id

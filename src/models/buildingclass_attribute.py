@@ -9,17 +9,17 @@ class ClassAttribute(db.Model):
     id = Column(Integer, primary_key=True)
     custom_probability = Column(Float, nullable=True)
     class_has_attribute = Column(Boolean, nullable=False)
-    
+
     attribute_id = Column(Integer, ForeignKey('attribute.id'))
     buildingclass_id = Column(Integer, ForeignKey('building_class.id'))
     attribute = relationship("Attribute")
     answer = relationship("BuildingClass")
 
-
-    def __init__(self, attribute, answer, session):
+    def __init__(self, attribute, building_class, has_attribute, custom_probability=None):
         self.attribute_id = attribute.id
-        self.answer_id = answer.id
-        self.session_id = session.id
+        self.buildingclass_id = building_class.id
+        self.class_has_attribute = has_attribute
+        self.custom_probability = custom_probability
 
     def __repr__(self):
-        return f"<AnswerQuestion(attribute_id='{self.attribute_id}', answer_id='{self.answer_id}')>"
+        return f"<ClassAttribute(attribute_id='{self.attribute_id}', buildindclass_id='{self.buildingclass_id}', class_has_attribute={self.class_has_attribute}, custom_probability={self.custom_probability})>"

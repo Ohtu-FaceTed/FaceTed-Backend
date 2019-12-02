@@ -11,4 +11,4 @@ class BuildingClass(db.Model):
     class_probability = Column(Float, nullable=False)
 
     def __repr__(self):
-        return f"<BuildingClass(class_id='{self.class_id}', class_name='{self.class_name}')>"
+        return f"<BuildingClass(class_id='{self.class_id}', class_name='{self.class_name}', class_probability={self.class_probability})>"

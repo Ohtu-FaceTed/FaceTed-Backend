@@ -56,10 +56,12 @@ def load_attributes(attribute_file):
 # The building classes dataframe should have at least the following fields:
 #   class_id: four digit class identifier (string, unique)
 #   class_name: common name for class (string)
+#   probability: unnormalized prior probability for class (float)
 DEFAULT_BUILDING_CLASSES = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
                                          'class_name': ['Omakotitalot',
                                                         'Paritalot',
-                                                        'Rivitalot']})
+                                                        'Rivitalot'],
+                                         'probability': [1.0, 1.0, 1.0]})
 
 
 def load_building_classes(building_classes_file):
@@ -67,7 +69,7 @@ def load_building_classes(building_classes_file):
     df = pd.read_csv(building_classes_file, dtype=str)
 
     # Check that the required fields are present
-    for required_field in ['class_id', 'class_name']:
+    for required_field in ['class_id', 'class_name', 'class_probability']:
         if required_field not in df:
             raise ValueError(
                 f"The building classes data ({building_classes_file}) does not contain a '{required_field}' column!")
@@ -124,6 +126,37 @@ def load_attribute_probabilities(attribute_probabilities_file):
         raise ValueError(
             f"The attribute probability data ({attribute_groups_file}) does not contain any rows!")
     
+    df.columns = df.columns.astype(str)
+
+    return df
+
+DEFAULT_OBSERVATIONS = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
+                                     '1': [1, 1, 1],
+                                     '101': [1, 0, 1],
+                                     '102': [0, 1, 0]})
+
+
+def load_observations(observation_file):
+    '''Attempts to load buiding-attribute observation data from file into Pandas dataframe'''
+    df = pd.read_csv(observation_file, dtype={'class_id': str})
+
+    # Check that the required fields are present
+    if 'class_id' not in df:
+        raise ValueError(
+            f"The observations data ({observation_file}) does not contain a 'class_id' column!")
+
+    # Check that we have at least one "attribute" column in addition to
+    # class_id and count
+    if len(df.columns) < 2:
+        raise ValueError(
+            f"The observation data ({observation_file}) does not contain any attribute columns!")
+
+    # Check that there is at least one row of data
+    if len(df.index) < 1:
+        raise ValueError(
+            f"The observation data ({observation_file}) does not contain any rows!")
+
+    # Ensure that the column labels are interpreted as strings
     df.columns = df.columns.astype(str)
 
     return df
@@ -218,7 +251,8 @@ if __name__ == '__main__':
             try:
                 for i, x in building_classes_df.iterrows():
                     db.session.add(BuildingClass(class_id=x.class_id,
-                                                class_name=x.class_name))
+                                                 class_name=x.class_name,
+                                                 class_probability=x.class_probability))
                 db.session.commit()
             except IntegrityError as e:
                 print('Caught integrity error:', e.args[0])
@@ -244,6 +278,32 @@ if __name__ == '__main__':
                 db.session.rollback()                
     else:
         print(f'Could not find attribute_groups.csv at: {attribute_groups_path}')
+
+    # Load the "observation" data, that determines, which building classes have
+    # which attributes 
+    observation_path = os.path.join(args.data_directory, 'observations.csv')
+    if os.path.isfile(observation_path):
+        df = load_observations(observation_path)
+        df = df.set_index('class_id')
+
+        with app.app_context():
+            try:
+                for attribute_id, attr_values in df.items():
+                    attribute = Attribute.query.filter_by(attribute_id=attribute_id).first()
+                    for class_id, x in attr_values.items():
+                        building_class = BuildingClass.query.filter_by(class_id=class_id).first()
+                        if building_class is None:
+                            print('class_id', class_id, type(class_id))
+                        db.session.add(ClassAttribute(
+                            attribute=attribute,
+                            building_class=building_class,
+                            has_attribute=(x==1)))
+                db.session.commit()
+            except IntegrityError as e:
+                print('Caught integrity error:', e.args[0])
+                db.session.rollback()
+    else:
+        print(f'Could not find observation.csv at: {observation_path}')
 
     
         
