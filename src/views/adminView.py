@@ -86,7 +86,10 @@ def edit_attribute_name(attribute_id):
 @app.route("/801fc3c", methods=["GET"])
 @login_required
 def classes_view():
-    return render_template("classesView.html", building_classes=BuildingClass.query.all())
+    building_classes = BuildingClass.query.all()
+    for one in building_classes:
+        one.class_name = json.loads(one.class_name)["fi"]
+    return render_template("classesView.html", building_classes=building_classes)
 
 
 # results view
