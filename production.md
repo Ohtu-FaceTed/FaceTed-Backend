@@ -1,14 +1,50 @@
 Python 3.6 ja yhteensopiva pip-versio. (Testattu python 3.6.8 ja pip 9.0.3)
-Repon kloonaus https://github.com/Ohtu-FaceTed/FaceTed-Backend.git
-Mahdollinen branchin vaihto
-Virtual envin luonti python3 -m venv venv, vaatii mahdollisesti pip install venv
+Minulla nämä tuli paketeista python36u ja python36u-pip.
+Mahdollisesti sqlite3 yumilla.
+Lisäksi python36u-devel voi olla hyödyllinen joidenkin riippuvuuksien kanssa. (Tässä projektissa valinnainen setproctitle-kirjasto haluaa niitä.)
+
+Repon koodin hakeminen
+```git clone https://github.com/Ohtu-FaceTed/FaceTed-Backend.git
+cd FaceTed-Backend
+```
+
+Virtual envin luonti ```python3.6 -m venv venv```
+Jos ei toimi, niin
+```
+pip install --user virtualenv
+virtualenv venv
+```
+
 Venvin aktivointi: source venv/bin/activate
-Riippuvuuksien asennus: pip install -r requirements.txt
-Tietokannan salasanan asetus: nano data/user.json
-Tietokannan alustus: python import_data.py data app.db
+Varmista pythonin versio ```python --version```. Pitäisi olla >= 3.6.0
+Hyvä asentaa ennen muita : ```pip install wheel```
+Riippuvuuksien asennus: ```pip install -r requirements.txt```
 
+Tietokannan käyttäjänimen ja salasanan asetus: ```vi data/user.json```
+Name ja username kannattaa laittaa samoiksi. Kannattaa vaihtaa myös nimet, käyttäjällä on täydet oikeudet kannan muokkaukseen nimestä riippumatta.
 
+Tietokannan alustus: ```python import_data.py data app.db```
+Lukee csv:t sisään kansiosta data/ ja luo app.db nimisen sqlite3 tietokannan
 
+Html-sessionhallintaa varten pitää alustaa SECRET_KEY muuttuja. Onnistuu ajamalla ./generate.sh
+Tarkista että skriptin jälkeen tiedosto secret_key.py on muotoa 
+```
+SECRET_KEY = b'0=A\x93}}3\xca\xcb\xbb\\\xdb(\xb3\xbc\xc7'
+```
+
+Kansion luonti lokeja varten ```mkdir -p logs```
+
+Gunicornin (palvelimen) asetukset löytyy tiedostosta ```gunicorn.conf.py```
+Täältä kannattaa vaihtaa ainakin muuttuja ```bind``` joka kertoo mihin osoitteeseen ja porttiin palvelin tarjoaa sisältönsä. Muuttujat capture_output ja daemon kannattaa asettaa False:ksi jos haluaa ensin varmistaa että sovellus toimii oikein. Tiedostossa on linkki asetuksien dokumentantaation. Huomaa että esim. asetus nimeltä capture-output pitää kirjoittaa muodossa capture_output sillä konfiguraatio on python-tiedostossa.
+
+Sovelluksen käynnistys: ```./run.sh``` (mahdollisesti ```chmod u+x ./run.sh```)
+Kannattaa testata hakemalla endpoint /question , sillä se käyttää myös tietokantaa. Sivulla pitäisi näkyä ensimmäinen kysymys json-muodossa
+
+Gunicornin dokumentaatiosta löytyy tapoja miten sovelluksen saa käynnistymään itsestään, jos tälle on tarvetta.
+
+Lopuksi frontin tiedostoista fs-question.js ja fs-detail.js pitää käydä muuttamassa muuttuja const baseUrl osoittamaan uuteen osoitteeseen.
+
+Endpointista /asdasd löytyy tietokannan hallintapaneeli. Vaatii sisäänkirjautumisen. 
 
 
 
@@ -19,3 +55,4 @@ Tietokannan alustus: python import_data.py data app.db
 
 #### Links
 https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-local-programming-environment-on-centos-7
+
