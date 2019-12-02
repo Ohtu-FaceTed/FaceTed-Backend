@@ -68,21 +68,25 @@ def init_test_db(app):
 
 
 def init_classifier():
+    import numpy as np
     import pandas as pd
     from src import classifier
     from src.naive_bayes_classifier import calculate_conditional_probabilities
 
     # Add obseravations for all the attributes we define in the test database
-    classifier.observations = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
-                                            'count': [1, 1, 1],
-                                            '1': [1, 1, 1],
-                                            '101': [1, 1, 0],
-                                            '102': [1, 0, 1],
-                                            '114': [0, 1, 1],
-                                            '116': [1, 0, 0]})
+    observations = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
+                                 'count': [1, 1, 1],
+                                 '1': [1, 1, 1],
+                                 '101': [1, 1, 0],
+                                 '102': [1, 0, 1],
+                                 '114': [0, 1, 1],
+                                 '116': [1, 0, 0]})
 
     # Generate the conditional probability table
     classifier.conditional_probabilities = calculate_conditional_probabilities(
-        classifier.observations)
+        observations)
+
+    # Initialize the prior
+    classifier.prior = np.ones(3)
 
     return classifier
