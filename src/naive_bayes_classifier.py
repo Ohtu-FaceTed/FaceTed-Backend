@@ -107,7 +107,7 @@ class NaiveBayesClassifier:
                 class_id = x.answer.class_id
                 self.conditional_probabilities[attribute_id][class_id] = new_prob
 
-    def load_from_file(observation_file):
+    def load_from_file(self, observation_file):
         try:
             observations = load_observations(observation_file)
         except ValueError as error:
