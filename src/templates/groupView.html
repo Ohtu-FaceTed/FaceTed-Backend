@@ -6,8 +6,47 @@
 
 {% block body %}
 <div class="container text-center">
-
+    <hr/>
     <div class="container">
+    <form method="POST" action="#"
+        style="width: auto; max-width: 400px; margin: auto;">
+        <div class="form-group">            
+            <div class="row" style="margin-bottom:0.5rem">
+                <label for="Group Name">Group Name</label>
+                <input name="Group Name" class="form-control" id="Group_name" placeholder="Name of the new group"
+                    required/>
+            </div>
+            <div class="row" style="margin-bottom:0.5rem">
+                <label for="Group key">Group key</label>
+                <input name="Group key" class="form-control" id="Group_key" placeholder="Grouping key for the new group"
+                    required/>
+            </div>
+            <div class="row" style="margin-bottom:0.5rem">
+                <h4>Group Question</h4>
+            </div>
+            <div class="row" style="margin-bottom:0.5rem">
+                <h1></h1>
+                <label for="Suomeksi">Suomeksi</label>
+                <input name="Suomeksi" class="form-control" id="fin" placeholder="Suomi"
+                        required/>
+            </div>
+            <div class="row" style="margin-bottom:0.5rem">
+                <label for="Svenska">Svenska</label>
+                <input name="Svenska" class="form-control" id="sv" placeholder="Svenska"
+                    required />
+            </div>
+            <div class="row" style="margin-bottom:0.5rem">
+                <label for="English">English</label>
+                <input name="English" class="form-control" id="en" placeholder="English"
+                    required />
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <input type="submit" class="btn btn-primary" value="Create new group" />
+        </div>
+    </form>
+    <hr/>
+
         <table id="table_id" style="margin-top:2rem;" class="table tablez table-striped table-dark table-sm">
             <thead>
                 <tr>
