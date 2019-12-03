@@ -1,6 +1,6 @@
 import json
 from . import views as app
-from ..models import db, Answer, AnswerQuestion, Attribute, Session
+from ..models import db, Answer, AnswerQuestion, Attribute, Session, QuestionGroup
 from flask import redirect, render_template, request, url_for, jsonify
 from flask_login import login_required
 
@@ -144,3 +144,39 @@ def setActive(attribute_id):
 
     db.session.commit()
     return redirect(url_for("views.admin_view"))
+
+# Group view for listing active groups
+@app.route("/801fc3/groups", methods=["GET", "POST"])
+@login_required
+def group_view():
+    return render_template("groupView.html",groups = QuestionGroup.query.all())
+
+# Edit Group question
+@app.route("/edit_group_question/<group_id>", methods=["GET"])
+@login_required
+def edit_group_question_view(group_id):
+    attribute = QuestionGroup.query.get(group_id)
+    json_a = json.loads(attribute.group_question)
+    return render_template("langTemplate.html", attribute=json_a, redirect_url=url_for('views.group_view'),
+                           post_url=url_for('views.edit_group_question_string', group_id=attribute.id))
+
+# Tooltip edit post handler.
+@app.route("/edit_group_question/<group_id>", methods=["POST"])
+@login_required
+def edit_group_question_string(group_id):
+    group = QuestionGroup.query.get(group_id)
+
+    try:
+        form = request.form
+        jsoned = json.loads(group.group_question)
+
+        for key in jsoned:
+            if(len(form[key]) > 0):
+                jsoned[key] = form[key]
+
+        group.group_question = json.dumps(jsoned)
+        db.session.commit()
+    except:
+        print('Data parsing failed in group_question_edit')
+
+    return redirect(url_for("views.group_view"))

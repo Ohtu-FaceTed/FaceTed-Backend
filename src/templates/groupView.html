@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<div class="container text-center">
+
+    <div class="container">
+        <table id="table_id" style="margin-top:2rem;" class="table tablez table-striped table-dark table-sm">
+            <thead>
+                <tr>
+                    <th>Group name</th>
+                    <th>Grouping key</th>
+                    <th>Question string</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for grp in groups %}
+                <tr>
+                    <td>{{ grp.group_name }}</td>
+                    <td>
+                        {{ grp.grouping_key }}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('views.edit_group_question_view', group_id=grp.id) }}">
+                        {{ grp.group_question }}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script async defer type="text/javascript">
+    $(document).ready(function () {
+        $('.tablez').DataTable({
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "pageLength": 25
+        });
+    });
+</script>
+{% endblock %}
