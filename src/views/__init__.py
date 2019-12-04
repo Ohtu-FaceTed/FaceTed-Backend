@@ -50,7 +50,7 @@ def translate_attr(attrJson, language):
         print(f"Error parsing {attrJson}.")
         print("Expected this to be a dict of translations. Either the json is malformed or the attribute was translated already.")
         return attrJson
-    
+
     ret_lang = default_language
 
     if language is not None:
