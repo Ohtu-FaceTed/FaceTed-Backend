@@ -12,7 +12,7 @@
     <div class="container">
         <table id="table_id" style="margin-top:2rem;" class="table tablez table-striped table-dark table-sm">
             <a href="{{ url_for('views.create_building_class_view') }}">
-                Lisää rakennusluokka
+                Create building class
             </a>
             <thead>
                 <tr>
@@ -32,7 +32,7 @@
                             <div class="input-group">
                                 <input style="max-width:100px;" name="probability" class="form-control" id="probability" value="{{ class.class_probability or 0 }}" />
                                 <span class="input-group-btn" style="margin-left: 5px;">
-                                    <button type="submit">Tallenna</button>
+                                    <button type="submit">Save</button>
                                 </span>
                             </div>
                         </form>
