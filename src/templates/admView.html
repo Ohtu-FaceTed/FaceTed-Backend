@@ -52,17 +52,19 @@
                         <form method="POST"
                             action="{{ url_for('views.setGroup', attribute_id=attr.id ) }}">
                             <select name="select_group">
-                                {% for x in groups %}
-                                    {% if attr.part_of_group.grouping_key %}                                   
+                                {% if attr.part_of_group.grouping_key %}    
+                                    {% for x in groups %}                               
                                         {% if x.grouping_key == attr.part_of_group.grouping_key %}
-                                            <option value="{{ attr.part_of_group.grouping_key }}" selected> 
+                                            <option value="{{ attr.part_of_group.grouping_key }}" selected hidden> 
                                                 {{ attr.part_of_group.grouping_key }} - {{ x.group_name }}
                                             </option> 
                                         {% endif %}
-                                        <option value="None">Not grouped</option> 
-                                    {% else %}
-                                        <option value="None" selected>Not grouped</option> 
-                                    {% endif %}
+                                    {% endfor %}
+                                    <option value="None">Not grouped</option> 
+                                {% else %}
+                                    <option value="None" selected hidden>Not grouped</option> 
+                                {% endif %}
+                                {% for x in groups %}  
                                     {% if x.grouping_key != attr.part_of_group.grouping_key %}
                                         <option value="{{ x.grouping_key }}">{{ x.grouping_key }} - {{ x.group_name }}</option>
                                     {% endif %}
