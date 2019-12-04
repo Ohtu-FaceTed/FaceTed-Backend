@@ -149,8 +149,8 @@ def setActive(attribute_id):
 @app.route("/801fc3/groups", methods=["GET", "POST"])
 @login_required
 def group_view():
-    if request.method=="GET":
-        return render_template("groupView.html",groups = QuestionGroup.query.all())
+    if request.method == "GET":
+        return render_template("groupView.html", groups=QuestionGroup.query.all())
 
     form = request.form
     groupname = form.get('group_name')
@@ -160,17 +160,18 @@ def group_view():
     en = form.get('English')
 
     question = '{"fi":"' + fi + '","sv":"' + sv + '","en":"' + en + '"}'
-    try: 
+    try:
         json.loads(question)
-        db.session.add(QuestionGroup(grouping_key=groupkey, group_name=groupname, group_question=question))
+        db.session.add(QuestionGroup(grouping_key=groupkey,
+                                     group_name=groupname, group_question=question))
         db.session.commit()
-        return render_template("groupView.html",groups = QuestionGroup.query.all())
+        return render_template("groupView.html", groups=QuestionGroup.query.all())
 
     except:
-        db.session.rollback()    
-        return render_template("groupView.html",groups = QuestionGroup.query.all(), error="Item could not be added, this might be due to use of quotes or a duplicate grouping key.")
-    
-    
+        db.session.rollback()
+        return render_template("groupView.html", groups=QuestionGroup.query.all(), error="Item could not be added, this might be due to use of quotes or a duplicate grouping key.")
+
+
 # Edit Group question
 @app.route("/edit_group_question/<group_id>", methods=["GET"])
 @login_required
@@ -180,7 +181,7 @@ def edit_group_question_view(group_id):
     return render_template("langTemplate.html", attribute=json_a, redirect_url=url_for('views.group_view'),
                            post_url=url_for('views.edit_group_question_string', group_id=attribute.id))
 
-#group question edit handler
+# group question edit handler
 @app.route("/edit_group_question/<group_id>", methods=["POST"])
 @login_required
 def edit_group_question_string(group_id):
@@ -211,7 +212,7 @@ def edit_group_name_view(group_id):
     return render_template("singleStringEditTemplate.html", string=string, redirect_url=url_for('views.group_view'),
                            post_url=url_for('views.edit_group_name_string', group_id=group.id))
 
-#group name edit handler
+# group name edit handler
 @app.route("/edit_group_name/<group_id>", methods=["POST"])
 @login_required
 def edit_group_name_string(group_id):
@@ -220,7 +221,7 @@ def edit_group_name_string(group_id):
     try:
         form = request.form
         string = group.group_name
-        if len(form.get('string'))>0:
+        if len(form.get('string')) > 0:
 
             group.group_name = form.get('string')
             db.session.commit()
@@ -239,7 +240,7 @@ def edit_group_key_view(group_id):
     return render_template("singleStringEditTemplate.html", string=string, redirect_url=url_for('views.group_view'),
                            post_url=url_for('views.edit_group_key', group_id=group.id))
 
-#grouping key edit handler
+# grouping key edit handler
 @app.route("/edit_group_key/<group_id>", methods=["POST"])
 @login_required
 def edit_group_key(group_id):
@@ -248,7 +249,7 @@ def edit_group_key(group_id):
     try:
         form = request.form
         string = group.grouping_key
-        if len(form.get('string'))>0:
+        if len(form.get('string')) > 0:
 
             group.grouping_key = form.get('string')
             db.session.commit()
