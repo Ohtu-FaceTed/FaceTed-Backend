@@ -30,8 +30,10 @@ def test_conditional_probabilities_are_probabilities(default_conditional_probabi
 
 @pytest.fixture
 def default_classifier():
-    obs = DEFAULT_OBSERVATIONS
-    return NaiveBayesClassifier(obs)
+    nbc = NaiveBayesClassifier()
+    nbc.conditional_probabilities = calculate_conditional_probabilities(DEFAULT_OBSERVATIONS)
+    nbc.prior = np.ones(nbc.conditional_probabilities.shape[0])
+    return nbc
 
 
 def test_calculate_posterior_normalizes_probabilities_by_default(default_classifier):
@@ -73,7 +75,7 @@ def test_calculate_posterior_unnormalized_probabilities_are_bernoulli(default_cl
 
 def test_skip_returns_prior_in_calculate_posterior(default_classifier):
     # Generate a deterministic but random prior
-    n_attributes = len(default_classifier.observations.columns) - 2
+    n_attributes = len(default_classifier.conditional_probabilities.columns) - 2 # FIXME: once count is removed
     np.random.seed(12345)
     prior = np.random.permutation(n_attributes).astype(float)
     prior /= prior.sum()
