@@ -116,6 +116,47 @@ def edit_tooltip(attribute_id):
     return redirect(url_for("views.admin_view"))
 
 
+# Class probability edit post handler.
+@app.route("/edit_class_probability/<class_id>", methods=["POST"])
+@login_required
+def edit_class_probability(class_id):
+    b_class = BuildingClass.query.get(attribute_id)
+    probability = request.form["probability"]
+    if (probability):
+        try:
+            b_class.class_probability = probability
+            db.session.commit()
+        except:
+            print('Error in editing class probability')
+
+    return redirect(url_for("views.classes_view"))
+
+
+# Building class create
+@app.route("/createBuildingClass", methods=["GET"])
+@login_required
+def create_building_class_view():
+    b_class = vars(db.session.query(BuildingClass).first())
+    b_class.pop("_sa_instance_state", None)
+    return render_template("createTemplate.html", object=b_class, redirect_url=url_for('views.classes_view'),
+                           post_url=url_for('views.create_building_class'))
+
+
+# Building class create post handler
+@app.route("/create_building_class", methods=["POST"])
+@login_required
+def create_building_class():
+    try:
+        form = request.form
+        db.session.add(BuildingClass(class_id=form["class_id"],
+                                                class_name=form["class_name"]))
+        db.session.commit()
+    except IntegrityError as e:
+        db.session.rollback()
+
+    return redirect(url_for("views.classes_view"))
+
+
 # building classes view
 @app.route("/801fc3c", methods=["GET"])
 @login_required

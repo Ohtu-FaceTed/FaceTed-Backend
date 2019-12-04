@@ -11,11 +11,14 @@
 
     <div class="container">
         <table id="table_id" style="margin-top:2rem;" class="table tablez table-striped table-dark table-sm">
+            <a href="{{ url_for('views.create_building_class_view') }}">
+                Lisää rakennusluokka
+            </a>
             <thead>
                 <tr>
                     <th>Class id</th>
                     <th>Class name</th>
-                    {# <th>Probability</th> #}
+                    <th>Probability</th>
                 </tr>
             </thead>
             <tbody>
@@ -23,13 +26,17 @@
                 <tr>
                     <td>{{ class.class_id }}</td>
                     <td>{{ class.class_name }}</td>
-                    {#
                     <td>
-                        <a href="{{ url_for('views.edit_class_probability, class_id=class.class_id) }}">
-                            {{ class.class_probability }}
-                        </a>
+                        <form method="POST"
+                            action="{{ url_for('views.edit_class_probability', class_id=class.id) }}">
+                            <div class="input-group">
+                                <input style="max-width:100px;" name="probability" class="form-control" id="probability" value="{{ class.class_probability or 0 }}" />
+                                <span class="input-group-btn" style="margin-left: 5px;">
+                                    <button type="submit">Tallenna</button>
+                                </span>
+                            </div>
+                        </form>
                     </td>
-                    #}
                 </tr>
                 {% endfor %}
             </tbody>
