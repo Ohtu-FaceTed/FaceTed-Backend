@@ -146,13 +146,13 @@ def setActive(attribute_id):
     return redirect(url_for("views.admin_view"))
 
 
-@app.route("/gs95b/<attribute_id>", methods=["POST"])
+@app.route("/gs59e/<attribute_id>", methods=["POST"])
 @login_required
 def setGroup(attribute_id):
     attr = Attribute.query.get(attribute_id)
     selected_group = request.form.get('select_group')
     if attr.grouping_id != selected_group: 
-        attr.grouping_id == selected_group
+        attr.grouping_id = selected_group 
         db.session.commit()
 
     return redirect(url_for("views.admin_view"))
