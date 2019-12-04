@@ -145,12 +145,32 @@ def setActive(attribute_id):
     db.session.commit()
     return redirect(url_for("views.admin_view"))
 
-# Group view for listing active groups
+# Group view for listing active groups and adding new ones
 @app.route("/801fc3/groups", methods=["GET", "POST"])
 @login_required
 def group_view():
-    return render_template("groupView.html",groups = QuestionGroup.query.all())
+    if request.method=="GET":
+        return render_template("groupView.html",groups = QuestionGroup.query.all())
 
+    form = request.form
+    groupname = form.get('group_name')
+    groupkey = form.get('group_key')
+    fi = form.get('Suomeksi')
+    sv = form.get('Svenska')
+    en = form.get('English')
+
+    question = '{"fi":"' + fi + '","sv":"' + sv + '","en":"' + en + '"}'
+    try: 
+        json.loads(question)
+        db.session.add(QuestionGroup(grouping_key=groupkey, group_name=groupname, group_question=question))
+        db.session.commit()
+        return render_template("groupView.html",groups = QuestionGroup.query.all())
+
+    except:
+        db.session.rollback()    
+        return render_template("groupView.html",groups = QuestionGroup.query.all(), error="Item could not be added, this might be due to use of quotes or a duplicate grouping key.")
+    
+    
 # Edit Group question
 @app.route("/edit_group_question/<group_id>", methods=["GET"])
 @login_required
