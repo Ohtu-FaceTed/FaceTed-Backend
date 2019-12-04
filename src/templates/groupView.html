@@ -63,9 +63,15 @@
             <tbody>
                 {% for grp in groups %}
                 <tr>
-                    <td>{{ grp.group_name }}</td>
                     <td>
-                        {{ grp.grouping_key }}
+                        <a href="{{ url_for('views.edit_group_name_view', group_id=grp.id) }}">
+                            {{ grp.group_name }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('views.edit_group_key_view', group_id=grp.id) }}">
+                            {{ grp.grouping_key }}
+                        </a>
                     </td>
                     <td>
                         <a href="{{ url_for('views.edit_group_question_view', group_id=grp.id) }}">

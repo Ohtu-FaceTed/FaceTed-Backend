@@ -180,7 +180,7 @@ def edit_group_question_view(group_id):
     return render_template("langTemplate.html", attribute=json_a, redirect_url=url_for('views.group_view'),
                            post_url=url_for('views.edit_group_question_string', group_id=attribute.id))
 
-# Tooltip edit post handler.
+#group question edit handler
 @app.route("/edit_group_question/<group_id>", methods=["POST"])
 @login_required
 def edit_group_question_string(group_id):
@@ -198,5 +198,62 @@ def edit_group_question_string(group_id):
         db.session.commit()
     except:
         print('Data parsing failed in group_question_edit')
+        return redirect(url_for("views.group_view", error="Edit failed. This might be caused by quotes in the strings"))
+
+    return redirect(url_for("views.group_view"))
+
+# Edit Group name
+@app.route("/edit_group_name/<group_id>", methods=["GET"])
+@login_required
+def edit_group_name_view(group_id):
+    group = QuestionGroup.query.get(group_id)
+    string = group.group_name
+    return render_template("singleStringEditTemplate.html", string=string, redirect_url=url_for('views.group_view'),
+                           post_url=url_for('views.edit_group_name_string', group_id=group.id))
+
+#group name edit handler
+@app.route("/edit_group_name/<group_id>", methods=["POST"])
+@login_required
+def edit_group_name_string(group_id):
+    group = QuestionGroup.query.get(group_id)
+
+    try:
+        form = request.form
+        string = group.group_name
+        if len(form.get('string'))>0:
+
+            group.group_name = form.get('string')
+            db.session.commit()
+    except:
+        print('Data parsing failed in group_name_edit')
+        return redirect(url_for("views.group_view", error="Edit failed."))
+
+    return redirect(url_for("views.group_view"))
+
+# Edit Grouping key
+@app.route("/edit_group_key/<group_id>", methods=["GET"])
+@login_required
+def edit_group_key_view(group_id):
+    group = QuestionGroup.query.get(group_id)
+    string = group.grouping_key
+    return render_template("singleStringEditTemplate.html", string=string, redirect_url=url_for('views.group_view'),
+                           post_url=url_for('views.edit_group_key', group_id=group.id))
+
+#grouping key edit handler
+@app.route("/edit_group_key/<group_id>", methods=["POST"])
+@login_required
+def edit_group_key(group_id):
+    group = QuestionGroup.query.get(group_id)
+
+    try:
+        form = request.form
+        string = group.grouping_key
+        if len(form.get('string'))>0:
+
+            group.grouping_key = form.get('string')
+            db.session.commit()
+    except:
+        print('Data parsing failed in group_name_edit')
+        return redirect(url_for("views.group_view", error="Edit failed."))
 
     return redirect(url_for("views.group_view"))
