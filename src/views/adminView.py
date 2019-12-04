@@ -138,8 +138,11 @@ def edit_class_probability(class_id):
 def create_building_class_view():
     b_class = vars(db.session.query(BuildingClass).first())
     b_class.pop("_sa_instance_state", None)
-    return render_template("createTemplate.html", object=b_class, redirect_url=url_for('views.classes_view'),
-                           post_url=url_for('views.create_building_class'))
+    b_class.pop("id", None)
+    return render_template("createTemplate.html", object=b_class,
+                           redirect_url=url_for('views.classes_view'),
+                           post_url=url_for('views.create_building_class'),
+                           message='Lisääthän vain rakennusluokkia, joilla on vastine tilastokeskuksen API:ssa.')
 
 
 # Building class create post handler
@@ -148,8 +151,17 @@ def create_building_class_view():
 def create_building_class():
     try:
         form = request.form
-        db.session.add(BuildingClass(class_id=form["class_id"],
-                                                class_name=form["class_name"]))
+        b_class = BuildingClass(class_id=form["class_id"],
+                                class_name=form["class_name"],
+                                #class_probability=form["class_probability"]
+                                )
+        db.session.add(b_class)
+        db.session.commit()
+        b_class = BuildingClass.query.filter_by(class_id=b_class.class_id)
+        attributes = Attribute.query.all()
+        for one in attributes:
+            db.session.add(ClassAttribute(attribute=one,
+                                          building_class=b_class))
         db.session.commit()
     except IntegrityError as e:
         db.session.rollback()
