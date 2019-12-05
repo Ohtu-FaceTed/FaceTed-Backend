@@ -62,7 +62,7 @@
                                     {% endfor %}
                                     <option value="None">Not grouped</option> 
                                 {% else %}
-                                    <option value="None" selected hidden>Not grouped</option> 
+                                    <option value="None" selected>Not grouped</option> 
                                 {% endif %}
                                 {% for x in groups %}  
                                     {% if x.grouping_key != attr.part_of_group.grouping_key %}
