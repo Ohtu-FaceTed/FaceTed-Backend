@@ -8,8 +8,13 @@
 
 
 <div class="container text-center">
-
     <div class="container">
+        <br />
+            <p> Hide "None" columns </p>
+            <label class="switch">
+                <input id="filteroo" type="checkbox">
+                <span class="slider"></span>
+        </div>
         <table id="table_id" style="margin-top:2rem;" class="table tablez table-striped table-dark table-sm">
             <thead>
                 <tr>
@@ -52,7 +57,25 @@
         $('.tablez').DataTable({
             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
             "pageLength": 25,
-            "order": [[ 0, "desc" ]]
+            "order": [[0, "desc"]]
+        });
+    });
+</script>
+<script async defer type="text/javascript">
+    $(document).ready(function () {
+        var table = $('#table_id').DataTable();
+
+        $("#filteroo").click(function () {
+            if ($("#filteroo").is(':checked'))
+                table
+                    .columns(0)
+                    .search('^((?!None).)*$', true, false)
+                    .draw();
+            else
+                table
+                    .columns(0)
+                    .search('')
+                    .draw();
         });
     });
 </script>

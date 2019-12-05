@@ -3,6 +3,7 @@ from . import views as app
 from ..models import db, Answer, AnswerQuestion, Attribute, Session, QuestionGroup
 from flask import redirect, render_template, request, url_for, jsonify
 from flask_login import login_required
+from sqlalchemy import func
 
 
 @app.route("/801fc3", methods=["GET"])
@@ -120,7 +121,24 @@ def edit_tooltip(attribute_id):
 @app.route("/801fc3r", methods=["GET"])
 @login_required
 def results_view():
-    return render_template("resultsView.html", sessions=Session.query.all())
+    # Change default_minimum to 0 if you want to always see empty sessions by default, or some other number if you want the filtering to be rougher.
+    # For a quick temporary filter- In the browser, you can use /801fc3r?min=5 for example, to set the filter to only show sessions with 5 or more answered questions
+    default_minimum = 1
+    count = request.args.get('min')
+    try:
+        if count:
+            count = max(int(count), default_minimum)
+        else:
+            count = default_minimum
+    except:
+        count = default_minimum
+
+    return render_template("resultsView.html", sessions=Session.query
+                           .outerjoin(AnswerQuestion)
+                           .group_by(Session)
+                           .having(func.count_(Session.answered_questions) >= count)
+                           .all()
+                           )
 
 
 @app.route("/801fc3s", methods=["GET"])
