@@ -66,7 +66,7 @@
                                 {% endif %}
                                 {% for x in groups %}  
                                     {% if x.grouping_key != attr.part_of_group.grouping_key %}
-                                        <option value="{{ x.grouping_key }}">{{ x.grouping_key }} - {{ x.group_name }}</option>
+                                        <option value="{{ x.id }}">{{ x.grouping_key }} - {{ x.group_name }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
