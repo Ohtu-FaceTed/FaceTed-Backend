@@ -8,7 +8,7 @@ from flask_login import login_required
 @app.route("/801fc3", methods=["GET"])
 @login_required
 def admin_view():
-    return render_template("admView.html", attributes=Attribute.query.all())
+    return render_template("admView.html", attributes=Attribute.query.all(), groups = QuestionGroup.query.all())
 
 
 # question string edit
@@ -144,6 +144,19 @@ def setActive(attribute_id):
 
     db.session.commit()
     return redirect(url_for("views.admin_view"))
+
+
+@app.route("/gs59e/<attribute_id>", methods=["POST"])
+@login_required
+def setGroup(attribute_id):
+    attr = Attribute.query.get(attribute_id)
+    selected_group = request.form.get('select_group')
+    if attr.grouping_id != selected_group: 
+        attr.grouping_id = selected_group 
+        db.session.commit()
+
+    return redirect(url_for("views.admin_view"))
+
 
 # Group view for listing active groups and adding new ones
 @app.route("/801fc3/groups", methods=["GET", "POST"])
