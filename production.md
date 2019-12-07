@@ -1,6 +1,7 @@
-Tarvittavat ohjelmistot
+## Backend
+### Tarvittavat ohjelmistot
 * Python 3.6 ja yhteensopiva pip-versio. (Testattu python 3.6.8 ja pip 9.0.3). Huom. näitä ei ole välttämättä valmiina default repoissa tai asennuksessa.
-* Mahdollisesti sqlite3 yumilla.
+* sqlite3
 * git
 
 Repon koodin hakeminen
@@ -32,19 +33,27 @@ SECRET_KEY = b'0=A\x93}}3\xca\xcb\xbb\\\xdb(\xb3\xbc\xc7'
 Kansion luonti lokeja varten ```mkdir -p logs```
 
 Gunicornin (palvelimen) asetukset löytyy tiedostosta ```gunicorn.conf.py```
-Täältä kannattaa vaihtaa ainakin muuttuja ```bind``` joka kertoo mihin osoitteeseen ja porttiin palvelin tarjoaa sisältönsä. Muuttujat capture_output ja daemon kannattaa asettaa False:ksi jos haluaa ensin varmistaa että sovellus toimii oikein. Tällöin palvelimen viestit tallentuu suoraan terminaaliin. Tiedostossa on linkki asetuksien dokumentantaation. Huomaa että esim. asetus nimeltä capture-output pitää kirjoittaa muodossa capture_output sillä konfiguraatio on python-tiedostossa.
+Täältä kannattaa vaihtaa ainakin muuttuja ```bind``` joka kertoo mihin osoitteeseen ja porttiin palvelin tarjoaa sisältönsä. Tässä vaiheessa voi konfiguroida mahdollisen palomuurin siten että se päästää läpi liikennettä edellä asetetusta portista.
+Muuttujat capture_output ja daemon kannattaa asettaa False:ksi jos haluaa ensin varmistaa että sovellus toimii oikein. Tällöin palvelimen viestit tallentuu suoraan terminaaliin. Tiedostossa on linkki asetuksien dokumentantaation. Huomaa että esim. asetus nimeltä capture-output pitää kirjoittaa muodossa capture_output sillä konfiguraatio on python-tiedostossa.
 
 Sovelluksen käynnistys: ```./run.sh``` (mahdollisesti puuttuvat ajo-oikeudet saa komennolla ```chmod u+x ./run.sh```)
 Kannattaa testata hakemalla endpoint /question , sillä se käyttää myös tietokantaa. Sivulla pitäisi näkyä ensimmäinen kysymys json-muodossa.
 
 Gunicornin dokumentaatiosta löytyy tapoja miten sovelluksen saa käynnistymään itsestään, jos tälle on tarvetta.
 
-Lopuksi frontin tiedostoista fs-question.js ja fs-detail.js pitää käydä muuttamassa muuttuja const baseUrl osoittamaan uuteen osoitteeseen.
-
 Endpointista /asdasd löytyy tietokannan hallintapaneeli. Vaatii sisäänkirjautumisen. 
 
+## Frontend
 
+Lopuksi frontin tiedostoista fs-question.js ja fs-detail.js pitää käydä muuttamassa muuttuja const baseUrl osoittamaan uuteen osoitteeseen. Pitäisi löytyä tiedostojen alusta. 
 
+Komponentit olettaa että ne ovat html:ssä <div>-tägien sisällä joiden id on faceted. Tämä sen takia että ne sitovat tähän diviin eventListenerit joiden avulla ne viestivät keskenään. Esim
+```html
+<div id="faceted">
+    <fs-question.js>
+    ...
+</div>
+```
 
 
 
