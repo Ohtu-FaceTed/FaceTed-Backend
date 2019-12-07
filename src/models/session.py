@@ -7,7 +7,7 @@ class Session(db.Model):
     __tablename__ = 'session'
 
     id = Column(Integer, primary_key=True)
-    session_ident = Column(String(128), nullable=False)
+    session_ident = db.Column(String, unique=True, nullable=False)
     buildclass_id = Column(Integer, ForeignKey(
         "building_class.id"), nullable=True)
     selected_class = relationship("BuildingClass")
