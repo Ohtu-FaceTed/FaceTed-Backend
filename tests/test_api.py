@@ -43,7 +43,7 @@ def responses(backend):
         question_type = json['type']
         responses['server_responses'].append(json)
 
-        for x in range(2):  
+        for x in range(2):
 
             answer = []
             attribute_id = []
@@ -60,23 +60,24 @@ def responses(backend):
                 response = backend.post(
                     '/answer', json={'language': 'fi', 'response': [{'attribute_id': attribute, 'response': 'yes'}]}
                 )
-                
-            elif question_type == 'multi': 
+
+            elif question_type == 'multi':
                 attributes = []
                 multi_answer = []
                 if x == 0:
                     attributes = responses['server_responses'][-1]['attributes']
                 elif x > 0:
                     attributes = responses['server_responses'][-1]['new_question']['attributes']
-                
+
                 for attribute in attributes:
-                    res = {'attribute_id': attribute['attribute_id'], 'response': 'no'}
+                    res = {
+                        'attribute_id': attribute['attribute_id'], 'response': 'no'}
                     attribute_id.append(attribute['attribute_id'])
                     multi_answer.append(res)
                     answer.append('no')
                 response = backend.post(
-                    '/answer', json={'language': 'fi', 'response': multi_answer}   
-                )     
+                    '/answer', json={'language': 'fi', 'response': multi_answer}
+                )
             json = response.get_json()
             new = {
                 'new_question': json['new_question'],
@@ -104,6 +105,7 @@ def test_get_question_returns_json(backend):
     if json['type'] == 'simple':
         assert 'attribute_id' in json
         assert 'attribute_name' in json
+        assert 'attribute_tooltip' in json
 
 
 def test_get_answer_fails(backend):
@@ -149,6 +151,7 @@ def test_post_answer_returns_new_question(backend):
     if json['new_question']['type'] == 'simple':
         assert 'attribute_id' in json['new_question']
         assert 'attribute_name' in json['new_question']
+        assert 'attribute_tooltip' in json['new_question']
 
 
 def test_post_answer_returns_building_classes(backend):
@@ -381,8 +384,6 @@ def test_previous_deletes_answers_from_database(backend, responses):
         assert len(answer_question_new) == len(answer_question_old) - 1
         assert answer_question_new[-1].attribute.attribute_id == answer_question_old[-2].attribute.attribute_id
         assert answer_question_new[-1].answer.value == answer_question_old[-2].answer.value
-
-    
 
 
 @pytest.fixture

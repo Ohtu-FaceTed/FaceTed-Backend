@@ -32,21 +32,55 @@ def validate_language(langs):
     if isinstance(langs, str):
         langs = [langs]
     for lang in langs:
+        # force strings like en-us to correct format
+        try:
+            lang = lang[:2].lower()
+        except:
+            print(f"Got weird lang param: {lang}")
+            return default_language
         if lang in supported_languages:
             return lang
         return default_language
 
 
-def select_question_by_language(questionJson, language):
-    question = json.loads(questionJson)
+def translate_attr(attrJson, language):
+    try:
+        attr = json.loads(attrJson)
+    except:
+        print(f"Error parsing {attrJson}.")
+        print("Expected this to be a dict of translations. Either the json is malformed or the attribute was translated already.")
+        return attrJson
+
+    ret_lang = default_language
 
     if language is not None:
         if language in supported_languages:
-            return question[language]
+            ret_lang = language
         else:
-            print('language ' + language +
-                  ' not supported for attribute : ' + questionJson)
-            return question[default_language]
+            ret_lang = default_language
     else:
-        print('language not defined')
-        return question[default_language]
+        print('language not defined, falling back to "fi"')
+    try:
+        translated = attr[ret_lang]
+    except KeyError:
+        print(f"Language {language} not found in {attrJson}")
+        translated = ""
+    return translated
+
+
+def fix_question_language(question, language):
+    if question['type'] == 'multi':
+        question['attribute_question'] = translate_attr(
+            question['attribute_question'], language)
+        for attribute in question['attributes']:
+            attribute['attribute_name'] = translate_attr(
+                attribute['attribute_name'], language)
+            attribute['attribute_tooltip'] = translate_attr(
+                attribute['attribute_tooltip'], language)
+    else:
+        question['attribute_name'] = translate_attr(
+            question['attribute_name'], language)
+        question['attribute_question'] = translate_attr(
+            question['attribute_question'], language)
+        question['attribute_tooltip'] = translate_attr(
+            question['attribute_tooltip'], language)
