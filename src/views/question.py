@@ -1,5 +1,5 @@
 import json
-from src.sessionManagement import create_session, users
+from src.sessionManagement import create_session, cleanup, users
 from src.question_selection import next_question
 from flask import jsonify, session, request
 from . import views as app
@@ -20,5 +20,8 @@ def question():
 
     # Save response
     users[ident]['server_responses'].append(question)
+
+    # Cleanup users dict
+    cleanup()
 
     return jsonify(question)
