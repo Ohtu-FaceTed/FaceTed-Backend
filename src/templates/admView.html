@@ -84,7 +84,11 @@
                             {{ attr.attribute_tooltip }}
                         </a>
                     </td>
-                    <td> {{ attr.probability }}</td>
+                    <td>
+                        <a href="{{ url_for('views.edit_attribute_probability_float', attribute_id=attr.id) }}">
+                            {{ attr.probability }}
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
