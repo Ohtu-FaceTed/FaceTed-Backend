@@ -154,7 +154,7 @@ def create_building_class():
         flash("Fill all the fields.")
         return redirect(url_for("views.create_building_class_view"))
     try:
-        name = f'{{"fi":"{form["class_name"]}", "en":"", "sv":""}}'
+        name = f'{{"fi":"{form["class_name"]}", "en":"[English]{form["class_name"]}", "sv":"[Svenska]{form["class_name"]}"}}'
         b_class = BuildingClass(class_id=form["class_id"],
                                 class_name=name,
                                 class_probability=form["class_probability"])
