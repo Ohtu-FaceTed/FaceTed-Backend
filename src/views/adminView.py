@@ -1,11 +1,15 @@
 import json
 from . import views as app
 from ..models import db, Answer, AnswerQuestion, Attribute, BuildingClass, ClassAttribute, Session, QuestionGroup
-from flask import redirect, render_template, request, url_for, jsonify
+
+from flask import redirect, render_template, request, url_for, jsonify, flash
 from flask_login import login_required
+
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, DecimalField, SelectField, StringField, validators
 from wtforms.validators import ValidationError
+
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 
 
@@ -131,6 +135,74 @@ def edit_tooltip(attribute_id):
         print('Data parsing failed in attribute_name_edit')
 
     return redirect(url_for("views.admin_view"))
+
+
+# Class probability edit post handler.
+@app.route("/edit_class_probability/<class_id>", methods=["POST"])
+@login_required
+def edit_class_probability(class_id):
+    b_class = BuildingClass.query.get(class_id)
+    try:
+        b_class.class_probability = request.form["probability"]
+        db.session.commit()
+    except:
+        flash("Probability should be a numeric value.")
+
+    return redirect(url_for("views.classes_view"))
+
+
+# Building class create
+@app.route("/createBuildingClass", methods=["GET"])
+@login_required
+def create_building_class_view():
+    b_class = vars(db.session.query(BuildingClass).first())
+    b_class.pop("_sa_instance_state", None)
+    b_class.pop("id", None)
+    return render_template("createTemplate.html", object=b_class,
+                           redirect_url=url_for('views.classes_view'),
+                           post_url=url_for('views.create_building_class'),
+                           info='Only add building classes that are defined in Statistics Finland API.')
+
+
+# Building class create post handler
+@app.route("/create_building_class", methods=["POST"])
+@login_required
+def create_building_class():
+    form = request.form
+    if (not form["class_id"] or not form["class_name"]):
+        flash("Fill all the fields.")
+        return redirect(url_for("views.create_building_class_view"))
+    try:
+        name = f'{{"fi":"{form["class_name"]}", "en":"[English]{form["class_name"]}", "sv":"[Svenska]{form["class_name"]}"}}'
+        b_class = BuildingClass(class_id=form["class_id"],
+                                class_name=name,
+                                class_probability=form["class_probability"])
+        db.session.add(b_class)
+        db.session.commit()
+        b_class = BuildingClass.query.filter_by(class_id=b_class.class_id).first()
+        attributes = Attribute.query.all()
+        for one in attributes:
+            db.session.add(ClassAttribute(attribute=one, building_class=b_class))
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        flash("Building class with corresponding class id already exists.")
+        return redirect(url_for("views.create_building_class_view"))
+    except:
+        flash("Probability should be a numeric value.")
+        return redirect(url_for("views.create_building_class_view"))
+
+    return redirect(url_for("views.classes_view"))
+
+
+# building classes view
+@app.route("/801fc3c", methods=["GET"])
+@login_required
+def classes_view():
+    building_classes = BuildingClass.query.all()
+    for one in building_classes:
+        one.class_name = json.loads(one.class_name)["fi"]
+    return render_template("classesView.html", building_classes=building_classes)
 
 
 # results view
@@ -259,8 +331,8 @@ def edit_group_name_view(group_id):
     return render_template("singleStringEditTemplate.html", string=string, redirect_url=url_for('views.group_view'),
                            post_url=url_for('views.edit_group_name_string', group_id=group.id))
 
-# Edit attribute custom probability
-@app.route("/edit_custom_probability/<attribute_id>", methods=["GET"])
+# Edit attribute probability
+@app.route("/edit_attribute_probability/<attribute_id>", methods=["GET"])
 @login_required
 def edit_attribute_probability_view(attribute_id):
     attr = Attribute.query.get(attribute_id)
@@ -268,8 +340,8 @@ def edit_attribute_probability_view(attribute_id):
     return render_template("singleStringEditTemplate.html", string=string, redirect_url=url_for('views.admin_view'),
                            post_url=url_for('views.edit_attribute_probability_float', attribute_id=attr.id))
 
-# attribute custom probability handler
-@app.route("/edit_custom_probability/<attribute_id>", methods=["POST"])
+# attribute probability handler
+@app.route("/edit_attribute_probability/<attribute_id>", methods=["POST"])
 @login_required
 def edit_attribute_probability_float(attribute_id):
     attr = Attribute.query.get(attribute_id)
@@ -407,3 +479,44 @@ def add_attribute():
     else:
         print('Validation failed:', form.errors)
         return redirect(url_for('views.admin_view', error=f'Failed to add attribute: {form.errors}'))
+      
+# Edit attribute probability
+@app.route("/link_bclass_attribute_view/<class_id>", methods=["GET"])
+@login_required
+def link_bclass_attribute_view(class_id):
+    bclass = BuildingClass.query.get(class_id)
+    links = ClassAttribute.query.filter_by(buildingclass_id = class_id)
+    
+    bclass.class_name = json.loads(bclass.class_name)["fi"]
+    for one in links:
+        one.attribute.attribute_name = json.loads(one.attribute.attribute_name)["fi"]
+
+    return render_template("bclass_attr_link.html",  bclass=bclass, links=links)
+
+# Toggler for class having attribute
+@app.route("/toggle_link_between_class_attribute/<class_attribute_id>", methods=["POST"])
+@login_required
+def toggle_link_between_class_attribute(class_attribute_id):
+    link = ClassAttribute.query.get(class_attribute_id)
+
+    if link.class_has_attribute:
+        link.class_has_attribute = False
+    else:
+        link.class_has_attribute = True
+
+    db.session.commit()
+    return redirect(url_for("views.link_bclass_attribute_view", class_id = link.buildingclass_id))
+
+# Class probability edit post handler.
+@app.route("/edit_class_attribute_probability/<class_attribute_id>", methods=["POST"])
+@login_required
+def edit_class_attribute_probability(class_attribute_id):
+    link = ClassAttribute.query.get(class_attribute_id)
+
+    try:
+        link.custom_probability = request.form["probability"]
+        db.session.commit()
+    except:
+        flash("Probability should be a numeric value.")
+
+    return redirect(url_for("views.link_bclass_attribute_view", class_id = link.buildingclass_id))

@@ -33,8 +33,9 @@
                     </td>
                     <td>
                         <a href="{{ url_for('views.session_view', session=session.id) }}">
-                            {{ session.session_ident }}</td>
-                    </a>
+                            {{ session.session_ident }} 
+                        </a>
+                    </td>
                     <td>
                         <a href="{{ url_for('views.session_view', session=session.id) }}">
                             {{ session.answered_questions_string() }}
