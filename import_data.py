@@ -57,11 +57,6 @@ def load_attributes(attribute_file):
         raise ValueError(
             f"The attribute data ({attribute_file}) does not contain any rows!")
 
-    # Ensure columns are imported as strings
-    df.columns = df.columns.astype(str)
-
-    # Change active column type to boolean
-    df.active = df.active.astype(bool)
     return df
 
 
