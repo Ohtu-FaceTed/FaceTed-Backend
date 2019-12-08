@@ -15,7 +15,16 @@ class Attribute(db.Model):
     part_of_group = relationship("QuestionGroup")
     active = Column(Boolean, nullable=True)
     attribute_tooltip = Column(String(1000), nullable=True)
-    probability = Column(Float, nullable=True)
+    probability = Column(Float, nullable=False)
+
+    def __init__(self, id_, name, question, tooltip=None, probability=0.5, active=False, group=None):
+        self.attribute_id = id_
+        self.attribute_name = name
+        self.attribute_question = question
+        self.attribute_tooltip = tooltip
+        self.probability = probability
+        self.active = active
+        self.grouping_id = group.id if group is not None else None
 
     def __repr__(self):
         return f"<Attribute(attribute_id='{self.attribute_id}', attribute_name='{self.attribute_name}', attribute_question='{self.attribute_question}')>"

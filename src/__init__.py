@@ -48,6 +48,7 @@ def create_app(config):
 
     # Initialize the NaiveBayesClassifier
     classifier.app = app
-    classifier.load_from_file('./data/observations.csv')
+    # classifier.load_from_file('./data/observations.csv')
+    classifier.load_from_db()
 
     return app

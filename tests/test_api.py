@@ -7,20 +7,15 @@ from src.sessionManagement import users
 from src.models import Session, AnswerQuestion
 from config import TestingConfig
 import pytest
-from . import init_test_db, init_classifier
+from . import init_test_db
 
 
 @pytest.fixture  # (scope='module')
 def backend():
     app = create_app(TestingConfig)
     init_test_db(app)
-    init_classifier()
 
     test_client = app.test_client()
-
-    #src.building_data = src.BuildingData('./data')
-    #src.classifier = src.NaiveBayesClassifier(src.building_data.observations)
-    # init_app(app)
 
     ctxt = app.app_context()
     ctxt.push()
@@ -43,7 +38,7 @@ def responses(backend):
         question_type = json['type']
         responses['server_responses'].append(json)
 
-        for x in range(2):  
+        for x in range(2):
 
             answer = []
             attribute_id = []
@@ -60,23 +55,24 @@ def responses(backend):
                 response = backend.post(
                     '/answer', json={'language': 'fi', 'response': [{'attribute_id': attribute, 'response': 'yes'}]}
                 )
-                
-            elif question_type == 'multi': 
+
+            elif question_type == 'multi':
                 attributes = []
                 multi_answer = []
                 if x == 0:
                     attributes = responses['server_responses'][-1]['attributes']
                 elif x > 0:
                     attributes = responses['server_responses'][-1]['new_question']['attributes']
-                
+
                 for attribute in attributes:
-                    res = {'attribute_id': attribute['attribute_id'], 'response': 'no'}
+                    res = {
+                        'attribute_id': attribute['attribute_id'], 'response': 'no'}
                     attribute_id.append(attribute['attribute_id'])
                     multi_answer.append(res)
                     answer.append('no')
                 response = backend.post(
-                    '/answer', json={'language': 'fi', 'response': multi_answer}   
-                )     
+                    '/answer', json={'language': 'fi', 'response': multi_answer}
+                )
             json = response.get_json()
             new = {
                 'new_question': json['new_question'],
@@ -381,8 +377,6 @@ def test_previous_deletes_answers_from_database(backend, responses):
         assert len(answer_question_new) == len(answer_question_old) - 1
         assert answer_question_new[-1].attribute.attribute_id == answer_question_old[-2].attribute.attribute_id
         assert answer_question_new[-1].answer.value == answer_question_old[-2].answer.value
-
-    
 
 
 @pytest.fixture

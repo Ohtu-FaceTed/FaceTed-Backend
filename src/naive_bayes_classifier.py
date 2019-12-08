@@ -13,33 +13,6 @@ DEFAULT_OBSERVATIONS = pd.DataFrame({'class_id': ['0110', '0111', '0112'],
                                      '102': [0, 1, 0]})
 
 
-def load_observations(observation_file):
-    '''Attempts to load buiding-attribute observation data from file into Pandas dataframe'''
-    df = pd.read_csv(observation_file, dtype={'class_id': str})
-
-    # Check that the required fields are present
-    for required_field in ['class_id']:
-        if required_field not in df:
-            raise ValueError(
-                f"The observations data ({observation_file}) does not contain a '{required_field}' column!")
-
-    # Check that we have at least one "attribute" column in addition to
-    # class_id
-    if len(df.columns) < 2:
-        raise ValueError(
-            f"The observation data ({observation_file}) does not contain any attribute columns!")
-
-    # Check that there is at least one row of data
-    if len(df.index) < 1:
-        raise ValueError(
-            f"The observation data ({observation_file}) does not contain any rows!")
-
-    # Ensure that the column labels are interpreted as strings
-    df.columns = df.columns.astype(str)
-
-    return df
-
-
 def calculate_conditional_probabilities(observations):
     '''Calculates the conditional probability table from the building observations and returns them as a Pandas dataframe'''
     # Start with building_observations
@@ -67,11 +40,12 @@ class NaiveBayesClassifier:
         # Empty prior
         self.prior = np.array(())
 
-    def load_from_db():
+    def load_from_db(self):
         with self.app.app_context():
             # Load prior
             building_classes = BuildingClass.query.order_by('class_id').all()
-            self.prior = np.array([x.probability for x in building_classes])
+            self.prior = np.array(
+                [x.class_probability for x in building_classes])
 
             # Load attribute default probabilities
             attributes = Attribute.query.order_by('attribute_id').all()
@@ -93,24 +67,25 @@ class NaiveBayesClassifier:
                 # If a custom probability is provided, that is the new probability
                 if x.custom_probability is not None:
                     new_prob = x.custom_probability
-                    
+
                 # Replace the corresponding entry in the conditional probability table
                 attribute_id = x.attribute.attribute_id
-                class_id = x.answer.class_id
-                self.conditional_probabilities[attribute_id][class_id] = new_prob
+                mask = self.conditional_probabilities.class_id == x.answer.class_id
+                self.conditional_probabilities.loc[mask,
+                                                   attribute_id] = new_prob
 
-    def load_from_file(self, observation_file):
-        try:
-            observations = load_observations(observation_file)
-        except ValueError as error:
-            print(
-                f'Unable to load observations ({observation_file}): {error.args[0]}')
-            observations = DEFAULT_OBSERVATIONS
-        self.conditional_probabilities = calculate_conditional_probabilities(
-            observations)
+    # def load_from_file(self, observation_file):
+    #    try:
+    #        observations = load_observations(observation_file)
+    #    except ValueError as error:
+    #        print(
+    #            f'Unable to load observations ({observation_file}): {error.args[0]}')
+    #        observations = DEFAULT_OBSERVATIONS
+    #    self.conditional_probabilities = calculate_conditional_probabilities(
+    #        observations)
 
-        # Assume uniform prior
-        self.prior = np.ones(observations.shape[0])
+    #    # Assume uniform prior
+    #    self.prior = np.ones(observations.shape[0])
 
     def calculate_posterior(self, attribute, value, prior=None, normalize=True):
         '''Calculates the posterior probability for each building class given attribute and value'''
