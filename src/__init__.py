@@ -2,6 +2,8 @@ from flask import Flask
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
+from config import ProductionConfig
+
 from flask_bcrypt import Bcrypt
 bcrypt = Bcrypt()
 csrf = CSRFProtect()
@@ -14,7 +16,7 @@ building_data = BuildingData()
 classifier = NaiveBayesClassifier()
 
 
-def create_app(config):
+def create_app(config=ProductionConfig):
     app = Flask(__name__)
 
     #init bcrypt
@@ -50,7 +52,9 @@ def create_app(config):
 
     # Initialize the BuildingData cache object
     building_data.app = app
+    print('Initializing cache, this might take a while..')
     building_data.load_from_db()
+    print('Done')
 
     # Initialize the NaiveBayesClassifier
     classifier.app = app
