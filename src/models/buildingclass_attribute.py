@@ -13,7 +13,7 @@ class ClassAttribute(db.Model):
     attribute_id = Column(Integer, ForeignKey('attribute.id'))
     buildingclass_id = Column(Integer, ForeignKey('building_class.id'))
     attribute = relationship("Attribute")
-    answer = relationship("BuildingClass")
+    building_class = relationship("BuildingClass")
 
     def __init__(self, attribute, building_class, has_attribute, custom_probability=None):
         self.attribute_id = attribute.id
