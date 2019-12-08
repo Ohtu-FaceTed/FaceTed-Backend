@@ -1,9 +1,9 @@
 import json
-from src.sessionManagement import create_session, users
+from src.sessionManagement import create_session, cleanup, users
 from src.question_selection import next_question
 from flask import jsonify, session, request
 from . import views as app
-from . import select_question_by_language, get_best_match_language
+from . import fix_question_language, get_best_match_language
 
 
 @app.route('/question', methods=['GET'])
@@ -16,13 +16,12 @@ def question():
 
     ident = create_session()
     question = next_question(None, [])
-
-    questions = json.loads(question['attribute_question'])
-    lang_parsed_question = select_question_by_language(
-        question['attribute_question'], best_match_language)
-    question['attribute_question'] = lang_parsed_question
+    fix_question_language(question, best_match_language)
 
     # Save response
     users[ident]['server_responses'].append(question)
+
+    # Cleanup users dict
+    cleanup()
 
     return jsonify(question)

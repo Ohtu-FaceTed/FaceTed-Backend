@@ -17,8 +17,11 @@ from config import ProductionConfig
 #   active: indicates if the attribute should be used (boolean)
 #   attribute_tooltip: tooltip on mouse over for given attribute (string)
 DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102', '114', '116'],
-                                   'attribute_name': ['Asunnot', 'Asuinhuone',
-                                                      'Eteinen', 'WC', 'WC-pesuhuone'],
+                                   'attribute_name': ['{"fi":"Asunnot", "sv":"[Svenska]Asunnot", "en":"[English]Asunnot"}',
+                                                      '{"fi":"Asuinhuone", "sv":"[Svenska]Asuinhuone", "en":"[English]Asuinhuone"}',
+                                                      '{"fi":"Eteinen", "sv":"[Svenska]Eteinen", "en":"[English]Eteinen"}',
+                                                      '{"fi":"WC", "sv":"[Svenska]WC", "en":"[English]WC"}',
+                                                      '{"fi":"WC-pesuhuone", "sv":"[Svenska]WC-pesuhuone", "en":"[English]WC-pesuhuone"}'],
                                    'attribute_question': ['{"fi":"Onko rakennuksessa asunnot?", "sv":"[Svenska]Onko rakennuksessa asunnot?", "en":"[English]Onko rakennuksessa asunnot?"}',
                                                           '{"fi":"Onko rakennuksessa asuinhuone?", "sv":"[Svenska]Onko rakennuksessa asuinhuone?", "en":"[English]Onko rakennuksessa asuinhuone?"}',
                                                           '{"fi":"Onko rakennuksessa eteinen?", "sv":"[Svenska]Onko rakennuksessa eteinen?", "en":"[English]Onko rakennuksessa eteinen?"}',
@@ -26,11 +29,11 @@ DEFAULT_ATTRIBUTES = pd.DataFrame({'attribute_id': ['1', '101', '102', '114', '1
                                                           '{"fi":"Onko rakennuksessa wc-pesuhuone?", "sv":"[Svenska]Onko rakennuksessa wc-pesuhuone?", "en":"[English]Onko rakennuksessa wc-pesuhuone?"}'],
                                    'group_id': [None, None, None, '1', '1'],
                                    'active': [True, True, True, True, True],
-                                   'attribute_tooltip': ['Onko rakennuksessa asunnot?',
-                                                         'Onko rakennuksessa asuinhuone?',
-                                                         'Onko rakennuksessa eteinen?',
-                                                         'Onko rakennuksessa WC?',
-                                                         'Onko rakennuksessa WC-pesuhuone?']},)
+                                   'attribute_tooltip': ['{"fi":"", "en":"", "sv":""}',
+                                                         '{"fi":"", "en":"", "sv":""}',
+                                                         '{"fi":"", "en":"", "sv":""}',
+                                                         '{"fi":"", "en":"", "sv":""}',
+                                                         '{"fi":"", "en":"", "sv":""}']},)
 
 
 def load_attributes(attribute_file):

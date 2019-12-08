@@ -100,6 +100,7 @@ def test_get_question_returns_json(backend):
     if json['type'] == 'simple':
         assert 'attribute_id' in json
         assert 'attribute_name' in json
+        assert 'attribute_tooltip' in json
 
 
 def test_get_answer_fails(backend):
@@ -145,6 +146,7 @@ def test_post_answer_returns_new_question(backend):
     if json['new_question']['type'] == 'simple':
         assert 'attribute_id' in json['new_question']
         assert 'attribute_name' in json['new_question']
+        assert 'attribute_tooltip' in json['new_question']
 
 
 def test_post_answer_returns_building_classes(backend):

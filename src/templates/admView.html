@@ -50,7 +50,29 @@
                         {% endif %}
                     </td>
                     <td>
-                        {{ attr.part_of_group.grouping_key or 'Not grouped' }}
+                        <form method="POST"
+                            action="{{ url_for('views.setGroup', attribute_id=attr.id ) }}">
+                            <select name="select_group">
+                                {% if attr.part_of_group.grouping_key %}    
+                                    {% for x in groups %}                               
+                                        {% if x.id == attr.grouping_id %}
+                                            <option value="{{ attr.grouping_id }}" selected hidden> 
+                                                {{ attr.part_of_group.grouping_key }} - {{ x.group_name }}
+                                            </option> 
+                                        {% endif %}
+                                    {% endfor %}
+                                    <option value="None">Not grouped</option> 
+                                {% else %}
+                                    <option value="None" selected>Not grouped</option> 
+                                {% endif %}
+                                {% for x in groups %}  
+                                    {% if x.id != attr.grouping_id %}
+                                        <option value="{{ x.id }}">{{ x.grouping_key }} - {{ x.group_name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <input type="submit" value="Change" />
+                        </form>                   
                     </td>
                     <td>
                         <a href="{{ url_for('views.edit_question_view', attribute_id=attr.id) }}">
