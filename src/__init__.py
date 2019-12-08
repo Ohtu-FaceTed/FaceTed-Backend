@@ -45,7 +45,9 @@ def create_app(config=ProductionConfig):
 
     # Initialize the BuildingData cache object
     building_data.app = app
+    print('Initializing cache, this might take a while..')
     building_data.load_from_db()
+    print('Done')
 
     # Initialize the NaiveBayesClassifier
     classifier.app = app
