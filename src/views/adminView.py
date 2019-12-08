@@ -1,9 +1,9 @@
 import json
 from . import views as app
-from ..models import db, Answer, AnswerQuestion, Attribute, BuildingClass, ClassAttribute, Session
+from ..models import db, Answer, AnswerQuestion, Attribute, BuildingClass, ClassAttribute, Session, QuestionGroup
 from flask import redirect, render_template, request, url_for, jsonify, flash
 from flask_login import login_required
-from sqlalchemy.exc import IntegrityError, StatementError
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 
 

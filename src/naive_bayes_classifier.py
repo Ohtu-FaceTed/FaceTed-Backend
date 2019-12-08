@@ -70,7 +70,7 @@ class NaiveBayesClassifier:
 
                 # Replace the corresponding entry in the conditional probability table
                 attribute_id = x.attribute.attribute_id
-                mask = self.conditional_probabilities.class_id == x.answer.class_id
+                mask = self.conditional_probabilities.class_id == x.building_class.class_id
                 self.conditional_probabilities.loc[mask,
                                                    attribute_id] = new_prob
 
