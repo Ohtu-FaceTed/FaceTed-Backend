@@ -1,4 +1,4 @@
-import random
+import uuid
 from flask import session
 import string
 from datetime import date
@@ -9,13 +9,9 @@ users = {}
 
 
 def generate_id():
-    '''Composes 10 characters long string id chosen randomly from letters and numbers and yet checks if it's already in use'''
-    while (True):
-        ident = ''.join(random.choice(string.ascii_letters + string.digits)
-                        for i in range(10))
-        if not ident in users:
-            return ident
-
+    '''Creates a unique UUID id and returns it in string form'''
+    ident = uuid.uuid4()
+    return str(ident)
 
 def create_session():
     '''Creates and saves new session for user and returns session id'''
