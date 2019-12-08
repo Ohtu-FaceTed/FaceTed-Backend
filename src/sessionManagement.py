@@ -13,6 +13,7 @@ def generate_id():
     ident = uuid.uuid4()
     return str(ident)
 
+
 def create_session():
     '''Creates and saves new session for user and returns session id'''
     ident = generate_id()
@@ -24,6 +25,7 @@ def create_session():
     db.session.add(Session(ident))
     db.session.commit()
     return ident
+
 
 def cleanup():
     today = date.today()

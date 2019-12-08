@@ -57,7 +57,6 @@ def init_test_db(app):
                                 probability=0.2)]
         db.session.add_all(attributes)
 
-
         # Initialize building_classes table
         building_classes = [BuildingClass(class_id='0110',
                                           class_name='Omakotitalot',
