@@ -5,7 +5,10 @@ import os
 # Address where the app will be served at
 bind = "127.0.0.1:5000"
 
+# Worker setup
 workers = 1
+# Increase this if loading db cache takes too long
+timeout = 120
 
 # Enable logging at dir logs and pipe output there
 DIR = os.path.dirname(os.path.abspath(__file__))
