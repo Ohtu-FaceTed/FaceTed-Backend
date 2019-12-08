@@ -312,8 +312,8 @@ def edit_group_name_view(group_id):
     return render_template("singleStringEditTemplate.html", string=string, redirect_url=url_for('views.group_view'),
                            post_url=url_for('views.edit_group_name_string', group_id=group.id))
 
-# Edit attribute custom probability
-@app.route("/edit_custom_probability/<attribute_id>", methods=["GET"])
+# Edit attribute probability
+@app.route("/edit_attribute_probability/<attribute_id>", methods=["GET"])
 @login_required
 def edit_attribute_probability_view(attribute_id):
     attr = Attribute.query.get(attribute_id)
@@ -321,8 +321,8 @@ def edit_attribute_probability_view(attribute_id):
     return render_template("singleStringEditTemplate.html", string=string, redirect_url=url_for('views.admin_view'),
                            post_url=url_for('views.edit_attribute_probability_float', attribute_id=attr.id))
 
-# attribute custom probability handler
-@app.route("/edit_custom_probability/<attribute_id>", methods=["POST"])
+# attribute probability handler
+@app.route("/edit_attribute_probability/<attribute_id>", methods=["POST"])
 @login_required
 def edit_attribute_probability_float(attribute_id):
     attr = Attribute.query.get(attribute_id)
@@ -385,3 +385,44 @@ def edit_group_key(group_id):
         return redirect(url_for("views.group_view", error="Edit failed."))
 
     return redirect(url_for("views.group_view"))
+
+# Edit attribute probability
+@app.route("/link_bclass_attribute_view/<class_id>", methods=["GET"])
+@login_required
+def link_bclass_attribute_view(class_id):
+    bclass = BuildingClass.query.get(class_id)
+    links = ClassAttribute.query.filter_by(buildingclass_id = class_id)
+    
+    bclass.class_name = json.loads(bclass.class_name)["fi"]
+    for one in links:
+        one.attribute.attribute_name = json.loads(one.attribute.attribute_name)["fi"]
+
+    return render_template("bclass_attr_link.html",  bclass=bclass, links=links)
+
+# Toggler for class having attribute
+@app.route("/toggle_link_between_class_attribute/<class_attribute_id>", methods=["POST"])
+@login_required
+def toggle_link_between_class_attribute(class_attribute_id):
+    link = ClassAttribute.query.get(class_attribute_id)
+
+    if link.class_has_attribute:
+        link.class_has_attribute = False
+    else:
+        link.class_has_attribute = True
+
+    db.session.commit()
+    return redirect(url_for("views.link_bclass_attribute_view", class_id = link.buildingclass_id))
+
+# Class probability edit post handler.
+@app.route("/edit_class_attribute_probability/<class_attribute_id>", methods=["POST"])
+@login_required
+def edit_class_attribute_probability(class_attribute_id):
+    link = ClassAttribute.query.get(class_attribute_id)
+
+    try:
+        link.custom_probability = request.form["probability"]
+        db.session.commit()
+    except:
+        flash("Probability should be a numeric value.")
+
+    return redirect(url_for("views.link_bclass_attribute_view", class_id = link.buildingclass_id))

@@ -25,7 +25,11 @@
                 {% for class in building_classes %}
                 <tr>
                     <td>{{ class.class_id }}</td>
-                    <td>{{ class.class_name }}</td>
+                    <td>
+                        <a href="{{ url_for('views.link_bclass_attribute_view', class_id=class.id) }}">
+                            {{ class.class_name }}
+                        </a>
+                    </td>
                     <td>
                         <form method="POST"
                             action="{{ url_for('views.edit_class_probability', class_id=class.id) }}">
