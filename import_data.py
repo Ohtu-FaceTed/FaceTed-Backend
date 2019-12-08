@@ -117,7 +117,7 @@ def load_attribute_groups(attribute_groups_file):
     return df
 
 def load_attribute_probabilities(attribute_probabilities_file):
-    df = pd.read_csv(attribute_probabilities_file, dtype=str)
+    df = pd.read_csv(attribute_probabilities_file, dtype={'attribute_id': str, 'probability': float})
         
     # Check that the required fields are present
     for required_field in ['attribute_id', 'probability']:
@@ -186,6 +186,7 @@ if __name__ == '__main__':
     app = create_app(config)
 
     # adds default user to db
+    print('Adding admin user', flush=True)
     with app.app_context():
         if len(Admin.query.all()) == 0:
             with open('data/user.json') as f:
@@ -195,6 +196,7 @@ if __name__ == '__main__':
 
     # load attributes groupings
     attribute_groups_path = os.path.join(args.data_directory, 'attribute_groups.csv')
+    print(f'Adding attribute groups ({attribute_groups_path})', flush=True)
     if os.path.isfile(attribute_groups_path):
         attribute_groups_df = load_attribute_groups(attribute_groups_path)
         
@@ -213,6 +215,7 @@ if __name__ == '__main__':
 
 
     # Load answer types
+    print('Adding answer strings', flush=True)
     with app.app_context():
         try:
             for x in ['yes', 'no', 'skip']:
@@ -224,18 +227,25 @@ if __name__ == '__main__':
 
     # Load attributes
     attribute_path = os.path.join(args.data_directory, 'attributes.csv')
+    print(f'Loading attributes ({attribute_path})', flush=True)
     if os.path.isfile(attribute_path):
         attributes_df = load_attributes(attribute_path)
         
         with app.app_context():
             try:
+                attr_groups = QuestionGroup.query.all()
                 for i, x in attributes_df.iterrows():
-                    db.session.add(Attribute(attribute_id=x.attribute_id,
-                                             attribute_name=x.attribute_name,
-                                             attribute_question=x.attribute_question,
-                                             grouping_id=x.group_id,
+                    if pd.isna(x.group_id):
+                        group = None
+                    else:
+                        group = [y for y in attr_groups if y.grouping_key == x.group_id]
+                        group = group[0]
+                    db.session.add(Attribute(id_=x.attribute_id,
+                                             name=x.attribute_name,
+                                             question=x.attribute_question,
+                                             group=group,
                                              active=x.active,
-                                             attribute_tooltip= x.attribute_tooltip))
+                                             tooltip= x.attribute_tooltip))
                 db.session.commit()
             except IntegrityError as e:
                 print('Caught integrity error:', e.args[0])
@@ -247,6 +257,7 @@ if __name__ == '__main__':
 
     # Load classifications
     building_classes_path = os.path.join(args.data_directory, 'building_classes.csv')
+    print(f'Loading building classes ({building_classes_path})', flush=True)
     if os.path.isfile(building_classes_path):
         building_classes_df = load_building_classes(building_classes_path)
         
@@ -264,8 +275,9 @@ if __name__ == '__main__':
     else:
         print(f'Could not find building_classes.csv at: {building_classes_path}')
         
-        #load attribute probabilities
+    #load attribute probabilities
     attribute_probabilities_path = os.path.join(args.data_directory, 'attribute_probabilities.csv')
+    print(f'Loading attribute probabilities ({attribute_probabilities_path})', flush=True)
     if os.path.isfile(attribute_probabilities_path):
         attribute_probabilities_df = load_attribute_probabilities(attribute_probabilities_path)
         
@@ -285,6 +297,7 @@ if __name__ == '__main__':
     # Load the "observation" data, that determines, which building classes have
     # which attributes 
     observation_path = os.path.join(args.data_directory, 'observations.csv')
+    print(f'Loading observations ({observation_path})', flush=True)
     if os.path.isfile(observation_path):
         df = load_observations(observation_path)
         df = df.set_index('class_id')
