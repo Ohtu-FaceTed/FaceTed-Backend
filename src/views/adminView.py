@@ -9,7 +9,7 @@ from sqlalchemy import func
 @app.route("/801fc3", methods=["GET"])
 @login_required
 def admin_view():
-    return render_template("admView.html", attributes=Attribute.query.all(), groups = QuestionGroup.query.all())
+    return render_template("admView.html", attributes=Attribute.query.all(), groups=QuestionGroup.query.all())
 
 
 # question string edit
@@ -169,8 +169,8 @@ def setActive(attribute_id):
 def setGroup(attribute_id):
     attr = Attribute.query.get(attribute_id)
     selected_group = request.form.get('select_group')
-    if attr.grouping_id != selected_group: 
-        attr.grouping_id = selected_group 
+    if attr.grouping_id != selected_group:
+        attr.grouping_id = selected_group
         db.session.commit()
 
     return redirect(url_for("views.admin_view"))
@@ -242,6 +242,33 @@ def edit_group_name_view(group_id):
     string = group.group_name
     return render_template("singleStringEditTemplate.html", string=string, redirect_url=url_for('views.group_view'),
                            post_url=url_for('views.edit_group_name_string', group_id=group.id))
+
+# Edit attribute custom probability
+@app.route("/edit_custom_probability/<attribute_id>", methods=["GET"])
+@login_required
+def edit_attribute_probability_view(attribute_id):
+    attr = Attribute.query.get(attribute_id)
+    string = attr.probability
+    return render_template("singleStringEditTemplate.html", string=string, redirect_url=url_for('views.admin_view'),
+                           post_url=url_for('views.edit_attribute_probability_float', attribute_id=attr.id))
+
+# attribute custom probability handler
+@app.route("/edit_custom_probability/<attribute_id>", methods=["POST"])
+@login_required
+def edit_attribute_probability_float(attribute_id):
+    attr = Attribute.query.get(attribute_id)
+
+    try:
+        form = request.form
+        prob = attr.probability
+        if len(form.get('string')) > 0:
+            attr.probability = float(form.get('string'))
+            db.session.commit()
+    except:
+        print('Data parsing failed in attribute_probability_edit')
+        return redirect(url_for("views.edit_attribute_probability_view", attribute_id=attr.id, error="Edit failed, value has to be float"))
+
+    return redirect(url_for("views.admin_view"))
 
 # group name edit handler
 @app.route("/edit_group_name/<group_id>", methods=["POST"])

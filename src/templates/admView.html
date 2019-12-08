@@ -19,6 +19,7 @@
                     <th>Grouping id</th>
                     <th>Question string</th>
                     <th>Tooltip info</th>
+                    <th>Probability</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,8 +55,8 @@
                             <select name="select_group">
                                 {% if attr.part_of_group.grouping_key %}    
                                     {% for x in groups %}                               
-                                        {% if x.grouping_key == attr.part_of_group.grouping_key %}
-                                            <option value="{{ attr.part_of_group.grouping_key }}" selected hidden> 
+                                        {% if x.id == attr.grouping_id %}
+                                            <option value="{{ attr.grouping_id }}" selected hidden> 
                                                 {{ attr.part_of_group.grouping_key }} - {{ x.group_name }}
                                             </option> 
                                         {% endif %}
@@ -65,8 +66,8 @@
                                     <option value="None" selected>Not grouped</option> 
                                 {% endif %}
                                 {% for x in groups %}  
-                                    {% if x.grouping_key != attr.part_of_group.grouping_key %}
-                                        <option value="{{ x.grouping_key }}">{{ x.grouping_key }} - {{ x.group_name }}</option>
+                                    {% if x.id != attr.grouping_id %}
+                                        <option value="{{ x.id }}">{{ x.grouping_key }} - {{ x.group_name }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -81,6 +82,11 @@
                     <td>
                         <a href="{{ url_for('views.edit_tooltip_view', attribute_id=attr.id) }}">
                             {{ attr.attribute_tooltip }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('views.edit_attribute_probability_float', attribute_id=attr.id) }}">
+                            {{ attr.probability }}
                         </a>
                     </td>
                 </tr>
