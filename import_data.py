@@ -2,7 +2,7 @@ import argparse
 import os
 import pandas as pd
 import json
-
+from src import bcrypt
 from sqlalchemy.exc import IntegrityError
 
 from src import create_app
@@ -191,7 +191,7 @@ if __name__ == '__main__':
         if len(Admin.query.all()) == 0:
             with open('data/user.json') as f:
                 data = json.load(f)
-                db.session.add(Admin(data['name'],data['username'],data['password']))
+                db.session.add(Admin(data['name'],data['username'],bcrypt.generate_password_hash(data['password']).decode('utf-8')))
                 db.session.commit()
 
     # load attributes groupings

@@ -4,7 +4,10 @@ from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
 from config import ProductionConfig
 
+from flask_bcrypt import Bcrypt
+bcrypt = Bcrypt()
 csrf = CSRFProtect()
+
 
 # Global objects (intialized in create_app)
 from .naive_bayes_classifier import NaiveBayesClassifier
@@ -15,6 +18,10 @@ classifier = NaiveBayesClassifier()
 
 def create_app(config=ProductionConfig):
     app = Flask(__name__)
+
+    #init bcrypt
+    
+    bcrypt.init_app(app)
 
     app.config.from_object(config)
 
