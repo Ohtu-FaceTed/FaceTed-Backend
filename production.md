@@ -10,12 +10,17 @@ git clone https://github.com/Ohtu-FaceTed/FaceTed-Backend.git
 cd FaceTed-Backend
 ```
 
+
 #### Virtual envin luonti
-```python3.6 -m venv venv```. Ei ole välttämätön mutta vähentää riskiä että joku muu ohjelma myöhemmin hajoittaisi jotain.
+```python3.6 -m venv venv```. 
+
+Ei ole välttämätön mutta vähentää riskiä että joku muu ohjelma myöhemmin hajoittaisi jotain.
 
 #### Venvin aktivointi
 ```source venv/bin/activate```
+
 Terminaalin prompt rivin alussa pitäisi olla nyt (venv).
+
 Esim. ```(venv) [root@centos-s-1vcpu-1gb-fra1-01 FaceTed-Backend]#```.
 
 Varmista pythonin versio ```python --version```. Pitäisi olla >= 3.6.0
@@ -73,13 +78,13 @@ Gunicornin dokumentaatiosta löytyy tapoja miten sovelluksen saa käynnistymää
 
 
 #### Tietokannan hallintapaneeli
-Endpointista /asdasd löytyy tietokannan hallintapaneeli. Vaatii sisäänkirjautumisen. 
+Endpointista /801fc löytyy tietokannan hallintapaneeli. Vaatii sisäänkirjautumisen. 
 
 ## Frontend
 
 Lopuksi frontin tiedostoista fs-question.js ja fs-detail.js pitää käydä muuttamassa muuttuja const baseUrl osoittamaan uuteen osoitteeseen. Pitäisi löytyä tiedostojen alusta. 
 
-Komponentit olettaa että ne ovat html:ssä div-tägien sisällä joiden id on faceted. Tämä sen takia että ne sitovat tähän diviin eventListenerit joiden avulla ne viestivät keskenään. Esim
+Komponentit olettaa että ne ovat html:ssä div-tägien sisällä joiden id on faceted. Tämä sen takia että ne sitovat tähän diviin eventListenerit joiden avulla ne viestivät keskenään. Esim. toimivasti html:stä
 ```html
 <div id="faceted">
     <fs-question.js>
