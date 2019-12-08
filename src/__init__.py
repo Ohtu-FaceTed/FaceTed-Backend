@@ -5,11 +5,11 @@ from flask_login import LoginManager
 
 csrf = CSRFProtect()
 
-# Global objects
+# Global objects (intialized in create_app)
 from .naive_bayes_classifier import NaiveBayesClassifier
 from .building_data import BuildingData
-building_data = BuildingData()  # Overriden in create_app
-classifier = NaiveBayesClassifier('./data/observations.csv')
+building_data = BuildingData()
+classifier = NaiveBayesClassifier()
 
 
 def create_app(config):
@@ -45,5 +45,10 @@ def create_app(config):
     # Initialize the BuildingData cache object
     building_data.app = app
     building_data.load_from_db()
+
+    # Initialize the NaiveBayesClassifier
+    classifier.app = app
+    # classifier.load_from_file('./data/observations.csv')
+    classifier.load_from_db()
 
     return app

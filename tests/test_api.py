@@ -7,20 +7,15 @@ from src.sessionManagement import users
 from src.models import Session, AnswerQuestion
 from config import TestingConfig
 import pytest
-from . import init_test_db, init_classifier
+from . import init_test_db
 
 
 @pytest.fixture  # (scope='module')
 def backend():
     app = create_app(TestingConfig)
     init_test_db(app)
-    init_classifier()
 
     test_client = app.test_client()
-
-    #src.building_data = src.BuildingData('./data')
-    #src.classifier = src.NaiveBayesClassifier(src.building_data.observations)
-    # init_app(app)
 
     ctxt = app.app_context()
     ctxt.push()

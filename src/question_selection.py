@@ -11,7 +11,7 @@ def best_questions(prior, answered_questions):
     free_attributes = [x['attribute_id'] for x in src.building_data.attribute.values() if
                        x['active'] == True and
                        x['attribute_id'] not in answered_questions and
-                       x['attribute_id'] in src.classifier.observations.columns]
+                       x['attribute_id'] in src.classifier.conditional_probabilities.columns]
 
     # Get the conditional probability table and the prior
     cond_p = src.classifier.conditional_probabilities[free_attributes]
