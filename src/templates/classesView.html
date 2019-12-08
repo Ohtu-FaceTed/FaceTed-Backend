@@ -31,6 +31,7 @@
                         </a>
                     </td>
                     <td>
+                        <span style="visibility: hidden">{{ class.class_probability or 0 }}</span>
                         <form method="POST"
                             action="{{ url_for('views.edit_class_probability', class_id=class.id) }}">
                             <div class="input-group">
