@@ -12,6 +12,7 @@ from .answer_question import AnswerQuestion
 from .session import Session
 from .question_grouper import QuestionGroup
 from .admin import Admin
+from .buildingclass_attribute import ClassAttribute
 
 
 def init_app(app):
