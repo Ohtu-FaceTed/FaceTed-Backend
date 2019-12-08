@@ -127,7 +127,6 @@ def edit_class_probability(class_id):
         db.session.commit()
     except:
         flash("Probability should be a numeric value.")
-        return redirect(url_for("views.classes_view"))
 
     return redirect(url_for("views.classes_view"))
 
@@ -157,8 +156,7 @@ def create_building_class():
         name = f'{{"fi":"{form["class_name"]}", "en":"", "sv":""}}'
         b_class = BuildingClass(class_id=form["class_id"],
                                 class_name=name,
-                                class_probability=form["class_probability"]
-                                )
+                                class_probability=form["class_probability"])
         db.session.add(b_class)
         db.session.commit()
         b_class = BuildingClass.query.filter_by(class_id=b_class.class_id).first()
