@@ -72,6 +72,5 @@ def next_question(prior, answered_questions):
             }
             return question
     else:
-        # FIXME: Is this coherent with the front end functionality?
         # All questions asked
-        return {'attribute_id': '', 'attribute_name': '', 'attribute_question': '', 'attribute_tooltip': ''}
+        return {'type': 'none', 'attribute_id': '', 'attribute_name': '', 'attribute_question': '', 'attribute_tooltip': ''}
