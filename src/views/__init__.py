@@ -69,7 +69,10 @@ def translate_attr(attrJson, language):
 
 
 def fix_question_language(question, language):
-    if question['type'] == 'multi':
+    if question['type'] == 'none':
+        # Don't translate the empty question
+        return
+    elif question['type'] == 'multi':
         question['attribute_question'] = translate_attr(
             question['attribute_question'], language)
         for attribute in question['attributes']:
