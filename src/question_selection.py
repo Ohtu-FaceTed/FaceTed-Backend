@@ -50,7 +50,7 @@ def next_question(prior, answered_questions):
                         == attribute['group_id']]
             new_attributes = [{'attribute_id': x['attribute_id'],
                                'attribute_name': x['attribute_name'],
-                               'attribute_tooltip': x['attribute_name']} for x in selected]  # FIXME: is this needed?
+                               'attribute_tooltip': x['attribute_tooltip']} for x in selected]  # FIXME: is this needed?
             group_question = None
 
             if len(group['group_question']) > 0:
