@@ -32,7 +32,7 @@ class Attribute(db.Model):
             group = QuestionGroup.query.filter_by(grouping_key=group).first()
             self.grouping_id = group.id
         elif isinstance(group, QuestionGroup):
-            self.grouping_id = group.id 
+            self.grouping_id = group.id
 
     def __repr__(self):
         return f"<Attribute(attribute_id='{self.attribute_id}', attribute_name='{self.attribute_name}', attribute_question='{self.attribute_question}')>"

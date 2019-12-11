@@ -4,6 +4,7 @@ from flask import redirect, render_template, request, url_for, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
 from .. import bcrypt
 
+
 @app.route("/801fc31", methods=["GET", "POST"])
 def auth_login():
     if request.method == "GET":
