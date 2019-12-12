@@ -70,6 +70,7 @@ def edit_class_probability(class_id):
         b_class.class_probability = request.form["probability"]
         db.session.commit()
     except:
+        db.session.rollback()
         flash("Probability should be a numeric value.")
 
     return redirect(url_for("views.classes_view"))
@@ -114,6 +115,7 @@ def edit_class_attribute_probability(class_attribute_id):
         link.custom_probability = request.form["probability"]
         db.session.commit()
     except:
+        db.session.rollback()
         flash("Probability should be a numeric value.")
 
     return redirect(url_for("views.link_bclass_attribute_view", class_id = link.buildingclass_id))
