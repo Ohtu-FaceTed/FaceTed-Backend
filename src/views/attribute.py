@@ -15,16 +15,17 @@ from ..models import db, Attribute, BuildingClass, ClassAttribute, QuestionGroup
 @login_required
 def admin_view():
     groups = QuestionGroup.query.all()
-    
+
     error = request.args.get('error', '')
     success = request.args.get('success', '')
-    
-    form = AttributeForm()
-    form.attribute_group_id.choices += [(x.grouping_key, f'{x.grouping_key} - {x.group_name}') for x in groups] 
 
-    return render_template("admView.html", 
-                           attributes=Attribute.query.all(), 
-                           groups=groups, 
+    form = AttributeForm()
+    form.attribute_group_id.choices += [
+        (x.grouping_key, f'{x.grouping_key} - {x.group_name}') for x in groups]
+
+    return render_template("admView.html",
+                           attributes=Attribute.query.all(),
+                           groups=groups,
                            form=form,
                            error=error,
                            success=success)
@@ -158,11 +159,11 @@ def setGroup(attribute_id):
     try:
         if grp:
             if attr.grouping_id != grp.id:
-                attr.grouping_id = grp.id               
+                attr.grouping_id = grp.id
         else:
             attr.grouping_id = None
 
-        db.session.commit()  
+        db.session.commit()
     except:
         db.session.rollback()
 
@@ -203,40 +204,46 @@ def validate_localized_json(attribute_name, languages=('fi', 'sv', 'en')):
         try:
             json_dict = json.loads(field.data)
         except:
-            raise ValidationError(f'{attribute_name} needs to be JSON parseable string')
-        
+            raise ValidationError(
+                f'{attribute_name} needs to be JSON parseable string')
+
         for x in languages:
             if x not in json_dict or not isinstance(json_dict[x], str):
-                raise ValidationError(f'{attribute_name} must be defined for {languages}, at least {x} missing!')
-        
+                raise ValidationError(
+                    f'{attribute_name} must be defined for {languages}, at least {x} missing!')
+
     return _validate
 
 
 class AttributeForm(FlaskForm):
     attribute_id = StringField('Attribute', [validators.Length(min=1, max=12)])
-    attribute_name = StringField('Attribute name', 
-                                 validators=[validators.Length(min=1, max=1000), 
+    attribute_name = StringField('Attribute name',
+                                 validators=[validators.Length(min=1, max=1000),
                                              validate_localized_json('attribute_name')],
                                  default='{"fi": "Uusi attribuutti", "sv": "Ett nytt attribut", "en": "A new attribute"}')
-    attribute_question = StringField('Question string', 
-                                     validators=[validators.Length(min=1, max=1000), 
+    attribute_question = StringField('Question string',
+                                     validators=[validators.Length(min=1, max=1000),
                                                  validate_localized_json('attribute_question')],
                                      default='{"fi": "Kysymys", "sv": "Frågan", "en": "The question"}')
-    attribute_tooltip = StringField('Tooltip info', 
-                                    validators=[validators.Length(min=1, max=1000), 
-                                                validate_localized_json('attribute_tooltip')], 
+    attribute_tooltip = StringField('Tooltip info',
+                                    validators=[validators.Length(min=1, max=1000),
+                                                validate_localized_json('attribute_tooltip')],
                                     default='{"fi":"", "sv":"", "en":""}')
     attribute_active = BooleanField('Active', default=False)
-    attribute_group_id = SelectField('Grouping id', choices=[('', 'Not grouped')])
-    attribute_probability = DecimalField('Probability', [validators.NumberRange(min=0.0, max=1.0)], default=0.0)
+    attribute_group_id = SelectField(
+        'Grouping id', choices=[('', 'Not grouped')])
+    attribute_probability = DecimalField(
+        'Probability', [validators.NumberRange(min=0.0, max=1.0)], default=0.0)
 
     def validate_attribute_id(form, field):
         if Attribute.query.filter_by(attribute_id=field.data).count() > 0:
-            raise ValidationError(f'Attribute ID {field.data} is already in use!')
+            raise ValidationError(
+                f'Attribute ID {field.data} is already in use!')
 
     def validate_attribute_group_id(form, field):
         if field.data != '' and QuestionGroup.query.filter_by(grouping_key=field.data).count() == 0:
-            raise ValidationError(f'Attribute group id {field.data} not found!')
+            raise ValidationError(
+                f'Attribute group id {field.data} not found!')
 
 
 @app.route('/attribute/new', methods=['POST'])
@@ -245,7 +252,8 @@ def add_attribute():
     groups = QuestionGroup.query.all()
 
     form = AttributeForm()
-    form.attribute_group_id.choices += [(x.grouping_key, f'{x.grouping_key} - {x.group_name}') for x in groups] 
+    form.attribute_group_id.choices += [
+        (x.grouping_key, f'{x.grouping_key} - {x.group_name}') for x in groups]
 
     if form.validate_on_submit():
         group = form.attribute_group_id.data
@@ -253,12 +261,12 @@ def add_attribute():
             group = None
 
         attribute = Attribute(id_=form.attribute_id.data,
-            name=form.attribute_name.data,
-            question=form.attribute_question.data,
-            tooltip=form.attribute_tooltip.data,
-            probability=form.attribute_probability.data,
-            active=form.attribute_active.data,
-            group=group)
+                              name=form.attribute_name.data,
+                              question=form.attribute_question.data,
+                              tooltip=form.attribute_tooltip.data,
+                              probability=form.attribute_probability.data,
+                              active=form.attribute_active.data,
+                              group=group)
 
         db.session.add(attribute)
         db.session.commit()

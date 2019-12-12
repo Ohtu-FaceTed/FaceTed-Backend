@@ -14,7 +14,7 @@
         {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
         {% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
         
-        <button data-toggle="collapse" data-target="#add-attribute" class="btn btn-primary mt-4">Add attribute</button>
+        <button data-toggle="collapse" data-target="#add-attribute" class="btn btn-link">Add attribute</button>
         <div id="add-attribute" class="card collapse my-4">
             <div class="card-body">
                 <form method="POST" action="{{ url_for('views.add_attribute') }}">
@@ -51,7 +51,7 @@
                 </form>
             </div>
         </div>
-
+        <hr/>
         <table id="table_id" style="margin-top:2rem;" class="table tablez table-striped table-dark table-sm">
             <thead>
                 <tr>
@@ -113,7 +113,7 @@
                                     {% endif %}
                                 {% endfor %}
                             </select>
-                            <input type="submit" value="Change" />
+                            <input type="submit" class="btn btn-sm btn-secondary" value="Change" />
                         </form>                   
                     </td>
                     <td>

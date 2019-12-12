@@ -43,13 +43,13 @@
                         {% endif %}
                     </td>
                     <td>
-                        <span style="visibility: hidden">{{ link.custom_probability or 0 }}</span>
+                        <span style="display:none">{{ link.custom_probability or 0 }}</span>
                         <form class="form-group" method="POST"
                             action="{{ url_for('views.edit_class_attribute_probability', class_attribute_id=link.id) }}">
                             <div class="input-group justify-content-center align-items-center">
                                 <input style="max-width:100px;" name="probability" class="form-control" id="probability" value="{{ link.custom_probability or 0 }}" />
                                 <span class="input-group-btn" style="margin-left: 5px;">
-                                    <button type="submit">Save</button>
+                                    <button type="submit" class="btn btn-sm btn-secondary">Save</button>
                                 </span>
                             </div>
                         </form>

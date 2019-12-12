@@ -1,6 +1,7 @@
 from flask import request
 from . import views as app
-from .. import building_data , classifier
+from .. import building_data, classifier
+
 
 @app.route("/update", methods=["GET"])
 def update():
@@ -11,5 +12,5 @@ def update():
         print("woopx2!")
     except:
         print("it all went to hell")
-    
-    return ('', 204)  
+
+    return ('', 204)

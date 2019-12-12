@@ -20,7 +20,7 @@ def init_app(app):
         from . import question
         from . import feedback
         from . import updateData
-        
+
         # Register blueprint
         app.register_blueprint(views)
 
