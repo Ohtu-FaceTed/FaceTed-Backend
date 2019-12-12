@@ -520,3 +520,43 @@ def edit_class_attribute_probability(class_attribute_id):
         flash("Probability should be a numeric value.")
 
     return redirect(url_for("views.link_bclass_attribute_view", class_id = link.buildingclass_id))
+
+def create_session_data_file(search_string, count=0):
+    import pandas as pd
+    
+    attributes = Attribute.query.all()
+
+    sessions = Session.query.all()
+
+    columns = {'session_id': [x.session_ident for x in sessions],
+               'selected_class': [x.selected_class.class_id if x.selected_class is not None else '-' for x in sessions]}
+    attr_columns = {x.attribute_id: '-' for x in attributes}
+    columns.update(attr_columns)
+
+    df = pd.DataFrame(columns)
+    df = df.set_index('session_id')
+
+    for x in sessions:
+        for y in x.answered_questions:
+            df.loc[x.session_ident, y.attribute.attribute_id] = y.answer.value
+
+    df.to_csv('./session_export.csv')
+
+    return './session_export.csv'
+
+# Export session data handler
+@app.route('/session_export', methods=['POST'])
+@login_required
+def session_export():
+    import pandas as pd
+    from flask import send_file
+    import os
+
+    form = request.form
+    search_string = form.get('search_string', '')
+
+    print(f'Got search string {search_string} creating file and sending it to client')
+    filename = create_session_data_file(search_string)
+    filename = os.path.abspath(filename)
+
+    return send_file(filename, mimetype='text/csv', as_attachment=True)
