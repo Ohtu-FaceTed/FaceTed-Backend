@@ -3,6 +3,7 @@ from . import views as app
 from .. import building_data , classifier
 
 @app.route("/update", methods=["GET"])
+@login_required
 def update():
     try:
         building_data.load_from_db()
