@@ -60,27 +60,38 @@
             {% endif %}
           </li>
         </ul>
-      </div>
-      
-
+      </div>     
     </nav>
   </header>
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul class=flashes>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-
-  {% block body %}
-  <p>
-    Content.
-  </p>
-  {% endblock %}
-
+  <div class="row text-center justify-content-center">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </div>
+  <div class="row">
+    <div class="col-1">
+      {% if current_user.is_authenticated %}  
+      <a style="margin-top: 1.5rem; margin-left: 1rem;" class="btn btn-success" href="{{ url_for('views.update')}}" data-toggle="tooltip" title="This will apply any changed data to the live app, WARNING: this might take a while.">
+        Update <span data-feather="save"></span>
+      </a>
+      {% endif %}
+    </div>
+    <div class="col-10">
+      {% block body %}
+      <p>
+        Content.
+      </p>
+      {% endblock %}
+    </div>
+    <div class="col-1">
+    </div> 
+  </div>
   <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
     crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
