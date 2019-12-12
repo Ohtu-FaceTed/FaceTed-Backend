@@ -30,4 +30,4 @@ It is also possible to add new attributes through the view, but take extra care 
 ### Building Classes
 
 Like in the other tabs here you can create a new Building Class from the form at the top of the page. Though its important to note that any added class needs to exist in the Statistics Finland API.
-The table functions very similarly to the others, except for the "Class name" column. Clicking on a class name will reveal a new table in which the attirbutes that that specific class has. From this table new attributes can be added to the class in question as well as their custom probabilities for the class in question.
+The table functions very similarly to the others, except for the "Class name" column. Clicking on a class name will reveal a new table in which the attributes that the specific class has. From this table new attributes can be added to the class in question as well as their custom probabilities for the class in question.
