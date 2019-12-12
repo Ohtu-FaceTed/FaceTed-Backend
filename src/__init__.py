@@ -19,8 +19,8 @@ classifier = NaiveBayesClassifier()
 def create_app(config=ProductionConfig):
     app = Flask(__name__)
 
-    #init bcrypt
-    
+    # init bcrypt
+
     bcrypt.init_app(app)
 
     app.config.from_object(config)
