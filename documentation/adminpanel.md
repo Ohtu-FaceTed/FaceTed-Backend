@@ -18,7 +18,11 @@ You can view the selected class of each session, and view the question-answer ch
 There is a slider-checkbox that allows you to filter out all sessions that do not have a selected class - eg a null value on the foreign key table reference.
 There is also a "Hidden" feature, which allows for modifying the sql statement to take into acount the minimum amount of answers required to be visible.
 This can be accessed by <url of backend>/801fc3r __?min=15__ (without a space)
-Or by navigating to the sessions view by clicking the "Sessions" tab, and then manually typing ?min=<insert minimum value> into the URL bar.
+Or by navigating to the sessions view by clicking the "Sessions" tab, and then manually typing ?min=(insert minimum value) into the URL bar.
 
 By clicking on any of the fields of a session, you are greeted by a different view, where you can then see what attributes got what answer, and at what timestamp.
 
+### Attributes
+
+From the attributes tab you can view all the existing attributes, and group attributes with the existing grouping ID's. It is also possible to edit all the fields of an attribute, and toggling wether or not you want an attribute to be active (and used in calculations etc).
+It is also possible to add new attributes through the view, but take extra care with the attribute name, question string and tooltip info fields (They are somewhat precise on syntax - but keep in mind you can easily edit the fields later without risk of breaking anything!)
