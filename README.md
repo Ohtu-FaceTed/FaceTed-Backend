@@ -10,3 +10,10 @@ source venv/bin/activate
 pip install -r requirements.txt
 python app.py
 ```
+
+### Documentation
+
+
+[Developement guide](https://github.com/Ohtu-FaceTed/FaceTed-Search/blob/master/doc/development.md)
+[Production guide](https://github.com/Ohtu-FaceTed/FaceTed-Backend/blob/master/documentation/production.md)
+[Admin panel documentation](https://github.com/Ohtu-FaceTed/FaceTed-Backend/blob/master/documentation/adminpanel.md)
