@@ -154,9 +154,17 @@ def setActive(attribute_id):
 def setGroup(attribute_id):
     attr = Attribute.query.get(attribute_id)
     selected_group = request.form.get('select_group')
-    if attr.grouping_id != selected_group:
-        attr.grouping_id = selected_group
-        db.session.commit()
+    grp = QuestionGroup.query.get(selected_group)
+    try:
+        if grp:
+            if attr.grouping_id != grp.id:
+                attr.grouping_id = grp.id               
+        else:
+            attr.grouping_id = None
+
+        db.session.commit()  
+    except:
+        db.session.rollback()
 
     return redirect(url_for("views.admin_view"))
 
