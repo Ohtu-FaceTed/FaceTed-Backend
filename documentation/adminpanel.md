@@ -26,3 +26,8 @@ By clicking on any of the fields of a session, you are greeted by a different vi
 
 From the attributes tab you can view all the existing attributes, and group attributes with the existing grouping ID's. It is also possible to edit all the fields of an attribute, and toggling wether or not you want an attribute to be active (and used in calculations etc).
 It is also possible to add new attributes through the view, but take extra care with the attribute name, question string and tooltip info fields (They are somewhat precise on syntax - but keep in mind you can easily edit the fields later without risk of breaking anything!)
+
+### Building Classes
+
+Like in the other tabs here you can create a new Building Class from the form at the top of the page. Though its important to note that any added class needs to exist in the Statistics Finland API.
+The table functions very similarly to the others, except for the "Class name" column. Clicking on a class name will reveal a new table in which the attirbutes that that specific class has. From this table new attributes can be added to the class in question as well as their custom probabilities for the class in question.
