@@ -84,7 +84,6 @@
         var search_input = document.querySelector("#table_id_filter>label>input");
         var export_button = document.getElementById("export_sessions");
         export_button.addEventListener("click", function(){
-            console.log("Search input is now " + search_input.value);
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "{{ url_for('views.session_export') }}");
             xhr.onreadystatechange = function() {
