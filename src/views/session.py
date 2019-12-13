@@ -1,9 +1,11 @@
-from flask import render_template, request
+import os
+from flask import render_template, request, send_file
 from flask_login import login_required
+import pandas as pd
 from sqlalchemy import func
 
 from . import views as app
-from ..models import db, AnswerQuestion, Session
+from ..models import db, Answer, AnswerQuestion, Attribute, BuildingClass, Session
 
 
 # results view
@@ -37,3 +39,48 @@ def session_view():
 
     sess = Session.query.get(session_id)
     return render_template("sessionView.html", session=sess)
+
+
+def create_session_data_file(search_string, count=1):
+    attributes = Attribute.query.all()
+
+    sessions = Session.query\
+                      .filter((Session.session_ident.contains(search_string)) |
+                              (Session.selected_class.has(BuildingClass.class_id.contains(search_string))) |
+                              (Session.answered_questions.any((AnswerQuestion.attribute.has(Attribute.attribute_id.contains(search_string))) |
+                                                              (AnswerQuestion.answer.has(Answer.value.contains(search_string))))))\
+                      .outerjoin(AnswerQuestion)\
+                      .group_by(Session)\
+                      .having(func.count_(Session.answered_questions) >= count)\
+                      .all()
+
+    columns = {'session_id': [x.session_ident for x in sessions],
+               'selected_class': [x.selected_class.class_id if x.selected_class is not None else '-' for x in sessions]}
+    attr_columns = {x.attribute_id: '-' for x in attributes}
+    columns.update(attr_columns)
+
+    df = pd.DataFrame(columns)
+    df = df.set_index('session_id')
+
+    for x in sessions:
+        for y in x.answered_questions:
+            df.loc[x.session_ident, y.attribute.attribute_id] = y.answer.value
+
+    df.to_csv('./tmp/session_export.csv')
+
+    return './tmp/session_export.csv'
+
+# Export session data handler
+@app.route('/session_export', methods=['POST'])
+@login_required
+def session_export():
+    form = request.form
+    search_string = form.get('search_string', '')
+    try:
+        count = int(form.get('count', 1))
+    except:
+        count = 1
+    filename = create_session_data_file(search_string, count)
+    filename = os.path.abspath(filename)
+
+    return send_file(filename, mimetype='text/csv', as_attachment=True)
