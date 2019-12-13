@@ -17,3 +17,6 @@ python app.py
 [Developement guide](https://github.com/Ohtu-FaceTed/FaceTed-Search/blob/master/doc/development.md)
 [Production guide](https://github.com/Ohtu-FaceTed/FaceTed-Backend/blob/master/documentation/production.md)
 [Admin panel documentation](https://github.com/Ohtu-FaceTed/FaceTed-Backend/blob/master/documentation/adminpanel.md)
+
+Database Model
+![ModelImage](https://github.com/Ohtu-FaceTed/FaceTed-Backend/blob/master/documentation/dbmodel.PNG)
