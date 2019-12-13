@@ -9,10 +9,10 @@ from .. import building_data, classifier
 def update():
     try:
         building_data.load_from_db()
-        print("woop!")
+        print("building data reloaded")
         classifier.load_from_db()
-        print("woopx2!")
+        print("classifier reloaded")
     except:
-        print("it all went to hell")
+        print("updating failed")
 
     return ('', 204)
