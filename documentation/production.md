@@ -78,7 +78,7 @@ Gunicornin dokumentaatiosta löytyy tapoja miten sovelluksen saa käynnistymää
 
 
 #### Tietokannan hallintapaneeli
-Endpointista /801fc löytyy tietokannan hallintapaneeli. Vaatii sisäänkirjautumisen. 
+Endpointista /801fc3 löytyy tietokannan hallintapaneeli. Vaatii sisäänkirjautumisen. 
 
 ## Frontend
 
