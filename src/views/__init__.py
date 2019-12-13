@@ -10,14 +10,17 @@ supported_languages = ('en', 'fi', 'sv')
 def init_app(app):
     with app.app_context():
         # Register routes with the app
+
+        # Admin views
+        from . import login, attribute, attribute_group, building_class, session
+
         from . import answer
         from . import index
         from . import previous
         from . import question
         from . import feedback
-        from . import adminView
-        from . import feedback
-        from . import login
+        from . import updateData
+
         # Register blueprint
         app.register_blueprint(views)
 
