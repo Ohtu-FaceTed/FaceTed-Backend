@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
 from config import ProductionConfig
+import os
 
 from flask_bcrypt import Bcrypt
 bcrypt = Bcrypt()
@@ -32,6 +33,10 @@ def create_app(config=ProductionConfig):
 
     # Enable cross-origin request support
     CORS(app, supports_credentials=True)
+
+    # Generate temp dir
+    if "tmp" not in os.listdir():
+        os.mkdir("tmp")
 
     from . import models
     models.init_app(app)
