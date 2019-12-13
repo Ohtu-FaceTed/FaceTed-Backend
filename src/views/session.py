@@ -80,8 +80,6 @@ def session_export():
         count = int(form.get('count', 1))
     except:
         count = 1
-    print(
-        f'Got search string {search_string} creating file and sending it to client')
     filename = create_session_data_file(search_string, count)
     filename = os.path.abspath(filename)
 
