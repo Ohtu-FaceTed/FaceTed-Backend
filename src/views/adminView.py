@@ -543,13 +543,13 @@ def create_session_data_file(search_string, count=1):
     attributes = Attribute.query.all()
 
     sessions = Session.query\
-                      .filter((Session.session_ident.contains(search_string)) |\
-                              (Session.selected_class.has(BuildingClass.class_id.contains(search_string))) |\
-                              (Session.answered_questions.any((AnswerQuestion.attribute.has(Attribute.attribute_id.contains(search_string))) |\
+                      .filter((Session.session_ident.contains(search_string)) |
+                              (Session.selected_class.has(BuildingClass.class_id.contains(search_string))) |
+                              (Session.answered_questions.any((AnswerQuestion.attribute.has(Attribute.attribute_id.contains(search_string))) |
                                                               (AnswerQuestion.answer.has(Answer.value.contains(search_string))))))\
                       .outerjoin(AnswerQuestion)\
                       .group_by(Session)\
-                      .having(func.count_(Session.answered_questions) > count)\
+                      .having(func.count_(Session.answered_questions) >= count)\
                       .all()
 
     columns = {'session_id': [x.session_ident for x in sessions],
@@ -578,10 +578,13 @@ def session_export():
 
     form = request.form
     search_string = form.get('search_string', '')
-
+    try:
+        count = int(form.get('count', 1))
+    except:
+        count = 1
     print(
         f'Got search string {search_string} creating file and sending it to client')
-    filename = create_session_data_file(search_string)
+    filename = create_session_data_file(search_string, count)
     filename = os.path.abspath(filename)
 
     return send_file(filename, mimetype='text/csv', as_attachment=True)

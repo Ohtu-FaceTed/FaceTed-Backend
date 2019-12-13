@@ -78,6 +78,9 @@
         });
 
         // Handle export button by reading the filter string and passing it to the appropriate endpoint
+        var url = new URL(window.location.href);
+        var min = url.searchParams.get("min");
+
         var search_input = document.querySelector("#table_id_filter>label>input");
         var export_button = document.getElementById("export_sessions");
         export_button.addEventListener("click", function(){
@@ -92,6 +95,7 @@
             xhr.responseType = "blob";
             var form_data = new FormData();
             form_data.append("search_string", search_input.value);
+            form_data.append("count",min);
             xhr.send(form_data);
         });
     });
