@@ -536,12 +536,21 @@ def edit_class_attribute_probability(class_attribute_id):
     return redirect(url_for("views.link_bclass_attribute_view", class_id=link.buildingclass_id))
 
 
-def create_session_data_file(search_string, count=0):
+def create_session_data_file(search_string, count=1):
     import pandas as pd
+    from sqlalchemy import func
 
     attributes = Attribute.query.all()
 
-    sessions = Session.query.all()
+    sessions = Session.query\
+                      .filter((Session.session_ident.contains(search_string)) |\
+                              (Session.selected_class.has(BuildingClass.class_id.contains(search_string))) |\
+                              (Session.answered_questions.any((AnswerQuestion.attribute.has(Attribute.attribute_id.contains(search_string))) |\
+                                                              (AnswerQuestion.answer.has(Answer.value.contains(search_string))))))\
+                      .outerjoin(AnswerQuestion)\
+                      .group_by(Session)\
+                      .having(func.count_(Session.answered_questions) > count)\
+                      .all()
 
     columns = {'session_id': [x.session_ident for x in sessions],
                'selected_class': [x.selected_class.class_id if x.selected_class is not None else '-' for x in sessions]}
